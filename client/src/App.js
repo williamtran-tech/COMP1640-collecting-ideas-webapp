@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div className='app'>
-        <Header></Header>
+        <Header>hello</Header>
         {(typeof backendData.message === 'undefined') ? (
           <p>Loading..</p>
         ) : (
