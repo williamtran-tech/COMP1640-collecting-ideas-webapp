@@ -34,7 +34,11 @@ npm install mysql2
 npm install --save-dev nodemon
 ```
 
-4. Create table, named ["FillLater"] in the database nodejs_mysql like the query below:
+4. Next, install dependencies in /client
+
+   >
+
+5. Create table, named ["FillLater"] in the database nodejs_mysql like the query below:
 
 ```
 CREATE TABLE tasks (
@@ -43,3 +47,10 @@ CREATE TABLE tasks (
 ## References/Guideline of this Project
 
 Uploading the project to Github, ref: https://dev.to/birdy/mern-stack-project-setup-to-push-to-github-4l5e
+
+### Some errors when implementing code:
+
+1. Lack of dependencies
+2. Forget to delete "git init" in react app folder, when initializing it
+3. Not connect to the api, especially setup "proxy" to fetch data from api in /client
+4. Not config the file to match with local machine
