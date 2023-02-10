@@ -8,7 +8,7 @@ This repository is using Nodejs, ExpressJs, React and Mysql to make a project:
 
 ## How to execute project in your local:
 
-1. Create a database, named ["FillLater"] by default of my project. Or if you change the name, make sure you have config the name of the database in the config file (stored in server/config/default).
+1. Create a database, named ["gre_ideas_db"] by default of my project. Or if you change the name, make sure you have config the name of the database in the config file (stored in server/config/default).
 
 2. install packets/lib require for each client and server folder. Because the node_modules files is heavy and time consuming in pushing the code to remote.
    Command in the Terminal like this:
@@ -38,11 +38,9 @@ npm install --save-dev nodemon
 
    >
 
-5. Create table, named ["FillLater"] in the database nodejs_mysql like the query below:
+5. Create tables, named in the ["gre_ideas_db"] like the query in the folder /server/db/create_table.sql
 
-```
-CREATE TABLE tasks (
-```
+6. Dummy data by execute the query in the file /server/db/dummie_data.sql
 
 ## References/Guideline of this Project
 
