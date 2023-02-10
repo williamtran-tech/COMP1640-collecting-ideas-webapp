@@ -1,32 +1,32 @@
 'use strict';
 
-var Task = require('../models/tasks.js');
+var Idea = require('../models/ideas.js');
 
-exports.list_all_tasks = function(req, res) {
-    Task.getAllTask((err, tasks) => {
+exports.list_all_ideas = function(req, res) {
+    Idea.getAllIdeas((err, ideas) => {
         if (err) {
             res.send(err);
         }
         // console.log('res', task);
         res.status(200).json({
             message: 'Hay lam thang nhoc',
-            tasks: tasks
+            ideas: ideas
         });
     });
 };
 
-exports.create_a_task = function(req, res) {
-    var new_task = new Task(req.body);
+exports.create_an_idea = function(req, res) {
+    var new_idea = new Idea(req.body);
 
     //handles null error
-    if(!new_task.task || !new_task.status){
-        res.status(400).send({ error:true, message: 'Please provide task/status' });
+    if(!new_idea.idea || !new_idea.created_at){
+        res.status(400).send({ error:true, message: 'Please provide task/created_at' });
     }
     else{
-        Task.createTask(new_task, function(err, task) {
+        Idea.createIdea(new_idea, function(err, idea) {
             if (err)
                 res.send(err);
-            res.send(task);
+            res.send(idea);
             console.log("Successfully inserted");
         });
     }

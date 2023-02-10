@@ -3,7 +3,7 @@
         "host": "localhost",
         "user": "root",
         "password": "",
-        "database": "nodejs_mysql"
+        "database": "gre_ideas_db"
     }
 }
     

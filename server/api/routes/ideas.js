@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const tasks = require('../../models/tasks.js');
 
-var taskList = require('../../controllers/taskController.js');
+var ideaList = require('../../controllers/ideaController.js');
 
-router.get('/', taskList.list_all_tasks);
-
-router.post('/', taskList.create_a_task);
+router.get('/', ideaList.list_all_ideas);
+router.post('/', ideaList.create_an_idea);
 
 // router.put('/:ideaId', (req, res, next) => {
 //     const id = req.params.ideaId;

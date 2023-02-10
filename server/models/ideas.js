@@ -2,11 +2,12 @@
 var sql = require('./db.js');
 
 //Task object constructor
-var Task = function(task){
-    console.log(task);
-    this.id = task.id;
-    this.task = task.task;
-    this.status = task.status;
+var Idea = function(idea){
+    console.log(idea);
+    this.id = idea.id;
+    this.idea = idea.idea;
+    this.topic = idea.topic;
+    this.category = idea.category;
     this.created_at = task.created_at;
 };
 
@@ -19,8 +20,8 @@ JavaScript functions do not perform type checking on the passed arguments.
 JavaScript functions do not check the number of arguments received.
  */
 
-Task.getAllTask = (result) => {
-    sql.query("Select * from tasks", function (err, res) {
+Idea.getAllIdeas = (result) => {
+    sql.query("Select * from idea", function (err, res) {
         if(err) {
             console.log("error: ", err);
             result(null, err);
@@ -32,14 +33,9 @@ Task.getAllTask = (result) => {
     });
 };
 
-Task.test = (idea) => {
-    console.log('Whatht the fuckl', idea);
-    // result(null, "asd");
-};
-
-Task.createTask = (idea, result) => {
+Idea.createIdea = (idea, result) => {
     // var query = "INSERT INTO tasks (id, task, status, created_at) VALUES ?;";
-    var query = "INSERT INTO tasks(id, task, status, created_at) VALUES (?,?,?,?)";
+    var query = "INSERT INTO idea(idea, topic_id, category_id) VALUES (?,?,?)";
     sql.query(query, Object.values(idea), function (err, res) {
 
         if(err) {
@@ -53,7 +49,7 @@ Task.createTask = (idea, result) => {
     });
 };
 
-module.exports = Task;
+module.exports = Idea;
 
 // Task.getTaskById = function createUser(taskId, result) {
 //     sql.query("Select task from tasks where id = ? ", taskId, function (err, res) {
