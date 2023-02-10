@@ -1,4 +1,4 @@
-# Nodejs_React_MySQL2
+# GRE Collecting Ideas System
 
 This repository is using Nodejs, ExpressJs, React and Mysql to make a project:
 
