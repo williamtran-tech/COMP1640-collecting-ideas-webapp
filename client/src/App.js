@@ -1,42 +1,15 @@
-import React, {useEffect, useState} from 'react'
-import Header from './components/header'
-import Game from './components/tictactoe'
-import Clock from './components/lifecycle'
+import React from 'react'
+import { Routes, Route } from "react-router-dom";
+import LandingPage from './pages/LandingPage';
+import User from './pages/User';
+
 
 function App() {
-  const [backendData, setBackendData] = useState([{}])
-
-  useEffect(() => {
-    fetch("/ideas").then(
-      response => response.json()
-    ).then(
-      data => {
-        setBackendData(data)
-      }
-    )
-  }, [])
-
   return (
-    <div className='app'>
-        <Header>hello</Header>
-        {(typeof backendData.message === 'undefined') ? (
-          <p>Loading..</p>
-        ) : (
-          <p>{backendData.message}</p>
-          )}
-        {(typeof backendData.tasks === 'undefined') ? (
-          <p>Loading tasks..</p>
-        ) : (
-          backendData.tasks.map((task) => (
-            <p key={task.id}>{task.task}</p>
-          ))
-        )}
-        <Game />
-        <Clock />
-        <Clock />
-        <Clock />
-        
-    </div>
+    <Routes>
+    <Route path="/" element={<LandingPage></LandingPage>}></Route>
+    <Route path="/user" element={<User></User>}></Route>
+    </Routes>
   );
 }
 export default App
