@@ -24,11 +24,19 @@ function App() {
         ) : (
           <p>{backendData.message}</p>
           )}
-        {(typeof backendData.tasks === 'undefined') ? (
-          <p>Loading tasks..</p>
+        {(typeof backendData.ideas === 'undefined') ? (
+          <p>Loading ideas..</p>
         ) : (
-          backendData.tasks.map((task) => (
-            <p key={task.id}>{task.task}</p>
+          backendData.ideas.map((idea) => (
+            <>
+                <p key={idea.id}>{idea.id}</p>
+                <p>{idea.idea}</p>
+                <p>{idea.category}</p>
+                <p>{idea.topic}</p>
+                <p>{idea.closure_date}</p>
+                <p>{idea.final_closure_date}</p>
+                <p>{idea.created_date}</p>
+            </>
           ))
         )}
         <Game />

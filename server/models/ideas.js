@@ -21,7 +21,11 @@ JavaScript functions do not check the number of arguments received.
  */
 
 Idea.getAllIdeas = (result) => {
-    sql.query("Select * from idea", function (err, res) {
+    let query = `SELECT idea.id, idea.idea, idea.created_at, idea.file_path, category.category, 
+    topic.topic, topic.closure_date, topic.final_closure_date FROM idea 
+    INNER JOIN category ON category.id=idea.category_id
+    INNER JOIN topic ON topic.id=idea.topic_id`
+    sql.query(query, function (err, res) {
         if(err) {
             console.log("error: ", err);
             result(null, err);
