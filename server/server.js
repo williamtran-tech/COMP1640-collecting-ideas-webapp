@@ -4,6 +4,7 @@ const app = express();
 
 const ideasRoutes = require('./api/routes/ideas');
 const usersRoutes = require('./api/routes/users');
+const topicsRoutes = require('./api/routes/topics');
 
 const PORT = process.env.PORT || '5000';
 
@@ -19,6 +20,7 @@ app.get('/api', (req, res) =>{
 });
 
 app.use('/ideas', ideasRoutes);
+app.use('/topics', topicsRoutes);
 app.use('/users', usersRoutes);
 
 app.listen(PORT, () => {console.log(`Server is running on ${PORT}`)})
