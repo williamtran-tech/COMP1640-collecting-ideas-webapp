@@ -52,3 +52,7 @@ Uploading the project to Github, ref: https://dev.to/birdy/mern-stack-project-se
 2. Forget to delete "git init" in react app folder, when initializing it
 3. Not connect to the api, especially setup "proxy" to fetch data from api in /client
 4. Not config the file to match with local machine
+5. Unable to resolve dependencies.
+
+![image](https://user-images.githubusercontent.com/81273649/218241034-3344fd29-bea1-4e02-aae1-2fdf069b86f4.png)
+   Ref: https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages 
