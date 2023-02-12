@@ -27,4 +27,20 @@ Topic.getAllTopics = (result) => {
     });
 };
 
+Topic.getAllIdeasByTopic = (result, topicId) => {
+    let query = `SELECT idea.id, idea.idea, idea.file_path, idea.created_at, category.category  FROM idea
+    INNER JOIN category ON idea.category_id = category.id
+    WHERE topic_id = ` + topicId;
+    sql.query(query,function (err, res) {
+        if(err) {
+            console.log("error: ", err);
+            result(null, err);
+        }
+        else{
+            console.log('a: ', res);
+            result(null, res);
+        }
+    });
+}
+
 module.exports = Topic;
