@@ -12,6 +12,7 @@ import { Grid } from '@mui/material'
 import '../style/listitem.css'
 import Moment from "moment"
 import handleApi from '../service/handleApi'
+import { Link } from 'react-router-dom';
 const ListTopics = () => {
     const [listtopics, setlisttopics] = useState([]);
     useEffect(() =>{
@@ -32,8 +33,9 @@ const ListTopics = () => {
         <Grid container className='list-item'>
             {
                 listtopics.topics?.map((topic) =>(
-                    <Grid item xs={12} md={4} >
-                <Card>
+                <Grid item xs={12} md={4} >
+                    <Link to = {"/topics/"+topic.id } style={{ textDecoration: 'none'}}>
+                    <Card>
                     <CardHeader title={topic.topic} action={
                         <IconButton>
                             <Badge badgeContent={topic.idea_quantity} color="primary">
@@ -56,9 +58,10 @@ const ListTopics = () => {
                                 <div>{Moment(topic.final_closure_date).format('YYYY/MM/DD')}</div>
                             </div>
                         </div>
-                        
                     </CardActions>
                 </Card>
+                    </Link>
+                
             </Grid> 
                 ))
             }
