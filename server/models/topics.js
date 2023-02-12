@@ -11,7 +11,10 @@ var Topic = function(topic){
 };
 
 Topic.getAllTopics = (result) => {
-    let query = `SELECT topic, closure_date, final_closure_date, count(idea) as idea_quantity FROM topic INNER JOIN idea ON idea.topic_id = topic.id GROUP BY topic.id`
+    let query = `SELECT topic.id, topic, closure_date, final_closure_date, count(idea) as idea_quantity 
+    FROM topic 
+    INNER JOIN idea ON idea.topic_id = topic.id 
+    GROUP BY topic.id`
     sql.query(query, function (err, res) {
         if(err) {
             console.log("error: ", err);
