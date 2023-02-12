@@ -7,6 +7,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link } from 'react-router-dom';
 import '../style/navbar.css'
+import { IconButton } from '@mui/material';
 const Navbar = () => {
     return (
 
@@ -20,11 +21,15 @@ const Navbar = () => {
                     <div className='item-right'>
                     <Badge badgeContent={4} color="error">
                         <Link to='/user'>
-                           <MailIcon color="primary"/>
+                            <IconButton>
+                                <MailIcon color="primary"/>
+                            </IconButton>
                         </Link>
                     </Badge>
                     <Link to='/user'>
-                           <AccountCircleIcon color="primary"/>
+                        <IconButton>
+                            <AccountCircleIcon color="primary"/>
+                        </IconButton>
                     </Link>
                     </div>
                 </Grid>
