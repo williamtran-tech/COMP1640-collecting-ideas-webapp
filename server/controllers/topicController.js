@@ -16,14 +16,32 @@ exports.list_all_topics = function(req, res) {
 };
 
 exports.list_all_ideas_by_topic = function(req, res) {
-    Topic.getAllIdeasByTopic((err, ideas) => {
+    const message = 'Successfully Get All Ideas By Topic';
+
+    // Topic.getTopicInfo((err, info) => {
+    //     if (err) {
+    //         res.send(err);
+    //     }
+    //     topicInfo = info;
+    // }, req.params.topicId);
+
+    Topic.getAllIdeasByTopic((err, topicInfo) => {
         if (err) {
             res.send(err);
         }
-        // console.log('res', task);
+        
         res.status(200).json({
-            message: 'Successfully Get All Ideas By Topic',
-            ideas: ideas
+            message: message,
+            info: topicInfo[0],
+            ideas: topicInfo[1]
         });
     }, req.params.topicId);
+
+   
+    // res.status(200).json({
+    //     message: message,
+    //     info: topicInfo,
+    //     ideas: ideaList
+    // })
+
 };
