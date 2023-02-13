@@ -19,13 +19,15 @@ const Navbar = () => {
                 </Grid>
                 <Grid className='navbar-item' item xs={6} md={9}>           
                     <div className='item-right'>
-                    <Badge badgeContent={4} color="error">
-                        <Link to='/user'>
+                   
+                        <Link to='/user'> 
                             <IconButton>
-                                <MailIcon color="primary"/>
+                                <Badge badgeContent={4} color="error">
+                                    <MailIcon color="primary"/>
+                                </Badge>
                             </IconButton>
                         </Link>
-                    </Badge>
+                    
                     <Link to='/user'>
                         <IconButton>
                             <AccountCircleIcon color="primary"/>
