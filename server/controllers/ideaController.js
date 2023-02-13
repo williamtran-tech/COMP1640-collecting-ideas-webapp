@@ -9,11 +9,23 @@ exports.list_all_ideas = function(req, res) {
         }
         // console.log('res', task);
         res.status(200).json({
-            message: 'Hay lam thang nhoc',
+            message: 'Successfully get all ideas',
             ideas: ideas
         });
     });
 };
+
+exports.get_idea_by_id = function(req, res) {
+    Idea.getIdeaById((err, idea) => {
+        if (err) {
+            res.send(err);
+        }
+        res.status(200).json({
+            message: 'Successfully get idea by ID',
+            idea: idea
+        })
+    }, req.params.ideaId);
+}
 
 exports.create_an_idea = function(req, res) {
     var new_idea = new Idea(req.body);

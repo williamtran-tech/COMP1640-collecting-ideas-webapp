@@ -39,7 +39,7 @@ Idea.getAllIdeas = (result) => {
 
 Idea.createIdea = (idea, result) => {
     // var query = "INSERT INTO tasks (id, task, status, created_at) VALUES ?;";
-    var query = "INSERT INTO idea(idea, topic_id, category_id) VALUES (?,?,?)";
+    let query = "INSERT INTO idea(idea, topic_id, category_id) VALUES (?,?,?)";
     sql.query(query, Object.values(idea), function (err, res) {
 
         if(err) {
@@ -52,6 +52,23 @@ Idea.createIdea = (idea, result) => {
         }
     });
 };
+
+Idea.getIdeaById = (result, ideaId) => {
+    let query = `SELECT idea.id, idea.idea, idea.created_at, category.category, topic.topic FROM idea
+            INNER JOIN category ON idea.category_id = category.id
+            INNER JOIN topic ON idea.topic_id = topic.id
+            WHERE idea.id = ` + ideaId;
+    sql.query(query, function (err, res) {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+        }
+        else {
+            console.log("Successfully get idea by ID");
+            result(null, res);
+        }
+    });  
+}
 
 module.exports = Idea;
 
