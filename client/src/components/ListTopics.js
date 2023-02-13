@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import { Box, CardHeader,Badge,IconButton } from '@mui/material'
+import { Box, CardHeader,Badge,IconButton, Chip } from '@mui/material'
 import { Card,CardActions, Divider} from '@mui/material'
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -33,9 +33,9 @@ const ListTopics = () => {
         <Grid container className='list-item'>
             {
                 listtopics.topics?.map((topic) =>(
-                <Grid item xs={12} md={4} >
+                <Grid item xs={12} md={4} className="topic-item">
                     <Link to = {"/topics/"+topic.id } style={{ textDecoration: 'none'}}>
-                    <Card>
+                    <Card className='topic'>
                     <CardHeader title={topic.topic} action={
                         <IconButton>
                             <Badge badgeContent={topic.idea_quantity} color="primary">
@@ -46,7 +46,11 @@ const ListTopics = () => {
                     </CardHeader>
                     <Divider />
                     <CardActions>
-                        <div>
+                        <Grid xs={12} className="date">
+                        <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closure_date).format('YYYY/MM/DD')} size="small" color="warning" />
+                        <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.final_closure_date).format('YYYY/MM/DD')} size="small" color="primary" />
+                        </Grid>
+                        {/* <div>
                             <div  className='time'>
                                 <AccessTimeIcon></AccessTimeIcon>
                                 <div>Closure date:  </div>
@@ -57,7 +61,7 @@ const ListTopics = () => {
                                 <div>Final date:</div>
                                 <div>{Moment(topic.final_closure_date).format('YYYY/MM/DD')}</div>
                             </div>
-                        </div>
+                        </div> */}
                     </CardActions>
                 </Card>
                     </Link>

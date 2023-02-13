@@ -1,19 +1,61 @@
 .list-item{
-padding: 30px;
+  padding: 0 50px;
+}
+.topic-item{
+padding: 15px 10px;
+}
+.topic{
+background-color: #b0f1b1 !important;
+
+}
+.date{
 display: flex;
-justify-content: center;
-gap: 30px;
+justify-content: space-around;
 }
 .time{
   display: flex;
   align-items: center;
+  background-color: rgba(255, 255, 255, 0.5); 
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
 }
+body, html {
+  height: 100%;
+}
+
 .listidea{
   justify-content: center;
 }
-
+.idea{
+background-color: #a6d3f4 !important;
+padding: 10px;
+margin-top: 20px;
+}
+.idea-content{
+border-bottom: solid #8094a3 0.5px;
+border-top: solid #8094a3 0.5px;
+padding: 10px 0;
+}
+.header-idea{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+.footer-idea{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+.avatar-category{
+  display: flex;
+  align-items: center;
+}
 .idea:hover{
-  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;}
+  /* box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px; */
+}
 .avatar{
   display: flex;
   justify-content: flex-end;
@@ -28,4 +70,27 @@ gap: 30px;
 }
 .react div{
   margin: 10px;
+}
+.header{
+  height: 20vh;
+  background-image: url("../components/images/header.jpg"); /* The image used */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+.header-item{
+  display: flex;
+  justify-content: center;
+}
+.filter-item{
+  padding: 0px  30px;
+}
+.filter{
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px;
+  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+}
+.chip{
+  margin-right: 5px;
 }
