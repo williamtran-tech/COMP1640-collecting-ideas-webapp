@@ -13,9 +13,11 @@ const Navbar = () => {
 
             <Grid container spacing={2}>
                 <Grid className='navbar-item' item xs={6} md={3} >
+                    <Link to="/">
                     <div className='item'>
                         <img className ='logo' src={logo} alt="" />
                     </div>
+                    </Link>
                 </Grid>
                 <Grid className='navbar-item' item xs={6} md={9}>           
                     <div className='item-right'>

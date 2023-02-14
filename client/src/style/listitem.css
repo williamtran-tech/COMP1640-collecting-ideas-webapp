@@ -28,13 +28,13 @@ body, html {
   justify-content: center;
 }
 .idea{
-background-color: #a6d3f4 !important;
+background-color: rgba(231, 245, 255, 1) !important;
 padding: 10px;
 margin-top: 20px;
+border-radius: 15px !important;
 }
 .idea-content{
-border-bottom: solid #8094a3 0.5px;
-border-top: solid #8094a3 0.5px;
+
 padding: 10px 0;
 }
 .header-idea{
@@ -73,6 +73,8 @@ padding: 10px 0;
 }
 .header{
   height: 20vh;
+  display: flex;
+  align-items: center;
   background-image: url("../components/images/header.jpg"); /* The image used */
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Do not repeat the image */
@@ -93,4 +95,36 @@ padding: 10px 0;
 }
 .chip{
   margin-right: 5px;
+}
+.topic-container{
+
+  margin-top: 20px;
+  border-radius: 15px!important;
+}
+.topic-header{
+  background-color: rgba(0, 93, 159, 1);
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}
+.topic-overall{
+  padding: 5px;
+}
+.topic-content{
+  background-color: rgb(240, 240, 240);
+  padding: 5px;
+  border-radius: 10px;
+}
+.create-topic{
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+.topics-table{
+  padding: 0 10px;
+}
+.category{
+display: flex;
+justify-content: center;
+padding: 10px 0;
 }
