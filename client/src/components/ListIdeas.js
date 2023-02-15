@@ -27,7 +27,7 @@ const ListIdeas = () => {
       retrievelistideas()
       // eslint-disable-next-line 
     },[])
-
+    
     const retrievelistideas = () => {
       handleApi.getIdeas_by_topic(id)
         .then(response => {
@@ -39,6 +39,12 @@ const ListIdeas = () => {
         });
     };
 
+    if (!listideas || !listideas.info) {
+        return null;
+      }
+    
+      // Access the id property of the first element in the listideas.info array
+      const idT = listideas.info[0].id;
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -207,9 +213,8 @@ const ListIdeas = () => {
                 </Grid>
                 
                 <Grid item xs={11} md={3}>
-                    
                 </Grid>
-                <Grid>hekkdk</Grid>
+                <Grid>{idT}</Grid>
             {/* {
                 listideas.ideas?.map(idea =>(
                     <Grid item xs={11} md={9} padding={3} className='idea' key={idea.id}>
