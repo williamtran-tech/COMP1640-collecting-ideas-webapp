@@ -41,7 +41,12 @@ npm install --save-dev nodemon
 
 5. Create tables, named in the ["gre_ideas_db"] like the query in the folder /server/db/create_table.sql
 
-6. Dummy data by execute the query in the file /server/db/dummie_data.sql
+6. Dummy data by execute the query in the file /server/db/dummie_data.sql (Optional -> Cause the using db is moved to Sequelize) (Skip to the step 7)
+7. Run the command
+
+```
+npx sequelize-cli db:migrate
+```
 
 ## References/Guideline of this Project
 
@@ -57,3 +62,47 @@ Uploading the project to Github, ref: https://dev.to/birdy/mern-stack-project-se
 
 ![image](https://user-images.githubusercontent.com/81273649/218241034-3344fd29-bea1-4e02-aae1-2fdf069b86f4.png)
 Ref: https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages
+
+### Step to using Sequelize
+
+1. Install all packages need for it in the official website
+2. Run the command to have four folder
+
+   - config, contains config file, which tells CLI how to connect with database
+   - models, contains all models for your project
+   - migrations, contains all migration files
+   - seeders, contains all seed files
+
+```
+npx sequelize-cli init
+```
+
+3. Configuration the config.json in the folder config ('dialect' used for declaring database using)
+4. Create the first model as the following command
+
+```
+npx sequelize-cli model:generate --name User --attributes firstName:string
+```
+
+5. Running migrations
+
+```
+npx sequelize-cli db:migrate
+```
+
+add suffix
+
+- :undo, for undo the migrate
+- :undo:all, for undo all migrate
+- More on official website Sequelize
+
+6. Running first seed (as dummy data into the database)
+
+```
+npx sequelize-cli seed:generate --name demo-user
+```
+
+### Gains Knowledge
+
+1. The Sequelize will be used for migrating, but the code will be generate as the structure; therefore, developer need to add more specific code to make the db work well. For example: the code after changing from model will not affect to the migrate file, but it will be helpful in the development, as model has the same attribute in the database -> Maybe that's why the ORM stand for.
+2.

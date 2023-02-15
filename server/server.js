@@ -13,6 +13,23 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+// Test fetching from Sequelize to Server
+const db = require('./db/models');
+const User = db.User;
+
+app.get('/users', async (req, res) => {
+    try {
+      const users = await User.findAll();
+    //   const usersJson = JSON.stringify(users);
+      res.json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+    }
+  });
+
+  // TEST END HERE
+
 app.get('/api', (req, res) =>{
     res.json({
         "users": ["userOne", "userTwo", "userThree", "userFour", "What the hell"]
