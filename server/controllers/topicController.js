@@ -18,13 +18,6 @@ exports.list_all_topics = function(req, res) {
 exports.list_all_ideas_by_topic = function(req, res) {
     const message = 'Successfully Get All Ideas By Topic';
 
-    // Topic.getTopicInfo((err, info) => {
-    //     if (err) {
-    //         res.send(err);
-    //     }
-    //     topicInfo = info;
-    // }, req.params.topicId);
-
     Topic.getAllIdeasByTopic((err, topicInfo) => {
         if (err) {
             res.send(err);
@@ -36,12 +29,4 @@ exports.list_all_ideas_by_topic = function(req, res) {
             ideas: topicInfo[1]
         });
     }, req.params.topicId);
-
-   
-    // res.status(200).json({
-    //     message: message,
-    //     info: topicInfo,
-    //     ideas: ideaList
-    // })
-
 };
