@@ -1,6 +1,4 @@
 import { Box, Grid, Avatar,Tooltip,Typography, Divider, FormControl, InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material'
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -15,7 +13,8 @@ import CreateIcon from '@mui/icons-material/Create';
 import '../style/listitem.css'
 import ThumbDown from '@mui/icons-material/ThumbDown';
 import RemoveRedEye from '@mui/icons-material/RemoveRedEye';
-
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 const ListIdeas = () => {
     const { id } = useParams();

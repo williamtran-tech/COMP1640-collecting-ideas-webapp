@@ -53,9 +53,7 @@ padding: 10px 0;
   display: flex;
   align-items: center;
 }
-.idea:hover{
-  /* box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px; */
-}
+
 .avatar{
   display: flex;
   justify-content: flex-end;
@@ -127,4 +125,33 @@ padding: 10px 0;
 display: flex;
 justify-content: center;
 padding: 10px 0;
+}
+.comment{
+  /* background-color: #b0f1b1; */
+}
+.comment-text{
+  background-color: rgba(231, 245, 255, 1);
+  border-radius: 20px;
+  padding: 0 15px;
+  /* width: 100%; */
+  display: flex;
+  align-items: center;
+}
+.comment-container{
+padding-left: 10px;
+padding-top: 10px;
+}
+.comment-item{
+  /* display: flex;
+  align-items: center; */
+  margin: 5px 0px;
+}
+.comment-input{
+  padding-left: 10px;
+  width: 100%;
+  
+}
+.avatar{
+margin-left: auto;
+margin-right: auto;
 }
