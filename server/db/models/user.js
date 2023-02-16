@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.belongsTo(models.Department, {foreignKey: 'departmentId', as: "Department"})
       User.belongsTo(models.Role, {foreignKey: 'roleId', as: 'Role'})
+      User.hasMany(models.Idea);
     }
   }
   User.init({

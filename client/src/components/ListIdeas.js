@@ -62,7 +62,7 @@ const ListIdeas = () => {
             <Grid container  className='header' key={topic.id}>
                 <Grid item xs={12}  className='header-item'>
                             <Typography variant='h3' fontWeight="fontWeightBold" color="white" >
-                                {topic.topic}
+                                {topic.name}
                             </Typography>
                 </Grid>
             </Grid>
@@ -133,13 +133,13 @@ const ListIdeas = () => {
                         
                             <Stack direction="row" spacing={2}>
                                 {listideas.ideas?.map(category =>(
-                                <Chip label={category.category} color="success" size="small" onClick={handleClick}/>          
+                                <Chip label={category.categoryName} color="success" size="small" onClick={handleClick}/>          
                             ))}
                             </Stack>
                         </Grid>
                         <Grid xs={12} className="date">
-                            <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closure_date).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
-                            <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.final_closure_date).format('YYYY/MM/DD')} size="small" color="error" variant='outlined'/>
+                            <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closureDate).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
+                            <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.finalClosureDate).format('YYYY/MM/DD')} size="small" color="error" variant='outlined'/>
                         </Grid>
                         <Grid item xs={12} className="create-topic">
                             <Chip icon={<EmojiObjectsIcon/>} label={topic.idea_quantity} size="small" color="primary" className='chip'/>
@@ -188,7 +188,7 @@ const ListIdeas = () => {
                                                 </Tooltip>
 
                                                 <Stack direction="row" spacing={1}>
-                                                    <Chip label={idea.category} color="success" size="small" onClick={handleClick}/>
+                                                    <Chip label={idea.categoryName} color="success" size="small" onClick={handleClick}/>
                                                 </Stack>
                                             </Stack>
                                             <Stack direction="row" spacing={1}>
@@ -198,12 +198,12 @@ const ListIdeas = () => {
                                             </Stack>
                                         </Grid>
                                         <Grid item xs={12} className="idea-content">
-                                            <Typography align="justify">{idea.idea} </Typography>
+                                            <Typography align="justify">{idea.name} </Typography>
                                         </Grid>
                                         <Divider/>
                                         <Grid item className='footer-idea' xs={12}>
                                             <Chip icon={<RemoveRedEye/>} label="10" variant="outlined"size="small" color="default" />
-                                            <Chip icon={<CreateIcon/>} label={Moment(idea.created_at).format('YYYY/MM/DD')} variant="outlined"size="small" color="default" />
+                                            <Chip icon={<CreateIcon/>} label={Moment(idea.createdAt).format('YYYY/MM/DD')} variant="outlined"size="small" color="default" />
                                         </Grid>
                                     </Grid>
                                 </Paper>

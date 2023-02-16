@@ -36,7 +36,7 @@ const ListTopics = () => {
                 <Grid item xs={12} md={4} className="topic-item">
                     <Link to = {"/topics/"+topic.id } style={{ textDecoration: 'none'}}>
                     <Card className='topic'>
-                    <CardHeader title={topic.topic} action={
+                    <CardHeader title={topic.name} action={
                         <IconButton>
                             <Badge badgeContent={topic.idea_quantity} color="primary">
                                 <EmojiObjectsIcon color="action"/>
