@@ -1,18 +1,17 @@
 'use strict';
 
-
-
 const db = require('./../db/models');
 const User = db.User;
 const Category = db.Category;
 const Topic = db.Topic;
 const Idea = db.Idea;
+const Comment = db.Comment;
 
 exports.all_ideas = async (req, res) => {
     try {
         const ideas = await Idea.findAll({
             attributes: {
-                exclude: ['createdAt', 'updatedAt', 'CategoryId', 'UserId', 'TopicId','categoryId', 'userId', 'topicId' ]
+                exclude: ['CategoryId', 'UserId', 'TopicId','categoryId', 'userId', 'topicId' ]
             },
             include: [
                 {
@@ -40,6 +39,52 @@ exports.all_ideas = async (req, res) => {
     }
 }
 
+exports.get_idea_by_id = async (req, res) => {
+    try{
+        const idea = await Idea.findAll({
+            attributes: {
+                exclude: ['CategoryId', 'UserId', 'TopicId','categoryId', 'userId', 'topicId' ]
+            },
+            where: {id: req.params.id},
+            include: [
+                {
+                    model: User, as: "User",
+                    attributes:['id','fullName'],
+                    require: true
+                },
+                {
+                    model: Topic, as: "Topic",
+                    attributes:['id','name', 'closureDate', 'finalClosureDate'],
+                    require: true
+                },
+                {
+                    model: Category, as: "Category",
+                    attributes:['id','name'],
+                    require: true
+                }
+            ]
+        });
+        const comments = await Comment.findAll({
+            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'createdAt', 'updatedAt'],
+            where: {'ideaId': req.params.id},
+            include: {
+                model: User, 
+                as: "User",
+                attributes:[],
+                required: true
+            }
+        });
+
+        res.status(200).json({
+            message: "Successfully get all comments by idea id " + idea[0].id,
+            idea: idea,
+            comments: comments
+        });
+    } catch (error){
+        console.log(error);
+        res.status(500).send("Server Error");
+    }
+}
 
 
 // THIS IS FOR BACKUP FUNCTIONS USING NORMAL QUERY

@@ -4,6 +4,7 @@ const router = express.Router();
 var ideaList = require('../../controllers/ideaController.js');
 
 router.get('/', ideaList.all_ideas);
+router.get('/:id', ideaList.get_idea_by_id);
 
 // router.get('/:ideaId', ideaList.get_idea_by_id);
 // router.post('/', ideaList.create_an_idea);

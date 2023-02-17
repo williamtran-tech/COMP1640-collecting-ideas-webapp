@@ -5,6 +5,7 @@ const app = express();
 const ideasRoutes = require('./api/routes/ideas');
 const usersRoutes = require('./api/routes/users');
 const topicsRoutes = require('./api/routes/topics');
+const commentsRoutes = require('./api/routes/comments');
 
 const PORT = process.env.PORT || '5000';
 
@@ -22,5 +23,6 @@ app.get('/api', (req, res) =>{
 app.use('/ideas', ideasRoutes);
 app.use('/topics', topicsRoutes);
 app.use('/users', usersRoutes);
+app.use('/comments', commentsRoutes);
 
 app.listen(PORT, () => {console.log(`Server is running on ${PORT}`)})
