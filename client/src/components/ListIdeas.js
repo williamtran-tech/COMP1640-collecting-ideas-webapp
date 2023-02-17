@@ -130,11 +130,11 @@ const ListIdeas = () => {
                         </Grid>
                         <Grid item xs={12} className="category">
                         
-                            <Stack direction="row" spacing={2}>
+                            <Grid direction="row" spacing={2}>
                                 {listideas.ideas?.map(category =>(
-                                <Chip label={category.categoryName} color="success" size="small" onClick={handleClick}/>          
+                                <Chip label={category.categoryName} color="success" size="small" onClick={handleClick} className="category_chip"/>          
                             ))}
-                            </Stack>
+                            </Grid>
                         </Grid>
                         <Grid xs={12} className="date">
                             <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closureDate).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
@@ -178,14 +178,15 @@ const ListIdeas = () => {
                                     <Grid container>
                                         <Grid item className='header-idea' xs={12}>
                                             <Stack direction="row" spacing={2} className="avatar-category">
-                                                <Tooltip title="VO HOANG TAM" arrow>
-                                                    <Avatar
-                                                    alt="T"
-                                                    src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/324659855_1288226605056706_1068574274762085817_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=cXa-aiUFgAIAX9zlbbV&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfBivjwSzqPY7MF9RJ8MIYtJ1DMRqctsGhSXkJgf8_rSUQ&oe=63EFBF1D"
-                                                    sx={{ width: 30, height: 30  }}
-                                                    />
-                                                </Tooltip>
-
+                                            <Stack >
+                                                <Avatar
+                                                alt="T"
+                                                src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/324659855_1288226605056706_1068574274762085817_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=cXa-aiUFgAIAX9zlbbV&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfBivjwSzqPY7MF9RJ8MIYtJ1DMRqctsGhSXkJgf8_rSUQ&oe=63EFBF1D"
+                                                sx={{ width: 30, height: 30, justifySelf: "center" }}
+                                                className='avatar'
+                                                />
+                                                <Typography variant="subtitle2">Vo Hoang Tam</Typography>
+                                            </Stack>
                                                 <Stack direction="row" spacing={1}>
                                                     <Chip label={idea.categoryName} color="success" size="small" onClick={handleClick}/>
                                                 </Stack>

@@ -155,3 +155,6 @@ padding-top: 10px;
 margin-left: auto;
 margin-right: auto;
 }
+.category_chip{
+  margin-top: 5px !important;
+}
