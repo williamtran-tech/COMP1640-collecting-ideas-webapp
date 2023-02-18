@@ -8,6 +8,8 @@ module.exports = {
         fullName: 'Bing Chilling',
         roleId: 1,
         departmentId: 1,
+        email: "test1@gmail.com",
+        password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -15,6 +17,8 @@ module.exports = {
         fullName: 'Bing Chilling Chilling',
         roleId: 2,
         departmentId: 1,
+        email: "test2@gmail.com",
+        password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -22,6 +26,8 @@ module.exports = {
         fullName: 'Bing Bing Chilling',
         roleId: 3,
         departmentId: 1,
+        email: "test3@gmail.com",
+        password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -29,6 +35,8 @@ module.exports = {
         fullName: 'John Xhina',
         roleId: 1,
         departmentId: 2,
+        email: "test4@gmail.com",
+        password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -36,6 +44,8 @@ module.exports = {
         fullName: 'Randy',
         roleId: 1,
         departmentId: 3,
+        email: "test5@gmail.com",
+        password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
       },

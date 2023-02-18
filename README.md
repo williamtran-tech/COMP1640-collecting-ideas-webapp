@@ -27,6 +27,7 @@ npm install
    > "mysql2": "^3.1.2"
    > "nodemon":
    > "sequelize"
+   > "bcrypt"
 
 Sample:
 

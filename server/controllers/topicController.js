@@ -73,8 +73,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
               {
                 model: Category, 
                 as: "Category",
-                attributes:[],
-                required: true
+                attributes:[]
               }
             ]
           });

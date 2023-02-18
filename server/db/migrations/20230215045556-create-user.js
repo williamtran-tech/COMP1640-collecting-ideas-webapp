@@ -10,7 +10,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       fullName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        notEmpty: true,
       },
       profileImage: {
         type: Sequelize.STRING,
@@ -29,6 +30,16 @@ module.exports = {
           model: 'Departments',
           key: 'id'
         }
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+        isEmail: true
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

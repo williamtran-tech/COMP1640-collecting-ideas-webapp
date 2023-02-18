@@ -11,7 +11,8 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        unique: true
+        unique: true,
+        notEmpty: true
       },
       createdAt: {
         allowNull: false,
