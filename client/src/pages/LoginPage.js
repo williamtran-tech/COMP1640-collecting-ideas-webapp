@@ -1,13 +1,14 @@
 import { TextField, Grid, Typography, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-
+import handleApi from '../service/handleApi';
 import { emailValidator, passwordValidator } from '../service/validator';
 import "../style/authen.css"
-
+import { useNavigate } from 'react-router-dom';
 import React from 'react'
 import logo from '../components/images/black_logo.png'
 const LoginPage = () => {
+    const navigate = useNavigate();
     const [LoginForm, setLoginForm] = useState({
         email: "",
         password: "",
@@ -23,7 +24,14 @@ const LoginPage = () => {
                 email: LoginForm.email,
                 password: LoginForm.password,
               };
-              console.log(login_form)
+              handleApi.login(login_form).then(response =>{
+                  if(response.data.token){
+                     localStorage.setItem("token", JSON.stringify(response.data.token))
+                     console.log(response.data)
+                     navigate("/")
+                  }
+                  return response.data;
+              })
           }
         // handleSubmit.create(data)
         //   .then(response => {
@@ -34,6 +42,7 @@ const LoginPage = () => {
         //     console.log(e);
         //   });
       };
+      
   return (
         <Grid container className="body-login">
                <Grid item xs={10} md={4}> 

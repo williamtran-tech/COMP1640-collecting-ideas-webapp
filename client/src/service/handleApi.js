@@ -12,10 +12,14 @@ const getIdeaDetail_by_idea = async id => {
 const post_comment = data => {
     return axios.post("/comments", data);
   };
+const login = data => {
+return axios.post("/accounts/login", data);
+};
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
     getIdeaDetail_by_idea,
-    post_comment 
+    post_comment, 
+    login
 };
 export default handleApi
