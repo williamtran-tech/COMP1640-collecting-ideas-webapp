@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 var comment = require('../../controllers/commentController.js');
+const checkAuth = require('./../../middleware/checkAuth');
 
-router.post('/', comment.create_comment);
+router.post('/', checkAuth, comment.create_comment);
 
 module.exports = router;
