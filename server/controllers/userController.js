@@ -2,10 +2,9 @@
 
 const db = require('./../db/models');
 const User = db.User;
-const Department = db.Department;
-const Role = db.Role;
-const Idea = db.Idea;
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('./../config/default.json');
 
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
 exports.create_user = async (req, res) => {
@@ -42,6 +41,49 @@ exports.create_user = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+exports.login_user = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        "email": req.body.email
+      }
+    });
+
+    if (user) {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (err) {
+          return res.status(404).json({
+            message: "Auth failed"
+          });
+        }
+        if (result) {
+          const token = jwt.sign({
+            email: user.email,
+            userId: user.id
+          }, config.env.JWT_key, 
+          {
+            expiresIn: "1h"
+          });
+          return res.status(200).json({
+            message: "Auth successfully",
+            token: token
+          });
+        }
+        return res.status(404).json({
+          message: "Auth failed"
+        });
+      });
+    } else {
+      res.status(404).json({
+        message: "Auth failed mail"
+      });
+    }
+  } catch (error){
+    console.log(error);
+    res.status(500).send("Server Error");
+  }
+}
 
 exports.list_all_users = async (req, res) =>{
     try {

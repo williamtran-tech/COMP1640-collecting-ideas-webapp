@@ -28,6 +28,7 @@ npm install
    > "nodemon":
    > "sequelize"
    > "bcrypt"
+   > "jsonwebtoken"
 
 Sample:
 
@@ -47,6 +48,7 @@ npm install --save-dev nodemon
 
 ```
 npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
 ```
 
 ## References/Guideline of this Project

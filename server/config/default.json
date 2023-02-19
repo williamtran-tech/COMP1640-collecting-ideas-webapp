@@ -4,6 +4,9 @@
         "user": "root",
         "password": "",
         "database": "gre_ideas_db"
+    },
+    "env": {
+        "JWT_key": "secret"
     }
 }
     
