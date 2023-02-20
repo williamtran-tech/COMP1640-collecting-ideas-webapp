@@ -8,6 +8,7 @@ module.exports = (req, res, next) => {
             console.log(token);
             decoded = jwt.verify(token, config.env.JWT_key);
             req.userData = decoded;
+            console.log(decoded);
             next();
         }
         else {

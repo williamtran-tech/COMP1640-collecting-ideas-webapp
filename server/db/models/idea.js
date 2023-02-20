@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       Idea.belongsTo(models.Category, {foreignKey: 'categoryId', as: 'Category'});
       Idea.belongsTo(models.User, {foreignKey: 'userId', as: 'User'});
       Idea.hasMany(models.Comment);
+      Idea.hasMany(models.React);
     }
   }
   Idea.init({
