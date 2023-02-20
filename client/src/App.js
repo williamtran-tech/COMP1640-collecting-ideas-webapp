@@ -8,6 +8,7 @@ import User from './pages/User';
 
 
 function App() {
+  var isLoggedIn = localStorage.getItem("token");
   return (
     <Routes>
         <Route path="/" element={<LandingPage></LandingPage>}></Route>

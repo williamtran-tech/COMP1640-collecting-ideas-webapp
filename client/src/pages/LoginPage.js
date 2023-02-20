@@ -1,6 +1,6 @@
 import { TextField, Grid, Typography, FormControlLabel, Checkbox, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import {  useState } from 'react';
 import handleApi from '../service/handleApi';
 import { emailValidator, passwordValidator } from '../service/validator';
 import "../style/authen.css"
@@ -9,6 +9,7 @@ import React from 'react'
 import logo from '../components/images/black_logo.png'
 const LoginPage = () => {
     const navigate = useNavigate();
+    var isLoggedIn= localStorage.getItem("token")
     const [LoginForm, setLoginForm] = useState({
         email: "",
         password: "",
@@ -33,16 +34,8 @@ const LoginPage = () => {
                   return response.data;
               })
           }
-        // handleSubmit.create(data)
-        //   .then(response => {
-        //     setSubmitted(true);
-        //     console.log(response.data);
-        //   })
-        //   .catch(e => {
-        //     console.log(e);
-        //   });
       };
-      
+  if(isLoggedIn ==null){
   return (
         <Grid container className="body-login">
                <Grid item xs={10} md={4}> 
@@ -118,6 +111,8 @@ const LoginPage = () => {
                </Grid>
         </Grid>
   )
+}else{
+    return <Navigate to="/"></Navigate>
 }
-
+}
 export default LoginPage

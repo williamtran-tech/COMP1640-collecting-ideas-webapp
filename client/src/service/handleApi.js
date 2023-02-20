@@ -1,4 +1,5 @@
 import axios from 'axios'
+import config from './headerToken';
 
 const getListTopic = async () => {
     return await axios.get("/topics");
@@ -10,10 +11,10 @@ const getIdeaDetail_by_idea = async id => {
     return await axios.get(`/ideas/${id}`);
 }
 const post_comment = data => {
-    return axios.post("/comments", data);
+    return axios.post("/comments", data, config);
   };
 const login = data => {
-return axios.post("/accounts/login", data);
+    return axios.post("/accounts/login", data)
 };
 const handleApi = {
     getListTopic,

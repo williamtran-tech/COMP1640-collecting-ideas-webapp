@@ -30,7 +30,7 @@ const Navbar = () => {
                             </IconButton>
                         </Link>
                     
-                    <Link to='/user'>
+                    <Link to='/login'>
                         <IconButton>
                             <AccountCircleIcon color="primary"/>
                         </IconButton>

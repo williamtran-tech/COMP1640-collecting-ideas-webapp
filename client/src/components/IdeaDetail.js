@@ -16,9 +16,7 @@ const IdeaDetail = () => {
     const { id } = useParams();
     const [ideaDetail, setideaDetail] = useState([]);
     const initialideaState = {
-        content: "",
-        userId: 1,
-        ideaId: 3
+        content: ""
       };
       const [comment, setcomment] = useState(initialideaState);
       const [commented, setcommented] = useState(false);
@@ -66,9 +64,7 @@ const IdeaDetail = () => {
             });
             setcommented(false);
             setcomment({
-                content: "",
-                userId: 1,
-                ideaId: 3
+                content: ""
             })
             }
       };
