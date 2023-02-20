@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(models.Role, {foreignKey: 'roleId', as: 'Role'})
       User.hasMany(models.Idea);
       User.hasMany(models.Comment);
+      User.hasMany(models.React);
     }
   }
   User.init({
