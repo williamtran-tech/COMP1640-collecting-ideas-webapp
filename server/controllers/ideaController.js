@@ -6,6 +6,7 @@ const Category = db.Category;
 const Topic = db.Topic;
 const Idea = db.Idea;
 const Comment = db.Comment;
+const React = db.React;
 
 exports.all_ideas = async (req, res) => {
     try {
@@ -86,7 +87,105 @@ exports.get_idea_by_id = async (req, res) => {
     }
 }
 
-
+exports.react = async (req, res) => {
+    try {
+        console.log("enter here");
+        if (req.body.isLike === 1) {
+            // Function increase like in db
+            // 1. Check react of userID is existed or not
+            // 1.1. If existed -> put/ update data of the like
+            // 1.1.1. If userId already liked -> return user has already like the idea
+            // 1.1.2. Increase nLike in the React table with the record of userId and decrease the dislike of idea
+            // 1.2. If not -> create a row contains the userId with the ideaId -> Increase nLike by 1.
+            const [react, created] = await React.findOrCreate({
+                where: {
+                    ideaId: req.body.ideaId, 
+                    userId: req.body.userId    
+                },
+                defaults: {
+                    ideaId: req.body.id,
+                    userId: req.body.userId,
+                    nLike: db.Sequelize.literal('nLike + 1')
+                }
+            });
+            if (!created){
+                if (react.nDislike === 1) {
+                    console.log("ĐỂ TAO LIKE");
+                    const update = await React.update({
+                        nDislike: db.Sequelize.literal('nDislike - 1'),
+                        nLike: db.Sequelize.literal('nLike + 1')},{
+                        where: { 
+                            ideaId: req.body.ideaId,
+                            userId: req.body.userId
+                            }
+                        }
+                    ); 
+                    res.status(200).json({
+                        msg: "Successfully like the idea"
+                    })
+                } else {
+                    console.log("Like rồi dcmmmm");
+                    res.status(200).json({
+                        msg: "Successfully like the idea"
+                    })
+                }
+            } else {
+                res.status(200).json({
+                    msg: "Successfully like the idea"
+                })
+            }
+        }
+        else if (req.body.isLike === 0) {
+            console.log("TAO DISLIKE HẾT");
+            // Function decrease like in db
+            const [react, created] = await React.findOrCreate({
+                where: {
+                    ideaId: req.body.ideaId, 
+                    userId: req.body.userId    
+                },
+                defaults: {
+                    ideaId: req.body.id,
+                    userId: req.body.userId,
+                    nDislike: db.Sequelize.literal('nDislike + 1')
+                }
+            });
+            if (!created) {
+                if (react.nLike === 1) {
+                    console.log("ĐỂ TAO DISLIKE");
+                    const update = await React.update({
+                        nDislike: db.Sequelize.literal('nDislike + 1'),
+                        nLike: db.Sequelize.literal('nLike - 1')},{
+                        where: { 
+                            ideaId: req.body.ideaId,
+                            userId: req.body.userId
+                            }
+                        }
+                    );
+                    res.status(200).json({
+                        msg: "Successfully dislike the idea",
+                        update: update
+                    });
+                }else {
+                    console.log("Dislike rồi DCMM");
+                    res.status(200).json({
+                        msg: "Successfully dislike the idea"
+                    })
+                }
+            } else {
+                res.status(200).json({
+                    msg: "Successfully dislike the idea"
+                })
+            }
+    
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: "Server Error"
+        })
+    }
+    
+}
 // THIS IS FOR BACKUP FUNCTIONS USING NORMAL QUERY
 // var Idea = require('../models/ideas.js');
 // exports.list_all_ideas = function(req, res) {
