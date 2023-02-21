@@ -28,6 +28,8 @@ const LoginPage = () => {
               handleApi.login(login_form).then(response =>{
                   if(response.data.token){
                      localStorage.setItem("token", JSON.stringify(response.data.token))
+                     localStorage.setItem("userid", JSON.stringify(response.data.userId))
+                     localStorage.setItem("roleId", JSON.stringify(response.data.roleId))
                      console.log(response.data)
                      navigate("/")
                   }

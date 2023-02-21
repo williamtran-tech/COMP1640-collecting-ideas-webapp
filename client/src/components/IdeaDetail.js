@@ -16,7 +16,9 @@ const IdeaDetail = () => {
     const { id } = useParams();
     const [ideaDetail, setideaDetail] = useState([]);
     const initialideaState = {
-        content: ""
+        content: "",
+        userId: localStorage.getItem("userid"),
+        ideaId: id
       };
       const [comment, setcomment] = useState(initialideaState);
       const [commented, setcommented] = useState(false);
@@ -63,9 +65,7 @@ const IdeaDetail = () => {
                 console.log(e);
             });
             setcommented(false);
-            setcomment({
-                content: ""
-            })
+            setcomment(initialideaState)
             }
       };
   return (

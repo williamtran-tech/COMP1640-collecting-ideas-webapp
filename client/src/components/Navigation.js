@@ -1,17 +1,23 @@
 import React from 'react'
 
 import Grid from '@mui/material/Grid';
-import logo from './images/black_logo.png'
+import logo from './images/logo.png'
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../style/navbar.css'
 import { IconButton } from '@mui/material';
+
 const Navbar = () => {
+    const navigate= useNavigate()
+    const logout= ()=>{
+        localStorage.clear();
+        navigate("/login")
+    }
     return (
 
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className="nav-container">
                 <Grid className='navbar-item' item xs={6} md={3} >
                     <Link to="/">
                     <div className='item'>
@@ -21,18 +27,16 @@ const Navbar = () => {
                 </Grid>
                 <Grid className='navbar-item' item xs={6} md={9}>           
                     <div className='item-right'>
-                   
-                        <Link to='/user'> 
-                            <IconButton>
+
+                            <IconButton onClick={logout}>
                                 <Badge badgeContent={4} color="error">
-                                    <MailIcon color="primary"/>
+                                    <MailIcon className='icon'/>
                                 </Badge>
                             </IconButton>
-                        </Link>
                     
                     <Link to='/login'>
                         <IconButton>
-                            <AccountCircleIcon color="primary"/>
+                            <AccountCircleIcon className='icon'/>
                         </IconButton>
                     </Link>
                     </div>

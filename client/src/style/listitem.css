@@ -1,11 +1,15 @@
+.nav-container{
+  background-color: #112D4E;
+}
 .list-item{
+  margin-top: 15px;
   padding: 0 50px;
 }
 .topic-item{
 padding: 15px 10px;
 }
 .topic{
-background-color: #b0f1b1 !important;
+background-color: #DBE2EF !important;
 
 }
 .date{
@@ -157,4 +161,7 @@ margin-right: auto;
 }
 .category_chip{
   margin-top: 5px !important;
+}
+.icon{
+  color: black;
 }
