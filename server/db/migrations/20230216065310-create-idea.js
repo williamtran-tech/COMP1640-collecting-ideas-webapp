@@ -25,6 +25,10 @@ module.exports = {
           key: 'id'
         }
       },
+      isAnonymous: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       topicId: {
         type: Sequelize.INTEGER,
         allowNull: false,

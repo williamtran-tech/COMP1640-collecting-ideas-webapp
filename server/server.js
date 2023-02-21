@@ -16,12 +16,6 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-app.get('/api', (req, res) =>{
-    res.json({
-        "users": ["userOne", "userTwo", "userThree", "userFour", "What the hell"]
-    })
-});
-
 app.use('/ideas', ideasRoutes);
 app.use('/topics', topicsRoutes);
 app.use('/users', usersRoutes);

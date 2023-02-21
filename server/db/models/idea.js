@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     filePath: DataTypes.STRING,
     categoryId: DataTypes.INTEGER,
     topicId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER
+    userId: DataTypes.INTEGER,
+    isAnonymous: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Idea',
