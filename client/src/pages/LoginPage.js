@@ -18,7 +18,8 @@ const LoginPage = () => {
         const { name, value } = event.target;
         setLoginForm({ ...LoginForm, [name]: value });
       };
-      const Login = () => {
+      const Login = (e) => {
+          e.preventDefault()
           if(emailValidator(LoginForm.email)&& passwordValidator(LoginForm.password))
           {
             var login_form = {
@@ -39,7 +40,8 @@ const LoginPage = () => {
       };
   if(isLoggedIn ==null){
   return (
-        <Grid container className="body-login">
+        <Grid container className="body-login" component="form" onSubmit={Login}>
+
                <Grid item xs={10} md={4}> 
                     <Grid container className='login-form'>
                         <Grid item xs={12} justifyContent="center" className='header-login'>
@@ -97,7 +99,6 @@ const LoginPage = () => {
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 1, mb: 2 }}
-                                onClick={Login}
                                 >
                                 Sign In
                             </Button>
@@ -111,6 +112,7 @@ const LoginPage = () => {
                         </Grid>
                     </Grid>
                </Grid>
+ 
         </Grid>
   )
 }else{

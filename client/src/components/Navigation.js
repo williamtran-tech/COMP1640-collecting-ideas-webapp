@@ -20,20 +20,16 @@ const Navbar = () => {
             <Grid container spacing={2} className="nav-container">
                 <Grid className='navbar-item' item xs={6} md={3} >
                     <Link to="/">
-                    <div className='item'>
-                        <img className ='logo' src={logo} alt="" />
-                    </div>
+                            <img className ='logo' src={logo} alt="" />
                     </Link>
                 </Grid>
                 <Grid className='navbar-item' item xs={6} md={9}>           
                     <div className='item-right'>
-
                             <IconButton onClick={logout}>
                                 <Badge badgeContent={4} color="error">
                                     <MailIcon className='icon'/>
                                 </Badge>
                             </IconButton>
-                    
                     <Link to='/login'>
                         <IconButton>
                             <AccountCircleIcon className='icon'/>

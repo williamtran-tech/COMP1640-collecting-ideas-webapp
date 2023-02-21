@@ -128,7 +128,7 @@ const ListIdeas = () => {
                         
                             <Grid direction="row" spacing={2}>
                                 {listideas.ideas?.map(category =>(
-                                <Chip label={category.categoryName} color="success" size="small" onClick={handleClick} className="category_chip"/>          
+                                <Chip label={category.categoryName} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick} className="category_chip"/>          
                             ))}
                             </Grid>
                         </Grid>
@@ -184,7 +184,7 @@ const ListIdeas = () => {
                                                 <Typography variant="subtitle2">Vo Hoang Tam</Typography>
                                             </Stack>
                                                 <Stack direction="row" spacing={1}>
-                                                    <Chip label={idea.categoryName} color="success" size="small" onClick={handleClick}/>
+                                                    <Chip label={idea.categoryName} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick}/>
                                                 </Stack>
                                             </Stack>
                                             <Stack direction="row" spacing={1}>

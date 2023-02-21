@@ -32,7 +32,7 @@ const ListTopics = () => {
     <Box>
         <Grid container  className='header' >
                 <Grid item xs={12}  className='header-item'>
-                            <Typography variant='h3' fontWeight="fontWeightBold" color="white" >
+                            <Typography variant='h3' fontWeight="fontWeightBold" color="#F0E9D2" >
                                 All topics
                             </Typography>
                 </Grid>
@@ -43,10 +43,10 @@ const ListTopics = () => {
                 <Grid item xs={12} md={4} className="topic-item">
                     <Link to = {"/topics/"+topic.id } style={{ textDecoration: 'none'}}>
                     <Card className='topic'>
-                    <CardHeader title={topic.name} action={
+                    <CardHeader title={topic.name}  action={
                         <IconButton>
-                            <Badge badgeContent={topic.idea_quantity} color="primary">
-                                <EmojiObjectsIcon color="action"/>
+                            <Badge badgeContent={topic.idea_quantity} sx={{"& .MuiBadge-badge": {color: "#fefae0",backgroundColor: "#181D31"}}}>
+                                <EmojiObjectsIcon style={{ color: '#fefae0'}}/>
                             </Badge>
                         </IconButton>
                     }>
@@ -54,8 +54,8 @@ const ListTopics = () => {
                     <Divider />
                     <CardActions>
                         <Grid xs={12} className="date">
-                        <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closure_date).format('YYYY/MM/DD')} size="small" color="warning" />
-                        <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.final_closure_date).format('YYYY/MM/DD')} size="small" color="primary" />
+                        <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closure_date).format('YYYY/MM/DD')} sx={{backgroundColor: "#fefae0"}} />
+                        <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.final_closure_date).format('YYYY/MM/DD')} sx={{backgroundColor: "#fefae0"}} />
                         </Grid>
                     </CardActions>
                 </Card>

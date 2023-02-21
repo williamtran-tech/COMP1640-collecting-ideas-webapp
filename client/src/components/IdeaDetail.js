@@ -15,6 +15,60 @@ import React from 'react'
 const IdeaDetail = () => {
     const { id } = useParams();
     const [ideaDetail, setideaDetail] = useState([]);
+    const initialideaReact = {
+        user_Id: localStorage.getItem("userid"),
+        idea_Id: id,
+        isLike:false,
+        likeStatus: "",
+        isDislike:false,
+        dislikeStatus: "",
+      };
+    const [react, setReact]= useState(initialideaReact)
+    const handleLike =()=>{
+        if(react.isDislike || !react.isLike){
+            setReact({
+                user_Id: "",
+                idea_Id: localStorage.getItem("userid"),
+                isLike:true,
+                likeStatus: "#F7F7F7",
+                isDislike:false,
+                dislikeStatus: "",
+            })
+        }
+        else if(react.isLike){
+            setReact({
+                user_Id: "",
+                idea_Id: localStorage.getItem("userid"),
+                isLike:false,
+                likeStatus: "",
+                isDislike:false,
+                dislikeStatus: "",
+            })
+        }
+    }
+    const handleDislike =()=>{
+        if(!react.isDislike || react.isLike){
+            setReact({
+                user_Id: "",
+                idea_Id: localStorage.getItem("userid"),
+                isLike:false,
+                likeStatus: "",
+                isDislike:true,
+                dislikeStatus: "#F7F7F7",
+            })
+        }
+        else if(react.isDislike){
+            setReact({
+                user_Id: "",
+                idea_Id: localStorage.getItem("userid"),
+                isLike:false,
+                likeStatus: "",
+                isDislike:false,
+                dislikeStatus: "",
+            })
+        }
+    }
+
     const initialideaState = {
         content: "",
         userId: localStorage.getItem("userid"),
@@ -46,7 +100,8 @@ const IdeaDetail = () => {
         const { name, value } = event.target;
         setcomment({ ...comment, [name]: value });
       };
-      const post_comment = () => {
+      const handleComment = e => {
+        e.preventDefault();
         var data = {
           content: comment.content,
           userId: comment.userId,
@@ -86,13 +141,13 @@ const IdeaDetail = () => {
                                     <Typography variant="subtitle2">{ideaDetail.idea[0].User.fullName}</Typography>
                                 </Stack>
                                 <Stack direction="row" spacing={1}>
-                                    <Chip label={ideaDetail.idea[0].Category.name} color="success" size="small" onClick={"handleClick"}/>
+                                    <Chip label={ideaDetail.idea[0].Category.name} sx={{backgroundColor: "#F7F7F7"}} size="small" onClick={"handleClick"}/>
                                 </Stack>
                             </Stack>
                             <Stack direction="row" spacing={1}>
-                            <Chip icon={<ThumbDown />} label="10" variant="outlined" size="small" color="default" />
-                            <Chip icon={<ThumbUpIcon />} label="10" variant="outlined" size="small" color="default"/>
-                            <Chip icon={<ChatBubbleIcon/>} label="10" variant="outlined"size="small" color="default" />
+                            <Chip icon={<ThumbDown style={{color: `${react.likeStatus}`}}/>} label="10" variant="outlined" size="small"  onClick={handleLike}/>
+                            <Chip icon={<ThumbUpIcon style={{color: `${react.dislikeStatus}`}}/>} label="10" variant="outlined" size="small"  onClick={handleDislike}/>
+                            <Chip icon={<ChatBubbleIcon/>} label="10" variant="outlined"size="small" sx={{backgroundColor: "#F7F7F7"}} />
                             </Stack>
                         </Grid>
                         <Grid item xs={12} className="idea-content">
@@ -100,8 +155,8 @@ const IdeaDetail = () => {
                         </Grid>
                         <Divider/>
                         <Grid item className='footer-idea' xs={12}>
-                            <Chip icon={<RemoveRedEye/>} label="10" variant="outlined"size="small" color="default" />
-                            <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} variant="outlined"size="small" color="default" />
+                            <Chip icon={<RemoveRedEye/>} label="10" size="small" sx={{backgroundColor: "#6D9886"}} />
+                            <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
                         </Grid>
                     </Grid>
                 </Paper>
@@ -130,6 +185,7 @@ const IdeaDetail = () => {
                     
                 </Stack>
                 <Grid> 
+                    <form onSubmit={handleComment}>
                         <Stack direction="row" spacing={1} className="comment-item">
                                     <Tooltip title="VO HOANG TAM" arrow>
                                         <Avatar
@@ -138,12 +194,12 @@ const IdeaDetail = () => {
                                         sx={{ width: 30, height: 30  }}
                                         />
                                     </Tooltip>
-                                    <Input placeholder="Comment..." className='comment-input' id='comment-input' name='content' value={comment.content} onChange={handleInputChange}/>
+                                        <Input placeholder="Comment..." className='comment-input' sx={{borderBottomColor: "#6D9886"}} id='comment-input' name='content' value={comment.content} onChange={handleInputChange}/>
                                     <IconButton>
-                                         <SendIcon color='primary' onClick={post_comment}></SendIcon>
+                                         <SendIcon sx={{color: "#6D9886"}} type="submit"></SendIcon>
                                     </IconButton>
-                                   
                         </Stack>
+                        </form>
                     </Grid>
             </Grid>
         </Grid>

@@ -1,15 +1,14 @@
-.nav-container{
-  background-color: #112D4E;
-}
 .list-item{
   margin-top: 15px;
   padding: 0 50px;
 }
 .topic-item{
 padding: 15px 10px;
+
 }
 .topic{
-background-color: #DBE2EF !important;
+background-color: #6D9886 !important;
+border-radius: 12px !important;
 
 }
 .date{
@@ -32,7 +31,7 @@ body, html {
   justify-content: center;
 }
 .idea{
-background-color: rgba(231, 245, 255, 1) !important;
+background-color: #6D9886 !important;
 padding: 10px;
 margin-top: 20px;
 border-radius: 15px !important;
@@ -104,7 +103,7 @@ padding: 10px 0;
   border-radius: 15px!important;
 }
 .topic-header{
-  background-color: rgba(0, 93, 159, 1);
+  background-color: #393E46;
   padding: 5px;
   display: flex;
   justify-content: center;
@@ -113,7 +112,7 @@ padding: 10px 0;
   padding: 5px;
 }
 .topic-content{
-  background-color: rgb(240, 240, 240);
+  background-color: #6D9886;
   padding: 5px;
   border-radius: 10px;
 }
@@ -134,7 +133,7 @@ padding: 10px 0;
   /* background-color: #b0f1b1; */
 }
 .comment-text{
-  background-color: rgba(231, 245, 255, 1);
+  background-color: #6D9886;
   border-radius: 20px;
   padding: 0 15px;
   /* width: 100%; */
@@ -161,7 +160,5 @@ margin-right: auto;
 }
 .category_chip{
   margin-top: 5px !important;
-}
-.icon{
-  color: black;
+  margin-left: 5px !important;
 }
