@@ -67,7 +67,10 @@ exports.login_user = async (req, res) => {
           });
           return res.status(200).json({
             message: "Auth successfully",
-            token: token
+            token: token,
+            userId: user.id,
+            email: user.email,
+            roleId: user.roleId
           });
         }
         return res.status(404).json({
