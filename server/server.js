@@ -22,4 +22,6 @@ app.use('/users', usersRoutes);
 app.use('/comments', commentsRoutes);
 app.use('/accounts', accountsRoutes);
 
-app.listen(PORT, () => {console.log(`Server is running on ${PORT}`)})
+app.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`);
+})
