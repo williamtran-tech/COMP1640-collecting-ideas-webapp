@@ -10,19 +10,27 @@ const Comment = db.Comment;
 
 exports.create_comment = async (req, res) => {
     try {
-        // No need the following code bc the timezone set in config file instead of default
-        // const utcTime = new Date();
-        // const ictTime = new Date(utcTime.getTime() + (7 * 60 * 60 * 1000));
-
         const comment = await Comment.create({
             content: req.body.content,
             userId: req.body.userId,
             ideaId: req.body.ideaId
         });
 
+        // Using another instance because the date retrieving is ICT date, instead of the Date in the Comment.create function (UTC)
+        const commentLatest = await Comment.findOne({
+            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'createdAt', 'updatedAt'],
+            where: {'id': comment.id },
+            include: {
+                model: User, 
+                as: "User",
+                attributes:[],
+                required: true
+            }
+        })
+
         res.status(200).json({
             message: "Successfully created comment",
-            comment: comment
+            comment: commentLatest
         });
     } catch (error){
         console.log(error);

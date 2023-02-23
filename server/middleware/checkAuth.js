@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
+const moment = require('moment-timezone');
 
 module.exports = (req, res, next) => {
     try {
@@ -21,8 +22,13 @@ module.exports = (req, res, next) => {
     }
     catch (error) {
         console.log(error);
+
+        const utcDate = new Date(error.expiredAt);
+        const ictDate = moment.utc(utcDate).tz('Asia/Bangkok');
         res.status(401).json({
-            error: "Auth failed"
+            error: "Expire section",
+            expiredAt: ictDate.toLocaleString(),
+            isExpire: true
         });
         
     }

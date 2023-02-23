@@ -109,6 +109,10 @@ npx sequelize-cli seed:generate --name demo-user
 
 1. The Sequelize will be used for migrating, but the code will be generate as the structure; therefore, developer need to add more specific code to make the db work well. For example: the code after changing from model will not affect to the migrate file, but it will be helpful in the development, as model has the same attribute in the database -> Maybe that's why the ORM stand for.
 2. By default, the timezone of the Sequelize is UTC -> Therefore, if want to set the time zone ICT, you must define it in the config file.
+
    ![Example Image](./docs/images/timezone.png)
    And update the timezone of the dialect in Sequelize like this
-   ![Example Image](./docs/images/timezone.png)
+
+   ![Example Image](./docs/images/tiemzone1.png)
+
+3. The Date in the function create of Sequelize will return UCT time, which is not the time I want. Therefore, need to create a constance to hold the created thing by the findOne function.

@@ -8,6 +8,9 @@ const Idea = db.Idea;
 const Comment = db.Comment;
 const React = db.React;
 
+const jwt = require('jsonwebtoken');
+const config = require('./../config/default.json');
+
 exports.all_ideas = async (req, res) => {
     try {
         const ideas = await Idea.findAll({
@@ -89,6 +92,9 @@ exports.get_idea_by_id = async (req, res) => {
 
 exports.react = async (req, res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
+        decoded = jwt.verify(token, config.env.JWT_key);
+
         console.log("enter here");
         if (req.body.isLike === 1) {
             // Function increase like in db
@@ -97,14 +103,17 @@ exports.react = async (req, res) => {
             // 1.1.1. If userId already liked -> return user has already like the idea
             // 1.1.2. Increase nLike in the React table with the record of userId and decrease the dislike of idea
             // 1.2. If not -> create a row contains the userId with the ideaId -> Increase nLike by 1.
+
+            
+
             const [react, created] = await React.findOrCreate({
                 where: {
                     ideaId: req.body.ideaId, 
-                    userId: req.body.userId    
+                    userId: decoded.userId
                 },
                 defaults: {
                     ideaId: req.body.id,
-                    userId: req.body.userId,
+                    userId: decoded.userId,
                     nLike: db.Sequelize.literal('nLike + 1')
                 }
             });
@@ -116,7 +125,7 @@ exports.react = async (req, res) => {
                         nLike: db.Sequelize.literal('nLike + 1')},{
                         where: { 
                             ideaId: req.body.ideaId,
-                            userId: req.body.userId
+                            userId: decoded.userId
                             }
                         }
                     ); 
@@ -124,9 +133,15 @@ exports.react = async (req, res) => {
                         msg: "Successfully like the idea"
                     })
                 } else {
-                    console.log("Like rồi dcmmmm");
+                    await React.destroy({
+                        where: { 
+                            ideaId: req.body.ideaId,
+                            userId: decoded.userId
+                            }
+                    }
+                    ); 
                     res.status(200).json({
-                        msg: "Successfully like the idea"
+                        msg: "Successfully remove react the idea"
                     })
                 }
             } else {
@@ -141,11 +156,11 @@ exports.react = async (req, res) => {
             const [react, created] = await React.findOrCreate({
                 where: {
                     ideaId: req.body.ideaId, 
-                    userId: req.body.userId    
+                    userId: decoded.userId  
                 },
                 defaults: {
                     ideaId: req.body.id,
-                    userId: req.body.userId,
+                    userId: decoded.userId,
                     nDislike: db.Sequelize.literal('nDislike + 1')
                 }
             });
@@ -157,7 +172,7 @@ exports.react = async (req, res) => {
                         nLike: db.Sequelize.literal('nLike - 1')},{
                         where: { 
                             ideaId: req.body.ideaId,
-                            userId: req.body.userId
+                            userId: decoded.userId
                             }
                         }
                     );
@@ -166,9 +181,15 @@ exports.react = async (req, res) => {
                         update: update
                     });
                 }else {
-                    console.log("Dislike rồi DCMM");
+                    await React.destroy({
+                        where: { 
+                            ideaId: req.body.ideaId,
+                            userId: decoded.userId
+                            }
+                    }
+                    ); 
                     res.status(200).json({
-                        msg: "Successfully dislike the idea"
+                        msg: "Successfully remove react the idea"
                     })
                 }
             } else {
@@ -182,7 +203,7 @@ exports.react = async (req, res) => {
         console.log(err);
         res.status(500).json({
             error: "Server Error"
-        })
+        });
     }
     
 }
