@@ -33,24 +33,23 @@ exports.create_comment = async (req, res) => {
 exports.update_comment = async (req, res) => {
     try {
         const updatedComment = await Comment.update({ 
-            content: "Updated commasdent"
+            content: "Updated comm a asdent"
         },
         {
-            where: { id: 65 }
+            where: { id: req.body.id }
         }        
         );
 
         const updatedCommentInfo = await Comment.findOne({
-            where: { id: 65 },
+            where: { id: req.body.id },
             attributes: ['id', 'content', 'updatedAt', 'createdAt'],
-            timezone: 'Asia/Bangkok'
-        })
-        
-            res.status(200).json({
-                msg: "Updated comment",
-                numRowsUpdated: updatedComment,
-                updatedRows: updatedCommentInfo
-            });
+        });
+
+        res.status(200).json({
+            msg: "Updated comment",
+            numRowsUpdated: updatedComment,
+            updatedRows: updatedCommentInfo
+        });
     } catch(err) {
         console.log(err);
         res.status(500).json({
