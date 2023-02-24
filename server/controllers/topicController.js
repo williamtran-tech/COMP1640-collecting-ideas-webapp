@@ -47,7 +47,7 @@ exports.list_all_topics = async (req, res) => {
 
 exports.list_all_ideas_by_topic = async (req, res) => {
     try {
-        const id = req.params.topicId;
+        const id = req.param("topicId");
         const topicInfo = await Topic.findAll({
             attributes: ['id', 'name', 'closureDate', 'finalClosureDate', [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']],
             where: {Id: id},
@@ -59,29 +59,57 @@ exports.list_all_ideas_by_topic = async (req, res) => {
             },
             group: ['id']
         });
-        const ideas = await Idea.findAll({
-            //Careful to name the alias in the attribute -> It can lead to god damn issue -> not showing the value 
-            attributes: ['id', 'name', [db.Sequelize.literal('Category.name'), 'categoryName'], [db.Sequelize.literal('User.fullName'), 'userName'], 'createdAt', 'updatedAt'],
-            where: {topicId: id},
-            include: [
-              {
-                model: User, 
-                as: "User",
-                attributes:[],
-                required: true
-              },
-              {
-                model: Category, 
-                as: "Category",
-                attributes:[]
-              }
-            ]
-          });
+        // const ideas = await Idea.findAll({
+        //     //Careful to name the alias in the attribute -> It can lead to god damn issue -> not showing the value 
+        //     attributes: ['id', 'name', [db.Sequelize.literal('Category.name'), 'categoryName'], [db.Sequelize.literal('User.fullName'), 'userName'], 'createdAt', 'updatedAt'],
+        //     where: {topicId: id},
+        //     include: [
+        //       {
+        //         model: User, 
+        //         as: "User",
+        //         attributes:[],
+        //         required: true
+        //       },
+        //       {
+        //         model: Category, 
+        //         as: "Category",
+        //         attributes:[]
+        //       }
+        //     ]
+        //   });
+
+        const page = req.param('page'); // current page number
+        const limit = 5; // number of items per page
+        const offset = (page - 1) * limit; // offset to skip previous items
+
+        const ideas = await db.sequelize.query(
+                `SELECT  
+                    ideas.name AS idea, 
+                    users.fullName AS ownerName, 
+                    users.email AS email, 
+                    SUM(reacts.nLike) AS likes, 
+                    SUM(reacts.nDislike) AS dislikes, 
+                    categories.name AS category,
+                    ideas.createdAt, 
+                    ideas.updatedAt,
+                    ideas.id as ideaId,
+                    users.id as userId,
+                    categories.id as categoryId
+                FROM reacts
+                INNER JOIN ideas ON reacts.ideaId = ideas.id
+                JOIN categories ON ideas.categoryId = categories.id
+                JOIN topics ON ideas.topicId = topics.id
+                JOIN users ON ideas.userId = users.id
+                WHERE topics.id = ${id}
+                GROUP BY reacts.ideaId ORDER BY ideas.name
+                LIMIT ${limit} OFFSET ${offset};
+                `);
+
 
         res.status(200).json({
             message: "Get all ideas of topic " + req.params.topicId + " successfully",
             info: topicInfo,
-            ideas: ideas
+            ideas: ideas[0]
         })
     } catch(error){
         console.log(error);

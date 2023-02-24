@@ -29,6 +29,7 @@ npm install
    > "sequelize"
    > "bcrypt"
    > "jsonwebtoken"
+   > "moment-timezone"
 
 Sample:
 
@@ -66,7 +67,7 @@ Uploading the project to Github, ref: https://dev.to/birdy/mern-stack-project-se
 ![image](https://user-images.githubusercontent.com/81273649/218241034-3344fd29-bea1-4e02-aae1-2fdf069b86f4.png)
 Ref: https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages
 
-### Step to using Sequelize
+### Steps to using Sequelize
 
 1. Install all packages need for it in the official website
 2. Run the command to have four folder
@@ -111,6 +112,7 @@ npx sequelize-cli seed:generate --name demo-user
 2. By default, the timezone of the Sequelize is UTC -> Therefore, if want to set the time zone ICT, you must define it in the config file.
 
    ![Example Image](./docs/images/timezone.png)
+
    And update the timezone of the dialect in Sequelize like this
 
    ![Example Image](./docs/images/tiemzone1.png)

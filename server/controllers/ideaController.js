@@ -10,6 +10,7 @@ const React = db.React;
 
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
+const { QueryTypes } = require('sequelize');
 
 exports.all_ideas = async (req, res) => {
     try {
@@ -32,9 +33,39 @@ exports.all_ideas = async (req, res) => {
                 }
             ]
         });
+
+        const page = req.param('page'); // current page number
+        const limit = 5; // number of items per page
+        const offset = (page - 1) * limit; // offset to skip previous items
+
+        const ideasReact = await db.sequelize.query(
+                `SELECT 
+                    topics.name AS Topic, 
+                    ideas.name AS Idea, 
+                    users.fullName AS OwnerName, 
+                    users.email AS Owner, 
+                    SUM(reacts.nLike) AS Likes, 
+                    SUM(reacts.nDislike) AS Dislikes, 
+                    categories.name AS Category,
+                    ideas.createdAt, 
+                    ideas.updatedAt,
+                    ideas.id as ideaId,
+                    users.id as userId,
+                    categories.id as categoryId
+                FROM reacts
+                INNER JOIN ideas ON reacts.ideaId = ideas.id
+                JOIN categories ON ideas.categoryId = categories.id
+                JOIN topics ON ideas.topicId = topics.id
+                JOIN users ON ideas.userId = users.id
+                GROUP BY reacts.ideaId ORDER BY ideas.name
+                LIMIT ${limit} OFFSET ${offset};
+                `);
+
+        // The sequelize returns 2 items in an array - 1st is result set - 2nd is metadata about the query
+        // => Get the [0] of array
         res.json({
             message: "Successfully get all ideas",
-            ideas: ideas
+            reactIdeas: ideasReact[0]
           });
     }
     catch (error) {
@@ -68,6 +99,26 @@ exports.get_idea_by_id = async (req, res) => {
                 }
             ]
         });
+
+        const react = await React.findAll({
+            where: {ideaId: req.params.id},
+            attributes: [
+                [db.Sequelize.fn('sum', db.sequelize.col('nLike')), 'Likes'],
+                [db.Sequelize.fn('sum', db.sequelize.col('nDislike')), 'Dislikes']
+            ]
+        });
+
+        const reactPeople = await React.findAll({
+            where: {ideaId: req.params.id}, 
+            attributes: [[db.Sequelize.literal("User.fullName"), "user"]],
+            include: [{
+                model: User,
+                as: "User",
+                attributes: [],
+                nested: true
+            }]
+        })
+
         const comments = await Comment.findAll({
             attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'createdAt', 'updatedAt'],
             where: {'ideaId': req.params.id},
@@ -82,7 +133,9 @@ exports.get_idea_by_id = async (req, res) => {
         res.status(200).json({
             message: "Successfully get all comments by idea id " + idea[0].id,
             idea: idea,
-            comments: comments
+            comments: comments,
+            react: react,
+            reactBy: reactPeople
         });
     } catch (error){
         console.log(error);
@@ -207,6 +260,7 @@ exports.react = async (req, res) => {
     }
     
 }
+
 // THIS IS FOR BACKUP FUNCTIONS USING NORMAL QUERY
 // var Idea = require('../models/ideas.js');
 // exports.list_all_ideas = function(req, res) {
