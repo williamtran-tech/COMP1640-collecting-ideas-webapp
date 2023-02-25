@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       Idea.belongsTo(models.User, {foreignKey: 'userId', as: 'User'});
       Idea.hasMany(models.Comment);
       Idea.hasMany(models.React);
+      Idea.hasMany(models.View);
     }
   }
   Idea.init({

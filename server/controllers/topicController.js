@@ -88,7 +88,8 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                     users.fullName AS ownerName, 
                     users.email AS email, 
                     SUM(reacts.nLike) AS likes, 
-                    SUM(reacts.nDislike) AS dislikes, 
+                    SUM(reacts.nDislike) AS dislikes,
+                    SUM(views.views) AS views,
                     categories.name AS category,
                     ideas.createdAt, 
                     ideas.updatedAt,
@@ -100,8 +101,9 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 JOIN categories ON ideas.categoryId = categories.id
                 JOIN topics ON ideas.topicId = topics.id
                 JOIN users ON ideas.userId = users.id
+                JOIN views ON ideas.id = views.ideaId
                 WHERE topics.id = ${id}
-                GROUP BY reacts.ideaId ORDER BY ideas.name
+                GROUP BY reacts.ideaId
                 LIMIT ${limit} OFFSET ${offset};
                 `);
 
@@ -109,13 +111,37 @@ exports.list_all_ideas_by_topic = async (req, res) => {
         res.status(200).json({
             message: "Get all ideas of topic " + req.params.topicId + " successfully",
             info: topicInfo,
-            ideas: ideas[0]
+            ideas: ideas[0],
+            offset: offset
         })
     } catch(error){
         console.log(error);
         res.status(500).send("Server Error");
     }
 }
+
+const query = `SELECT  
+ideas.name AS idea, 
+users.fullName AS ownerName, 
+users.email AS email, 
+SUM(reacts.nLike) AS likes, 
+SUM(reacts.nDislike) AS dislikes,
+SUM(views.views) AS views,
+categories.name AS category,
+ideas.createdAt, 
+ideas.updatedAt,
+ideas.id as ideaId,
+users.id as userId,
+categories.id as categoryId
+FROM reacts
+INNER JOIN ideas ON reacts.ideaId = ideas.id
+JOIN categories ON ideas.categoryId = categories.id
+JOIN topics ON ideas.topicId = topics.id
+JOIN users ON ideas.userId = users.id
+JOIN views ON ideas.id = views.ideaId
+WHERE topics.id = 2
+GROUP BY reacts.ideaId;`
+
 // exports.list_ideas_by_topic = async (req, res) => {
 //     try {
 //         const ideas = await Idea.findAll({

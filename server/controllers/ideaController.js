@@ -45,7 +45,8 @@ exports.all_ideas = async (req, res) => {
                     users.fullName AS OwnerName, 
                     users.email AS Owner, 
                     SUM(reacts.nLike) AS Likes, 
-                    SUM(reacts.nDislike) AS Dislikes, 
+                    SUM(reacts.nDislike) AS Dislikes,
+                    SUM(views.views) AS Views,
                     categories.name AS Category,
                     ideas.createdAt, 
                     ideas.updatedAt,
@@ -57,6 +58,7 @@ exports.all_ideas = async (req, res) => {
                 JOIN categories ON ideas.categoryId = categories.id
                 JOIN topics ON ideas.topicId = topics.id
                 JOIN users ON ideas.userId = users.id
+                JOIN views ON ideas.id = views.ideaId
                 GROUP BY reacts.ideaId ORDER BY ideas.name
                 LIMIT ${limit} OFFSET ${offset};
                 `);

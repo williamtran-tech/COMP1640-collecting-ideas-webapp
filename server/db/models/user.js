@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Idea);
       User.hasMany(models.Comment);
       User.hasMany(models.React);
+      User.hasMany(models.View);
     }
   }
   User.init({
