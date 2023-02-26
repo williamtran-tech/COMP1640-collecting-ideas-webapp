@@ -1,7 +1,8 @@
-import { Box, Grid, Avatar,Tooltip,Typography, Divider, FormControl, InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material'
+import { Box, Grid, Avatar,Tooltip,Typography, Divider, FormControl, InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, IconButton} from '@mui/material'
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import handleApi from '../service/handleApi'
 import { Link } from 'react-router-dom';
@@ -10,6 +11,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import CreateIcon from '@mui/icons-material/Create';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import '../style/listitem.css'
 import ThumbDown from '@mui/icons-material/ThumbDown';
 import RemoveRedEye from '@mui/icons-material/RemoveRedEye';
@@ -18,7 +20,7 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 const ListIdeas = () => {
     const { id } = useParams();
-
+    const fileInputRef = useRef(null);
     const [listideas, setlistideas] = useState([]);
     const [open, setOpen] = useState(false);
 
@@ -28,7 +30,7 @@ const ListIdeas = () => {
     },[])
     
     const retrievelistideas = () => {
-      handleApi.getIdeas_by_topic(id)
+      handleApi.getIdeas_by_topic()
         .then(response => {
           setlistideas(response.data);
           console.log(response.data);
@@ -50,6 +52,15 @@ const ListIdeas = () => {
     };
     const handleClick = () => {
         console.log('You clicked the Chip.');
+      };
+
+      const handleFileUploadButtonClick = () => {
+        fileInputRef.current.click();
+      };
+    
+      const handleFileInputChange = (event) => {
+        const files = event.target.files;
+        // do something with the uploaded files
       };
   return (
         <Box className="body-container">
@@ -139,26 +150,47 @@ const ListIdeas = () => {
                         <Grid item xs={12} className="create-topic">
                             <Chip icon={<EmojiObjectsIcon/>} label={topic.idea_quantity} size="small" color="primary" className='chip'/>
                             <Chip icon={<EmojiObjectsIcon/>} label="Have idea? Summit here" size="small" color="primary" onClick={handleClickOpen}/>
-                            <Dialog open={open} onClose={handleClose}>
-                                <DialogTitle>Subscribe</DialogTitle>
+                            <Dialog open={open} onClose={handleClose} className="create_idea_form">
+                                <DialogTitle className="title_idea_form" >{listideas.info[0].name}</DialogTitle>
                                 <DialogContent>
                                 <DialogContentText>
-                                    To subscribe to this website, please enter your email address here. We
-                                    will send updates occasionally.
+                                    To contribute idea to this topic, please enter your content. Thank for your contribution
                                 </DialogContentText>
+                                <Stack direction="row" className='user-inf-form'  spacing={1}>
+                                    <Avatar
+                                    alt="T"
+                                    src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/324659855_1288226605056706_1068574274762085817_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=cXa-aiUFgAIAX9zlbbV&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfBivjwSzqPY7MF9RJ8MIYtJ1DMRqctsGhSXkJgf8_rSUQ&oe=63EFBF1D"
+                                    sx={{ width: 30, height: 30 }}
+                                    />
+                                    <Typography variant="body2">Vo Hoang Tam</Typography>
+                                </Stack>
                                 <TextField
-                                    autoFocus
+                                    
                                     margin="dense"
                                     id="name"
-                                    label="Email Address"
-                                    type="email"
+                                    label="Your idea here"
+                                    type="text"
                                     fullWidth
-                                    variant="standard"
+                                    className='idea-input'
+                                    multiline={true}
+                                    rows={10}
+                                    fontSize={12}
                                 />
+                                <>
+                                <Input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        inputProps={{ multiple: true }}
+                                        onChange={handleFileInputChange}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <IconButton onClick={handleFileUploadButtonClick}>
+                                        <DriveFolderUploadIcon color="primary"/>
+                                    </IconButton>
+                                </>
                                 </DialogContent>
-                                <DialogActions>
-                                <Button onClick={handleClose}>Cancel</Button>
-                                <Button onClick={handleClose}>Subscribe</Button>
+                                <DialogActions className='form-action'>
+                                <Button onClick={handleClose} className="form-action-button">Submit</Button>
                                 </DialogActions>
                             </Dialog>
                         </Grid>
