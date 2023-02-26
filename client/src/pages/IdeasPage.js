@@ -3,7 +3,9 @@ import ListIdeas from '../components/ListIdeas'
 import Navbar from '../components/Navigation'
 
 
+
 const IdeasPage = () => {
+
   return (
     <>
     <Navbar></Navbar>
