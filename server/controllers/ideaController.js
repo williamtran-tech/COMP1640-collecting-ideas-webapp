@@ -7,10 +7,10 @@ const Topic = db.Topic;
 const Idea = db.Idea;
 const Comment = db.Comment;
 const React = db.React;
+const View = db.View;
 
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
-const { QueryTypes } = require('sequelize');
 
 exports.all_ideas = async (req, res) => {
     try {
@@ -132,13 +132,62 @@ exports.get_idea_by_id = async (req, res) => {
             }
         });
 
+        const views = await View.findAll({
+            where: {
+                "ideaId": req.params.id
+            },
+            attributes: [[db.Sequelize.fn('sum', db.sequelize.col('views')), 'views']]
+        });
+
+        // The code above need to refactor because of the repeated code - Separated Code for readability
+        let token="";
+        let decoded
+        
+        if(req.headers.authorization) {
+            token = req.headers.authorization.split(' ')[1];
+            decoded = jwt.verify(token, config.env.JWT_key);
+        }
+        // Update Views when access to the idea detail page
+        if(decoded != null){
+            const [view, created] = await View.findOrCreate({
+                where: {
+                ideaId: req.params.id, 
+                userId: decoded.userId
+            },
+            defaults: {
+                ideaId: req.body.id,
+                userId: decoded.userId,
+                views: db.Sequelize.literal('views + 1')
+            }
+            });
+            if (!created){
+                View.increment('views', {by: 1, 
+                    where: {
+                        "ideaId": req.params.id,
+                        "userId": decoded.userId
+                    }
+                });
+            } else {
+                console.log("Successfully created new ideaId with userId");
+            }
+        } else {
+            View.increment('views', {by: 1, 
+                where: {
+                    "ideaId": req.params.id,
+                    "userId": null
+                }
+            });
+        }
+
         res.status(200).json({
             message: "Successfully get all comments by idea id " + idea[0].id,
             idea: idea,
+            views: views[0].views,
             comments: comments,
             react: react,
             reactBy: reactPeople
         });
+        
     } catch (error){
         console.log(error);
         res.status(500).send("Server Error");
@@ -158,9 +207,6 @@ exports.react = async (req, res) => {
             // 1.1.1. If userId already liked -> return user has already like the idea
             // 1.1.2. Increase nLike in the React table with the record of userId and decrease the dislike of idea
             // 1.2. If not -> create a row contains the userId with the ideaId -> Increase nLike by 1.
-
-            
-
             const [react, created] = await React.findOrCreate({
                 where: {
                     ideaId: req.body.ideaId, 
