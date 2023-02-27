@@ -8,9 +8,11 @@ import User from './pages/User';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setuserRole] =useState()
   const location= useLocation()
   const navigate = useNavigate();
 
@@ -20,35 +22,34 @@ function App() {
     if (token) {
       const decodedToken = jwt_decode(token);
       const currentTime = Date.now() / 1000; // Convert to seconds
-      console.log(location.pathname)
+      setuserRole(decodedToken.roleId)
+      
       if (decodedToken.exp < currentTime) {
-        
+        alert("Your token is expired")
         setIsLoggedIn(false);
         localStorage.removeItem('token');
         navigate('/login');
-      } else {
-        setIsLoggedIn(true);
-      }
+      } 
+      // if(userRole===2 || userRole===3){
+      //   navigate()
+      // }
     } else {
       setIsLoggedIn(false);
       navigate('/login');
     }
   }, [location,isLoggedIn, navigate]);
 
-  const userInfo = isLoggedIn ? jwt_decode(localStorage.getItem('token')) : null;
+  // const userInfo = isLoggedIn ? jwt_decode(localStorage.getItem('token')) : null;
 
   return (
-
         <Routes>
-        <Route path="/" element={<LandingPage></LandingPage>}></Route>
-        <Route path="/topics/:id" element={<IdeasPage></IdeasPage>}></Route>
-        <Route path="/user" element={<User></User>}></Route>
-        <Route path="/login" element={<LoginPage></LoginPage>}></Route>
-        <Route path="/ideas/:id" element={ (<IdeaDetailPage></IdeaDetailPage>)}></Route>
+          {userRole === 2 || userRole === 3 ? (<Route path="/" element={<AdminPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />) : 
+          ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
+          <Route path="/topics/:id" element={<IdeasPage></IdeasPage>}></Route>
+          <Route path="/user" element={<User></User>}></Route>
+          <Route path="/ideas/:id" element={(<IdeaDetailPage></IdeaDetailPage>)}></Route></>)}
+          <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route>
        </Routes>
-
-
-
   );
 }
 export default App

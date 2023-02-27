@@ -7,7 +7,7 @@ import "../style/authen.css"
 import { useNavigate } from 'react-router-dom';
 import React from 'react'
 import logo from '../components/images/black_logo.png'
-const LoginPage = () => {
+const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
     const navigate = useNavigate();
     var isLoggedIn= localStorage.getItem("token")
     const [LoginForm, setLoginForm] = useState({
@@ -32,7 +32,7 @@ const LoginPage = () => {
                      localStorage.setItem("userid", JSON.stringify(response.data.userId))
                      localStorage.setItem("roleId", JSON.stringify(response.data.roleId))
                      console.log(response.data)
-                     navigate("/")
+                     setIsLoggedIn(true)
                   }
                   return response.data;
               })

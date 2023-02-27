@@ -5,13 +5,12 @@ import Navigation from '../components/Navigation'
 import CheckToken from '../service/CheckToken'
 
 
-const LandingPage = () => {
+const LandingPage = ({isLoggedIn, setIsLoggedIn }) => {
  return (
     <>
-    <Navigation></Navigation>
+    <Navigation isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></Navigation>
     <ListTopics></ListTopics>
     </>
-    
     )}
 
 export default LandingPage

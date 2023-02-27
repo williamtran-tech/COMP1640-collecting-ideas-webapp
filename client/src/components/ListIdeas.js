@@ -139,7 +139,7 @@ const ListIdeas = () => {
                         
                             <Grid direction="row" spacing={2}>
                                 {listideas.ideas?.map(category =>(
-                                <Chip label={category.categoryName} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick} className="category_chip"/>          
+                                <Chip label={category.category} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick} className="category_chip"/>          
                             ))}
                             </Grid>
                         </Grid>
@@ -201,8 +201,8 @@ const ListIdeas = () => {
                 <Grid item xs={11} md={6}>
                  {listideas.ideas?.map(idea =>(
                         <Grid i xs={12} >
-                            <Link to={"/ideas/"+idea.id}  style={{ textDecoration: 'none'}}>
-                                <Paper elevation={4} className="idea" key={idea.id}>
+                            <Link to={"/ideas/"+idea.ideaId}  style={{ textDecoration: 'none'}}>
+                                <Paper elevation={4} className="idea" key={idea.ideaId}>
                                     <Grid container>
                                         <Grid item className='header-idea' xs={12}>
                                             <Stack direction="row" spacing={2} className="avatar-category">
@@ -216,7 +216,7 @@ const ListIdeas = () => {
                                                 <Typography variant="subtitle2">Vo Hoang Tam</Typography>
                                             </Stack>
                                                 <Stack direction="row" spacing={1}>
-                                                    <Chip label={idea.categoryName} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick}/>
+                                                    <Chip label={idea.category} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick}/>
                                                 </Stack>
                                             </Stack>
                                             <Stack direction="row" spacing={1}>

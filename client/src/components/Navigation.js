@@ -9,14 +9,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../style/navbar.css'
 import { IconButton } from '@mui/material';
 
-const Navbar = () => {
+const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
     const navigate= useNavigate()
     const logout= ()=>{
-        localStorage.clear();
-        navigate("/login")
+        // navigate("/login")
+        localStorage.clear()
+        setIsLoggedIn(false)
     }
     return (
-
             <Grid container spacing={2} className="nav-container">
                 <Grid className='navbar-item' item xs={6} md={3} >
                     <Link to="/">
