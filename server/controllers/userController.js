@@ -60,7 +60,8 @@ exports.login_user = async (req, res) => {
         if (result) {
           const token = jwt.sign({
             email: user.email,
-            userId: user.id
+            userId: user.id,
+            roleId: user.roleId
           }, config.env.JWT_key, 
           {
             expiresIn: "1h"
