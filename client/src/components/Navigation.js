@@ -11,8 +11,8 @@ import { IconButton } from '@mui/material';
 
 const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
     const navigate= useNavigate()
-    const logout= ()=>{
-        // navigate("/login")
+    const logout= () => {
+        navigate("/login")
         localStorage.clear()
         setIsLoggedIn(false)
     }
@@ -30,7 +30,7 @@ const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
                                     <MailIcon className='icon'/>
                                 </Badge>
                             </IconButton>
-                    <Link to='/login'>
+                    <Link to='/user'>
                         <IconButton>
                             <AccountCircleIcon className='icon'/>
                         </IconButton>
@@ -38,7 +38,6 @@ const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
                     </div>
                 </Grid>
             </Grid>
-      
     )
 }
 

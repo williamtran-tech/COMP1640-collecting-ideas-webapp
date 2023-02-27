@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import AdminPage from './pages/AdminPage';
-
+ import config from './service/headerToken';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setuserRole] =useState()
@@ -45,9 +45,9 @@ function App() {
         <Routes>
           {userRole === 2 || userRole === 3 ? (<Route path="/" element={<AdminPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />) : 
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
-          <Route path="/topics/:id" element={<IdeasPage></IdeasPage>}></Route>
-          <Route path="/user" element={<User></User>}></Route>
-          <Route path="/ideas/:id" element={(<IdeaDetailPage></IdeaDetailPage>)}></Route></>)}
+          <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>
+          <Route path="/user" element={<User isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></User>}></Route>
+          <Route path="/ideas/:id" element={(<IdeaDetailPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeaDetailPage>)}></Route></>)}
           <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route>
        </Routes>
   );

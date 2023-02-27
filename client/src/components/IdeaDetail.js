@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import handleApi from '../service/handleApi';
+import calculateTimeDiff from '../service/calculateTimeDiff';
 import React from 'react'
 
 const IdeaDetail = () => {
@@ -76,12 +77,12 @@ const IdeaDetail = () => {
       };
       const [comment, setcomment] = useState(initialideaState);
       const [commented, setcommented] = useState(false);
+      
     // useEffect(()=>{
     //     retrieveideaDetail()
     // },[])
     useEffect(() =>{
         retrieveideaDetail()
-        // eslint-disable-next-line 
       },[commented])
     const retrieveideaDetail = () => {
         handleApi.getIdeaDetail_by_idea(id)
@@ -93,7 +94,7 @@ const IdeaDetail = () => {
             console.log(e);
           });
       };
-      if (!ideaDetail || !ideaDetail.idea) {
+      if (!ideaDetail || !ideaDetail.idea || !ideaDetail.views || !ideaDetail.react) {
         return null;
       }
       const handleInputChange = event => {
@@ -109,7 +110,7 @@ const IdeaDetail = () => {
         };
         if(comment.content == '')
             {
-                console.log("cak")
+                console.log("")
             }else{
                 handleApi.post_comment(data)
             .then(response => {
@@ -123,6 +124,7 @@ const IdeaDetail = () => {
             setcomment(initialideaState)
             }
       };
+
   return (
     <Box>
         <Grid container justifyContent="center">
@@ -138,16 +140,16 @@ const IdeaDetail = () => {
                                     sx={{ width: 30, height: 30, justifySelf: "center" }}
                                     className='avatar'
                                     />
-                                    <Typography variant="subtitle2">{ideaDetail.idea[0].User.fullName}</Typography>
+                                    <Typography variant="subtitle2" className='name-user'>{ideaDetail.idea[0].User.fullName}</Typography>
                                 </Stack>
                                 <Stack direction="row" spacing={1}>
                                     <Chip label={ideaDetail.idea[0].Category.name} sx={{backgroundColor: "#F7F7F7"}} size="small" onClick={"handleClick"}/>
                                 </Stack>
                             </Stack>
                             <Stack direction="row" spacing={1}>
-                            <Chip icon={<ThumbDown style={{color: `${react.likeStatus}`}}/>} label="10" variant="outlined" size="small"  onClick={handleLike}/>
-                            <Chip icon={<ThumbUpIcon style={{color: `${react.dislikeStatus}`}}/>} label="10" variant="outlined" size="small"  onClick={handleDislike}/>
-                            <Chip icon={<ChatBubbleIcon/>} label="10" variant="outlined"size="small" sx={{backgroundColor: "#F7F7F7"}} />
+                            <Chip icon={<ThumbDown style={{color: `${react.likeStatus}`}}/>} label={ideaDetail.react[0].Dislikes} variant="outlined" size="small"  onClick={handleLike}/>
+                            <Chip icon={<ThumbUpIcon style={{color: `${react.dislikeStatus}`}}/>} label={ideaDetail.react[0].Likes} variant="outlined" size="small"  onClick={handleDislike}/>
+                            <Chip icon={<ChatBubbleIcon/>} label={ideaDetail.views} variant="outlined"size="small" sx={{backgroundColor: "#F7F7F7"}} />
                             </Stack>
                         </Grid>
                         <Grid item xs={12} className="idea-content">
@@ -155,7 +157,7 @@ const IdeaDetail = () => {
                         </Grid>
                         <Divider/>
                         <Grid item className='footer-idea' xs={12}>
-                            <Chip icon={<RemoveRedEye/>} label="10" size="small" sx={{backgroundColor: "#6D9886"}} />
+                            <Chip icon={<RemoveRedEye/>} label={Number(ideaDetail.views)-3} size="small" sx={{backgroundColor: "#6D9886"}} />
                             <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
                         </Grid>
                     </Grid>
@@ -177,7 +179,13 @@ const IdeaDetail = () => {
                                         sx={{ width: 30, height: 30  }}
                                         />
                                     </Tooltip>
-                                    <Typography className='comment-text' variant="subtitle2">{comment.content}</Typography>
+                                    <Stack className='comment-text'>
+                                        <Stack direction="row" spacing={1}> 
+                                             <Typography variant="body2" className='name-user'>{comment.owner}</Typography>
+                                             <Typography variant="body2" className='time-comment'> {calculateTimeDiff(comment.updatedAt)}</Typography>
+                                        </Stack>
+                                        <Typography variant="subtitle2">{comment.content}</Typography>
+                                    </Stack>
                         </Stack>
                     </Grid>
                         ))
@@ -195,8 +203,8 @@ const IdeaDetail = () => {
                                         />
                                     </Tooltip>
                                         <Input placeholder="Comment..." className='comment-input' sx={{borderBottomColor: "#6D9886"}} id='comment-input' name='content' value={comment.content} onChange={handleInputChange}/>
-                                    <IconButton>
-                                         <SendIcon sx={{color: "#6D9886"}} type="submit"></SendIcon>
+                                    <IconButton type='submit'>
+                                         <SendIcon sx={{color: "#6D9886"}} ></SendIcon>
                                     </IconButton>
                         </Stack>
                         </form>

@@ -54,14 +54,6 @@ const ListIdeas = () => {
         console.log('You clicked the Chip.');
       };
 
-      const handleFileUploadButtonClick = () => {
-        fileInputRef.current.click();
-      };
-    
-      const handleFileInputChange = (event) => {
-        const files = event.target.files;
-        // do something with the uploaded files
-      };
   return (
         <Box className="body-container">
              {listideas.info?.map(topic=>(
@@ -165,7 +157,6 @@ const ListIdeas = () => {
                                     <Typography variant="body2">Vo Hoang Tam</Typography>
                                 </Stack>
                                 <TextField
-                                    
                                     margin="dense"
                                     id="name"
                                     label="Your idea here"
@@ -178,15 +169,15 @@ const ListIdeas = () => {
                                 />
                                 <>
                                 <Input
-                                        ref={fileInputRef}
                                         type="file"
                                         inputProps={{ multiple: true }}
-                                        onChange={handleFileInputChange}
                                         style={{ display: 'none' }}
                                     />
-                                    <IconButton onClick={handleFileUploadButtonClick}>
+                                    <label>
+                                        <IconButton >
                                         <DriveFolderUploadIcon color="primary"/>
                                     </IconButton>
+                                    </label>
                                 </>
                                 </DialogContent>
                                 <DialogActions className='form-action'>
@@ -213,16 +204,16 @@ const ListIdeas = () => {
                                                 sx={{ width: 30, height: 30, justifySelf: "center" }}
                                                 className='avatar'
                                                 />
-                                                <Typography variant="subtitle2">Vo Hoang Tam</Typography>
+                                                <Typography variant="subtitle2">{idea.ownerName}</Typography>
                                             </Stack>
                                                 <Stack direction="row" spacing={1}>
                                                     <Chip label={idea.category} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick}/>
                                                 </Stack>
                                             </Stack>
                                             <Stack direction="row" spacing={1}>
-                                            <Chip icon={<ThumbDown />} label="10" variant="outlined" size="small" color="default" />
-                                            <Chip icon={<ThumbUpIcon />} label="10" variant="outlined" size="small" color="default"/>
-                                            <Chip icon={<ChatBubbleIcon/>} label="10" variant="outlined"size="small" color="default" />
+                                                <Chip icon={<ThumbDown />} label={idea.dislikes} variant="outlined" size="small" color="default" />
+                                                <Chip icon={<ThumbUpIcon />} label={idea.likes} variant="outlined" size="small" color="default"/>
+                                                <Chip icon={<ChatBubbleIcon/>} label={idea.views} variant="outlined"size="small" color="default" />
                                             </Stack>
                                         </Grid>
                                         <Grid item xs={12} className="idea-content">
@@ -230,7 +221,7 @@ const ListIdeas = () => {
                                         </Grid>
                                         <Divider/>
                                         <Grid item className='footer-idea' xs={12}>
-                                            <Chip icon={<RemoveRedEye/>} label="10" variant="outlined"size="small" color="default" />
+                                            <Chip icon={<RemoveRedEye/>} label={idea.views} variant="outlined"size="small" color="default" />
                                             <Chip icon={<CreateIcon/>} label={Moment(idea.createdAt).format('YYYY/MM/DD')} variant="outlined"size="small" color="default" />
                                         </Grid>
                                     </Grid>

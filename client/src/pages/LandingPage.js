@@ -8,9 +8,9 @@ import CheckToken from '../service/CheckToken'
 const LandingPage = ({isLoggedIn, setIsLoggedIn }) => {
  return (
     <>
-    <Navigation isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></Navigation>
-    <ListTopics></ListTopics>
+      <Navigation isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></Navigation>
+      <ListTopics></ListTopics>
     </>
-    )}
+  )}
 
 export default LandingPage

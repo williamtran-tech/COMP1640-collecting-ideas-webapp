@@ -2,17 +2,14 @@ import React from 'react'
 import ListIdeas from '../components/ListIdeas'
 import Navbar from '../components/Navigation'
 
-
-
-const IdeasPage = () => {
+const IdeasPage = ({isLoggedIn, setIsLoggedIn }) => {
 
   return (
     <>
-    <Navbar></Navbar>
-    <ListIdeas></ListIdeas>
+      <Navbar  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></Navbar>
+      <ListIdeas></ListIdeas>
     </>
    
   )
 }
-
 export default IdeasPage

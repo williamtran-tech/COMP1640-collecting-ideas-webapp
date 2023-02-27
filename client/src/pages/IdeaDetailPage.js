@@ -3,11 +3,11 @@ import IdeaDetail from '../components/IdeaDetail'
 import Navbar from '../components/Navigation'
 
 
-const IdeaDetailPage = () => {
+const IdeaDetailPage = ({isLoggedIn, setIsLoggedIn }) => {
 
   return (
       <>
-        <Navbar></Navbar>
+        <Navbar  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} ></Navbar>
         <IdeaDetail></IdeaDetail>
       </>
   )

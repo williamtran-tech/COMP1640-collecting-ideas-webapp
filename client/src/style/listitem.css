@@ -134,11 +134,10 @@ padding: 10px 0;
 }
 .comment-text{
   background-color: #6D9886;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 0 15px;
   /* width: 100%; */
   display: flex;
-  align-items: center;
 }
 .comment-container{
 padding-left: 10px;
@@ -152,7 +151,14 @@ padding-top: 10px;
 .comment-input{
   padding-left: 10px;
   width: 100%;
-  
+}
+.name-user{
+  font-weight:550 !important;
+  font-style: italic;
+}
+.time-comment{
+  font-weight: 200 !important;
+  font-style: italic;
 }
 .avatar{
 margin-left: auto;
