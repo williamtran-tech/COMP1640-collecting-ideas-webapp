@@ -162,3 +162,29 @@ margin-right: auto;
   margin-top: 5px !important;
   margin-left: 5px !important;
 }
+.create_idea_form{
+  
+}
+.title_idea_form{
+  background-color: #6D9886 ;
+  display: flex;
+  justify-content: center;
+  font-weight: 600 !important;
+  
+}
+
+.user-inf-form{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+ margin: 10px 0;
+}
+.form-action{
+  justify-content: center !important;
+}
+.form-action-button{
+  background-color: #6D9886 !important;
+  color: aliceblue !important;
+  border-radius: 20px !important;
+  width: 150px !important;
+}

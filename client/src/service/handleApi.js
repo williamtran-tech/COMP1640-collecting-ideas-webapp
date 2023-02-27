@@ -4,8 +4,11 @@ import config from './headerToken';
 const getListTopic = async () => {
     return await axios.get("/topics");
   };
-const getIdeas_by_topic= async id => {
-    return await axios.get(`/topics/${id}`);
+// const getIdeas_by_topic= async id => {
+//     return await axios.get(`/topics/${id}`);
+// }
+const getIdeas_by_topic= async() => {
+    return await axios.get(`/topics/2?page=1`);
 }
 const getIdeaDetail_by_idea = async id => {
     return await axios.get(`/ideas/${id}`);
