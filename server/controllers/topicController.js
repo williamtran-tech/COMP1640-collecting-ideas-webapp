@@ -107,11 +107,15 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 LIMIT ${limit} OFFSET ${offset};
                 `);
 
-
+            const categories = await Category.findAll({
+                attributes: ['name']
+            })
+        
         res.status(200).json({
             message: "Get all ideas of topic " + req.params.topicId + " successfully",
             info: topicInfo,
             ideas: ideas[0],
+            categories: categories,
             offset: offset
         })
     } catch(error){

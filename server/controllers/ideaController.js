@@ -132,6 +132,14 @@ exports.get_idea_by_id = async (req, res) => {
             }
         });
 
+        const numComments = await Comment.findAll({
+            where: {
+                "ideaId": req.params.id
+            },
+            attributes: [[db.Sequelize.fn('count', db.sequelize.col('id')), 'quantity']],
+            raw: true
+        })
+
         const views = await View.findAll({
             where: {
                 "ideaId": req.params.id
@@ -184,6 +192,7 @@ exports.get_idea_by_id = async (req, res) => {
             idea: idea,
             views: views[0].views,
             comments: comments,
+            nComments: numComments[0].quantity,
             react: react,
             reactBy: reactPeople
         });
