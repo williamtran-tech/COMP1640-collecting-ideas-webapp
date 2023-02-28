@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 var topicList = require('../../controllers/topicController.js');
+const checkAuth = require('../../middleware/checkAuth.js');
 
-router.get('/', topicList.list_all_topics);
-router.get('/:topicId', topicList.list_all_ideas_by_topic);
+router.get('/', checkAuth,topicList.list_all_topics);
+router.get('/:topicId', checkAuth, topicList.list_all_ideas_by_topic);
 
 // router.post('/', ideaList.create_an_idea);
 
