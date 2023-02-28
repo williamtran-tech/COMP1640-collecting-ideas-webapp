@@ -6,6 +6,7 @@ const checkAuth = require('../../middleware/checkAuth.js');
 
 router.get('/', checkAuth,topicList.list_all_topics);
 router.get('/:topicId', checkAuth, topicList.list_all_ideas_by_topic);
+router.post('/:topicId', checkAuth, topicList.create_idea);
 
 // router.post('/', ideaList.create_an_idea);
 
