@@ -18,8 +18,8 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-
-    if (token) {
+    
+    if (token && config) {
       const decodedToken = jwt_decode(token);
       const currentTime = Date.now() / 1000; // Convert to seconds
       setuserRole(decodedToken.roleId)

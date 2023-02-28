@@ -200,7 +200,7 @@ const ListIdeas = () => {
                                             <Stack >
                                                 <Avatar
                                                 alt="T"
-                                                src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/324659855_1288226605056706_1068574274762085817_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=cXa-aiUFgAIAX9zlbbV&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfBivjwSzqPY7MF9RJ8MIYtJ1DMRqctsGhSXkJgf8_rSUQ&oe=63EFBF1D"
+                                                src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
                                                 sx={{ width: 30, height: 30, justifySelf: "center" }}
                                                 className='avatar'
                                                 />
