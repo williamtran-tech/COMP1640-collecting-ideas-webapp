@@ -1,4 +1,4 @@
-import React from 'react'
+
 import moment from 'moment';
 const calculateTimeDiff = (date) => {
     const now = moment();

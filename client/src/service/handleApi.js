@@ -11,7 +11,9 @@ const getIdeas_by_topic= async() => {
     return await axios.get(`/topics/2?page=1`);
 }
 const getIdeaDetail_by_idea = async id => {
-    return await axios.get(`/ideas/${id}`, config);
+    if(config){
+        return await axios.get(`/ideas/${id}`, config);
+    }
 }
 const post_comment = data => {
     return axios.post("/comments", data, config);

@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import handleApi from '../service/handleApi';
 import calculateTimeDiff from '../service/calculateTimeDiff';
 import React from 'react'
+import config from '../service/headerToken';
 
 const IdeaDetail = () => {
     const { id } = useParams();
@@ -81,11 +82,16 @@ const IdeaDetail = () => {
     // useEffect(()=>{
     //     retrieveideaDetail()
     // },[])
+    const token= localStorage.getItem("token")
+
     useEffect(() =>{
-        retrieveideaDetail()
+        if(config){
+            retrieveideaDetail()
+        }
+        
       },[commented])
     const retrieveideaDetail = () => {
-        handleApi.getIdeaDetail_by_idea(id)
+         handleApi.getIdeaDetail_by_idea(id)
           .then(response => {
             setideaDetail(response.data);
             console.log(response.data);
@@ -157,7 +163,7 @@ const IdeaDetail = () => {
                         </Grid>
                         <Divider/>
                         <Grid item className='footer-idea' xs={12}>
-                            <Chip icon={<RemoveRedEye/>} label={Number(ideaDetail.views)-3} size="small" sx={{backgroundColor: "#6D9886"}} />
+                            <Chip icon={<RemoveRedEye/>} label={Number(ideaDetail.views)-2} size="small" sx={{backgroundColor: "#6D9886"}} />
                             <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
                         </Grid>
                     </Grid>

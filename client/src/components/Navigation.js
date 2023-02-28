@@ -8,6 +8,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate } from 'react-router-dom';
 import '../style/navbar.css'
 import { IconButton } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
     const navigate= useNavigate()
@@ -26,9 +27,10 @@ const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
                 <Grid className='navbar-item' item xs={6} md={9}>           
                     <div className='item-right'>
                             <IconButton onClick={logout}>
-                                <Badge badgeContent={4} color="error">
+                                {/* <Badge badgeContent={4} color="error">
                                     <MailIcon className='icon'/>
-                                </Badge>
+                                </Badge> */}
+                                <LogoutIcon className='icon'></LogoutIcon>
                             </IconButton>
                     <Link to='/user'>
                         <IconButton>
@@ -40,5 +42,4 @@ const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
             </Grid>
     )
 }
-
 export default Navbar

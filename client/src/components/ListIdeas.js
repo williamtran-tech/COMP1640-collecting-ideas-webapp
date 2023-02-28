@@ -217,7 +217,7 @@ const ListIdeas = () => {
                                             </Stack>
                                         </Grid>
                                         <Grid item xs={12} className="idea-content">
-                                            <Typography align="justify">{idea.name} </Typography>
+                                            <Typography align="justify">{idea.idea} </Typography>
                                         </Grid>
                                         <Divider/>
                                         <Grid item className='footer-idea' xs={12}>
