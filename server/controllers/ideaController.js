@@ -168,23 +168,10 @@ exports.get_idea_by_id = async (req, res) => {
                 views: db.Sequelize.literal('views + 1')
             }
             });
-            if (!created){
-                View.increment('views', {by: 1, 
-                    where: {
-                        "ideaId": req.params.id,
-                        "userId": decoded.userId
-                    }
-                });
-            } else {
-                console.log("Successfully created new ideaId with userId");
+
+            if (created) {
+                console.log("Successfully add userId to view ideaId");
             }
-        } else {
-            View.increment('views', {by: 1, 
-                where: {
-                    "ideaId": req.params.id,
-                    "userId": null
-                }
-            });
         }
 
         res.status(200).json({

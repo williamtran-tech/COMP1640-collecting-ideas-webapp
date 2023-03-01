@@ -1,6 +1,5 @@
 'use strict';
 const db = require('./../db/models/index.js');
-const { QueryTypes } = require('sequelize');
 const models = require('./../db/models');
 const User = models.User;
 const Category = models.Category;
@@ -175,6 +174,19 @@ exports.create_idea = async (req, res) => {
     catch (err) {
         console.log(err);
         res.status(500).send("Server Error");
+    }
+}
+
+// This function is not done yet
+exports.upload_file = async (req, res) => {
+    try {
+        res.status(200).json({
+            msg: "Upload in controller"
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send(err);
     }
 }
 
