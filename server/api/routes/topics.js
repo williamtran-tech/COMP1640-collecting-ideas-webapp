@@ -2,9 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 var topicList = require('../../controllers/topicController.js');
+const checkAuth = require('../../middleware/checkAuth.js');
+const uploadFile = require('../../middleware/uploadFile.js');
 
-router.get('/', topicList.list_all_topics);
-router.get('/:topicId', topicList.list_all_ideas_by_topic);
+router.get('/', checkAuth,topicList.list_all_topics);
+router.get('/:topicId', checkAuth, topicList.list_all_ideas_by_topic);
+router.post('/:topicId', checkAuth, topicList.create_idea);
+// This function is not done yet
+router.post('/:topicId/upload', checkAuth, uploadFile, topicList.upload_file);
 
 // router.post('/', ideaList.create_an_idea);
 

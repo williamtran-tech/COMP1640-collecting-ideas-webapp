@@ -2,6 +2,8 @@
 
 const db = require('./../db/models');
 const User = db.User;
+const Department = db.Department;
+const Role = db.Role;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
@@ -60,6 +62,7 @@ exports.login_user = async (req, res) => {
         if (result) {
           const token = jwt.sign({
             email: user.email,
+            name: user.fullName,
             userId: user.id,
             roleId: user.roleId
           }, config.env.JWT_key, 
@@ -71,6 +74,7 @@ exports.login_user = async (req, res) => {
             token: token,
             userId: user.id,
             email: user.email,
+            name: user.fullName,
             roleId: user.roleId
           });
         }

@@ -4,8 +4,8 @@ const router = express.Router();
 var idea = require('../../controllers/ideaController.js');
 const checkAuth = require('../../middleware/checkAuth.js');
 
-router.get('/', idea.all_ideas);
-router.get('/:id', idea.get_idea_by_id);
+router.get('/', checkAuth, idea.all_ideas);
+router.get('/:id', checkAuth, idea.get_idea_by_id);
 router.put('/:id', checkAuth, idea.react);
 
 // router.get('/:ideaId', ideaList.get_idea_by_id);

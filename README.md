@@ -30,6 +30,7 @@ npm install
    > "bcrypt"
    > "jsonwebtoken"
    > "moment-timezone"
+   >  multer": "^1.4.5-lts.1"
 
 Sample:
 

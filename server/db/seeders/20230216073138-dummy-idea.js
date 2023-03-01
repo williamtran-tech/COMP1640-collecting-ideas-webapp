@@ -39,6 +39,7 @@ module.exports = {
         {
           name: 'Idea 5',
           topicId: 3,
+          categoryId: 1,
           userId: 5,
           createdAt: new Date(),
           updatedAt: new Date()

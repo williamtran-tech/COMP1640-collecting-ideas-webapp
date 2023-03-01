@@ -1,11 +1,12 @@
 'use strict';
 const db = require('./../db/models/index.js');
-const { QueryTypes } = require('sequelize');
 const models = require('./../db/models');
 const User = models.User;
 const Category = models.Category;
 const Topic = models.Topic;
 const Idea = models.Idea;
+const View = models.View;
+const React = models.React;
 
 exports.list_all_topics = async (req, res) => {
     try {
@@ -69,19 +70,9 @@ exports.list_all_ideas_by_topic = async (req, res) => {
         //         as: "User",
         //         attributes:[],
         //         required: true
-        //       },
-        //       {
-        //         model: Category, 
-        //         as: "Category",
-        //         attributes:[]
         //       }
         //     ]
         //   });
-
-        const page = req.param('page'); // current page number
-        const limit = 5; // number of items per page
-        const offset = (page - 1) * limit; // offset to skip previous items
-
         const ideas = await db.sequelize.query(
                 `SELECT  
                     ideas.name AS idea, 
@@ -103,20 +94,33 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 JOIN users ON ideas.userId = users.id
                 JOIN views ON ideas.id = views.ideaId
                 WHERE topics.id = ${id}
-                GROUP BY reacts.ideaId
-                LIMIT ${limit} OFFSET ${offset};
+                GROUP BY reacts.ideaId;
                 `);
 
-            const categories = await Category.findAll({
-                attributes: ['name']
+            const allCategories = await Category.findAll({
+                attributes: ['id','name']
             })
+
+            const categories = await Idea.findAll({
+                where: {
+                    topicId: id
+                },
+                include: {
+                    model: Category,
+                    as: "Category",
+                    attributes: []
+                },
+                attributes:[[db.sequelize.fn('distinct', db.sequelize.col('Category.name')), 'name'], ["categoryId", "id"],],
+                group: ["Category.name"],
+                raw: true
+            });
         
         res.status(200).json({
             message: "Get all ideas of topic " + req.params.topicId + " successfully",
             info: topicInfo,
             ideas: ideas[0],
-            categories: categories,
-            offset: offset
+            allCategories: allCategories,
+            categories: categories
         })
     } catch(error){
         console.log(error);
@@ -124,28 +128,122 @@ exports.list_all_ideas_by_topic = async (req, res) => {
     }
 }
 
-const query = `SELECT  
-ideas.name AS idea, 
-users.fullName AS ownerName, 
-users.email AS email, 
-SUM(reacts.nLike) AS likes, 
-SUM(reacts.nDislike) AS dislikes,
-SUM(views.views) AS views,
-categories.name AS category,
-ideas.createdAt, 
-ideas.updatedAt,
-ideas.id as ideaId,
-users.id as userId,
-categories.id as categoryId
-FROM reacts
-INNER JOIN ideas ON reacts.ideaId = ideas.id
-JOIN categories ON ideas.categoryId = categories.id
-JOIN topics ON ideas.topicId = topics.id
-JOIN users ON ideas.userId = users.id
-JOIN views ON ideas.id = views.ideaId
-WHERE topics.id = 2
-GROUP BY reacts.ideaId;`
+exports.create_idea = async (req, res) => {
+    try {
+        const [newIdea, created] = await Idea.findOrCreate({
+            where: {
+                "name": req.body.name,
+                "categoryId": req.body.categoryId,
+                "topicId": req.body.topicId,
+                "userId": req.body.userId,
+                "isAnonymous": req.body.isAnonymous
+            },
+            default: {
+                "name": req.body.name,
+                "categoryId": req.body.categoryId,
+                "topicId": req.body.id,
+                "userId": req.body.userId,
+                "isAnonymous": req.body.isAnonymous,
+                "nLike": 0,
+                "nDislike": 0,
+                "nView": 0
+            }
+        });
 
+        if (!created) {
+            res.status(406).json({
+                msg:"Your idea is exists"
+            })
+        } else {
+            // The following code used to set init value for comment and views of the new idea
+
+            const setView = await View.create({
+                "ideaId": newIdea.id,
+            })
+            const setReact = await React.create({
+                "ideaId": newIdea.id,
+            })
+
+            res.status(200).json({
+                msg: "Successfully create new idea",
+                idea: newIdea
+            });
+        }
+
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send("Server Error");
+    }
+}
+
+// This function is not done yet
+exports.upload_file = async (req, res) => {
+    try {
+        res.status(200).json({
+            msg: "Upload in controller"
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+// Paginate ideas in topic detail function - Backup
+// const query = `SELECT  
+// ideas.name AS idea, 
+// users.fullName AS ownerName, 
+// users.email AS email, 
+// SUM(reacts.nLike) AS likes, 
+// SUM(reacts.nDislike) AS dislikes,
+// SUM(views.views) AS views,
+// categories.name AS category,
+// ideas.createdAt, 
+// ideas.updatedAt,
+// ideas.id as ideaId,
+// users.id as userId,
+// categories.id as categoryId
+// FROM reacts
+// INNER JOIN ideas ON reacts.ideaId = ideas.id
+// JOIN categories ON ideas.categoryId = categories.id
+// JOIN topics ON ideas.topicId = topics.id
+// JOIN users ON ideas.userId = users.id
+// JOIN views ON ideas.id = views.ideaId
+// WHERE topics.id = 2
+// GROUP BY reacts.ideaId;`
+// const page = req.param('page'); // current page number
+//         const limit = 5; // number of items per page
+//         const offset = (page - 1) * limit; // offset to skip previous items
+
+//         const ideas = await db.sequelize.query(
+//                 `SELECT  
+//                     ideas.name AS idea, 
+//                     users.fullName AS ownerName, 
+//                     users.email AS email, 
+//                     SUM(reacts.nLike) AS likes, 
+//                     SUM(reacts.nDislike) AS dislikes,
+//                     SUM(views.views) AS views,
+//                     categories.name AS category,
+//                     ideas.createdAt, 
+//                     ideas.updatedAt,
+//                     ideas.id as ideaId,
+//                     users.id as userId,
+//                     categories.id as categoryId
+//                 FROM reacts
+//                 INNER JOIN ideas ON reacts.ideaId = ideas.id
+//                 JOIN categories ON ideas.categoryId = categories.id
+//                 JOIN topics ON ideas.topicId = topics.id
+//                 JOIN users ON ideas.userId = users.id
+//                 JOIN views ON ideas.id = views.ideaId
+//                 WHERE topics.id = ${id}
+//                 GROUP BY reacts.ideaId
+//                 LIMIT ${limit} OFFSET ${offset};
+//                 `);
+
+//             const categories = await Category.findAll({
+//                 attributes: ['name']
+//             })
 // exports.list_ideas_by_topic = async (req, res) => {
 //     try {
 //         const ideas = await Idea.findAll({

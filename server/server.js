@@ -15,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use("/uploaded_files", express.static("./uploaded_files"));
 
 app.use('/ideas', ideasRoutes);
 app.use('/topics', topicsRoutes);
@@ -22,6 +23,10 @@ app.use('/users', usersRoutes);
 app.use('/comments', commentsRoutes);
 app.use('/accounts', accountsRoutes);
 
+// app.post('/upload', (req,res) => {
+//     res.status(200).json({msg: "Successful upload"});
+// });
+
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
-})
+});
