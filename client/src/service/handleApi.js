@@ -2,21 +2,21 @@ import axios from 'axios'
 import config from './headerToken';
 
 const getListTopic = async () => {
-    return await axios.get("/topics");
+    return await axios.get("/topics",config());
   };
-// const getIdeas_by_topic= async id => {
-//     return await axios.get(`/topics/${id}`);
-// }
-const getIdeas_by_topic= async() => {
-    return await axios.get(`/topics/2?page=1`);
+const getIdeas_by_topic= async id => {
+    return await axios.get(`/topics/${id}`);
 }
+// const getIdeas_by_topic= async() => {
+//     return await axios.get(`/topics/2`, config);
+// }
 const getIdeaDetail_by_idea = async id => {
     if(config){
-        return await axios.get(`/ideas/${id}`, config);
+        return await axios.get(`/ideas/${id}`, config());
     }
 }
 const post_comment = data => {
-    return axios.post("/comments", data, config);
+    return axios.post("/comments", data, config());
   };
 const login = data => {
     return axios.post("/accounts/login", data)

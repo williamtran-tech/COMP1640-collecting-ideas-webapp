@@ -9,21 +9,18 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import AdminPage from './pages/AdminPage';
- import config from './service/headerToken';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setuserRole] =useState()
   const location= useLocation()
   const navigate = useNavigate();
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     
-    if (token && config) {
+    if (token) {
       const decodedToken = jwt_decode(token);
       const currentTime = Date.now() / 1000; // Convert to seconds
       setuserRole(decodedToken.roleId)
-      
       if (decodedToken.exp < currentTime) {
         alert("Your token is expired")
         setIsLoggedIn(false);

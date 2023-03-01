@@ -130,7 +130,6 @@ const IdeaDetail = () => {
             setcomment(initialideaState)
             }
       };
-
   return (
     <Box>
         <Grid container justifyContent="center">
@@ -142,7 +141,7 @@ const IdeaDetail = () => {
                                 <Stack >
                                     <Avatar
                                     alt="T"
-                                    src='https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png'
+                                    src='http://localhost:5050/uploaded_files/images/ideas/1677664453782_IMG_20220918_091000_505.jpg'
                                     sx={{ width: 30, height: 30, justifySelf: "center" }}
                                     className='avatar'
                                     />
@@ -155,7 +154,7 @@ const IdeaDetail = () => {
                             <Stack direction="row" spacing={1}>
                             <Chip icon={<ThumbDown style={{color: `${react.likeStatus}`}}/>} label={ideaDetail.react[0].Dislikes} variant="outlined" size="small"  onClick={handleLike}/>
                             <Chip icon={<ThumbUpIcon style={{color: `${react.dislikeStatus}`}}/>} label={ideaDetail.react[0].Likes} variant="outlined" size="small"  onClick={handleDislike}/>
-                            <Chip icon={<ChatBubbleIcon/>} label={ideaDetail.views} variant="outlined"size="small" sx={{backgroundColor: "#F7F7F7"}} />
+                            <Chip icon={<ChatBubbleIcon/>} label={ideaDetail.nComments} variant="outlined"size="small" sx={{backgroundColor: "#F7F7F7"}} />
                             </Stack>
                         </Grid>
                         <Grid item xs={12} className="idea-content">
@@ -163,7 +162,7 @@ const IdeaDetail = () => {
                         </Grid>
                         <Divider/>
                         <Grid item className='footer-idea' xs={12}>
-                            <Chip icon={<RemoveRedEye/>} label={Number(ideaDetail.views)-2} size="small" sx={{backgroundColor: "#6D9886"}} />
+                            <Chip icon={<RemoveRedEye/>} label={ideaDetail.views} size="small" sx={{backgroundColor: "#6D9886"}} />
                             <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
                         </Grid>
                     </Grid>

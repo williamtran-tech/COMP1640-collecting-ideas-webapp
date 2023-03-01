@@ -14,6 +14,7 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
         email: "",
         password: "",
       });
+    const [LoginStatus, setLoginStatus] = useState(true);
       const handleInputChange = event => {
         const { name, value } = event.target;
         setLoginForm({ ...LoginForm, [name]: value });
@@ -33,9 +34,12 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
                      localStorage.setItem("roleId", JSON.stringify(response.data.roleId))
                      console.log(response.data)
                      setIsLoggedIn(true)
+                     setLoginStatus(true)
                   }
                   return response.data;
-              })
+              }).catch(e => {
+                setLoginStatus(false)
+            });
           }
       };
   if(isLoggedIn ==null){
@@ -93,22 +97,24 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
                             />
                         </Grid>
                         <Grid container justifyContent="center">
+                            {
+                                !LoginStatus &&(
+                                <Typography style={{ color: "red" }}>
+                                    Wrong email or password! Please try again!
+                                </Typography>)
+                            }
                             <Grid xs={4}>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 1, mb: 2 }}
-                                >
-                                Sign In
-                            </Button>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 1, mb: 2 }}
+                                    >
+                                    Sign In
+                                </Button>
                             
                             </Grid>
-                            <Grid xs={12} className="register-link" >
-                                <Link to="/register" >
-                                Don't have an account? Sign Up
-                                </Link>
-                            </Grid>
+                            
                         </Grid>
                     </Grid>
                </Grid>
