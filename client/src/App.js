@@ -7,29 +7,19 @@ import LoginPage from './pages/LoginPage';
 import User from './pages/User';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import jwt_decode from 'jwt-decode';
 import AdminPage from './pages/AdminPage';
+import checkToken from './service/checkToken';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setuserRole] =useState()
-  const location= useLocation()
+  const [userRole, setUserRole] = useState();
+  const location = useLocation();
   const navigate = useNavigate();
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    
-    if (token) {
-      const decodedToken = jwt_decode(token);
-      const currentTime = Date.now() / 1000; // Convert to seconds
-      setuserRole(decodedToken.roleId)
-      if (decodedToken.exp < currentTime) {
-        alert("Your token is expired")
-        setIsLoggedIn(false);
-        localStorage.removeItem('token');
-        navigate('/login');
-      } 
-      // if(userRole===2 || userRole===3){
-      //   navigate()
-      // }
+    const decodedToken = checkToken();
+    if (decodedToken) {
+      setUserRole(decodedToken.roleId);
+      setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
       navigate('/login');
