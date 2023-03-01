@@ -92,8 +92,11 @@ const ListIdeas = () => {
                         label="category"
                         // onChange={handleChange}
                     >
-                        <MenuItem value={10} >cak</MenuItem>
-                        <MenuItem value={20}>cak</MenuItem>
+                        {
+                            listideas.ideas?.map(idea=>(
+                            <MenuItem value={1} >{idea.category}</MenuItem>
+                            ))
+                        }
                     </Select>
                     </FormControl>
                 </Grid>
@@ -151,11 +154,27 @@ const ListIdeas = () => {
                                 <Stack direction="row" className='user-inf-form'  spacing={1}>
                                     <Avatar
                                     alt="T"
-                                    src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/324659855_1288226605056706_1068574274762085817_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=cXa-aiUFgAIAX9zlbbV&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfBivjwSzqPY7MF9RJ8MIYtJ1DMRqctsGhSXkJgf8_rSUQ&oe=63EFBF1D"
+                                    src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
                                     sx={{ width: 30, height: 30 }}
                                     />
                                     <Typography variant="body2">Vo Hoang Tam</Typography>
                                 </Stack>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel id="category">Category</InputLabel>
+                                    <Select
+                                        labelId="category"
+                                        id="category"
+                                        // value={age}
+                                        label="category"
+                                        // onChange={handleChange}
+                                    >
+                                        {
+                                            listideas.categories?.map(category=>(
+                                            <MenuItem value={2} >{category.name}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
                                 <TextField
                                     margin="dense"
                                     id="name"
@@ -167,18 +186,19 @@ const ListIdeas = () => {
                                     rows={10}
                                     fontSize={12}
                                 />
-                                <>
-                                <Input
-                                        type="file"
-                                        inputProps={{ multiple: true }}
-                                        style={{ display: 'none' }}
-                                    />
-                                    <label>
-                                        <IconButton >
+                                
+                                <IconButton
+                                    variant="contained"
+                                    component="label"
+                                    >
                                         <DriveFolderUploadIcon color="primary"/>
-                                    </IconButton>
-                                    </label>
-                                </>
+                        
+                                    <input
+                                        type="file"
+                                        hidden
+                                    />
+                                </IconButton>
+                                
                                 </DialogContent>
                                 <DialogActions className='form-action'>
                                 <Button onClick={handleClose} className="form-action-button">Submit</Button>
