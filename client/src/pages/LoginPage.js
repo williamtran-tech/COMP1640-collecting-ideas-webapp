@@ -9,7 +9,7 @@ import React from 'react'
 import logo from '../components/images/black_logo.png'
 const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
     const navigate = useNavigate();
-    var isLoggedIn= localStorage.getItem("token")
+
     const [LoginForm, setLoginForm] = useState({
         email: "",
         password: "",
@@ -42,7 +42,7 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
             });
           }
       };
-  if(isLoggedIn ==null){
+  if(!isLoggedIn){
   return (
         <Grid container className="body-login" component="form" onSubmit={Login}>
 

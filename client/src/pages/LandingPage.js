@@ -8,7 +8,7 @@ const LandingPage = ({isLoggedIn, setIsLoggedIn }) => {
  return (
     <>
       <Navigation isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></Navigation>
-      <ListTopics></ListTopics>
+      <ListTopics isLoggedIn={isLoggedIn}></ListTopics>
     </>
   )}
 

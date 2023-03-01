@@ -13,12 +13,11 @@ import '../style/listitem.css'
 import Moment from "moment"
 import handleApi from '../service/handleApi'
 import { Link } from 'react-router-dom';
-const ListTopics = () => {
+const ListTopics = ({isLoggedIn}) => {
     const [listtopics, setlisttopics] = useState([]);
+    const [getTopic, setGetTopic]=useState(true)
     useEffect(() =>{
-      retrievelisttopics()
-    },[])
-    const retrievelisttopics = () => {
+      const retrievelisttopics = () => {
       handleApi.getListTopic()
         .then(response => {
           setlisttopics(response.data);
@@ -28,6 +27,10 @@ const ListTopics = () => {
           console.log(e);
         });
     };
+      retrievelisttopics()
+      // eslint-disable-next-line 
+    },[handleApi])
+    
   return (
     <Box>
         <Grid container  className='header' >
