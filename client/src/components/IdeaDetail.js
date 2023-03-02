@@ -85,9 +85,8 @@ const IdeaDetail = () => {
     const token= localStorage.getItem("token")
 
     useEffect(() =>{
-        if(config){
+
             retrieveideaDetail()
-        }
         
       },[commented])
     const retrieveideaDetail = () => {
@@ -134,7 +133,7 @@ const IdeaDetail = () => {
     <Box>
         <Grid container justifyContent="center">
             <Grid item xs={11} md={6}>
-            <Paper elevation={4} className="idea" key={"idea.id"}>
+            <Paper elevation={4} className="idea" key={ideaDetail.idea[0].id}>
                     <Grid container>
                         <Grid item className='header-idea' xs={12}>
                             <Stack direction="row" spacing={2} className="avatar-category">

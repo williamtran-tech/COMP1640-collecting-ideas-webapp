@@ -8,7 +8,7 @@ const getIdeas_by_topic= async id => {
     return await axios.get(`/topics/${id}`, config());
 }
 // const getIdeas_by_topic= async() => {
-//     return await axios.get(`/topics/2`, config);
+//     return await axios.get(`/topics/2`, config());
 // }
 const getIdeaDetail_by_idea = async id => {
         return await axios.get(`/ideas/${id}`, config());

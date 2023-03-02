@@ -194,3 +194,6 @@ margin-right: auto;
   border-radius: 20px !important;
   width: 150px !important;
 }
+.create-action{
+  align-items: center;
+}

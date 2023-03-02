@@ -44,7 +44,7 @@ const ListTopics = ({isLoggedIn}) => {
             {
                 listtopics.topics?.map((topic) =>(
                 <Grid item xs={12} md={4} className="topic-item">
-                    <Link to = {"/topics/"+topic.id } style={{ textDecoration: 'none'}}>
+                    <Link to = {`/topics/${topic.id}`} style={{ textDecoration: 'none'}}>
                     <Card className='topic'>
                     <CardHeader title={topic.name}  action={
                         <IconButton>

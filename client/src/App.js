@@ -16,7 +16,6 @@ function App() {
 
   useEffect(() => {
     const decodedToken = checkToken() ;
-    console.log(navigate.toString)
     if (decodedToken) {
       setUserRole(decodedToken.roleId);
       setIsLoggedIn(true);

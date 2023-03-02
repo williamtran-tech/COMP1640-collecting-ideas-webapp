@@ -1,4 +1,4 @@
-import { Box, Grid, Avatar,Tooltip,Typography, Divider, FormControl, InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, IconButton} from '@mui/material'
+import { Box, Grid, Avatar,Tooltip,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, IconButton} from '@mui/material'
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -21,7 +21,8 @@ const ListIdeas = () => {
     const { id } = useParams();
     const [listideas, setlistideas] = useState([]);
     const [open, setOpen] = useState(false);
-
+    const [checkedTerm, setCheckedTerm] = useState(false);
+   
     useEffect(() =>{
       console.log(id)
       retrievelistideas()
@@ -38,7 +39,14 @@ const ListIdeas = () => {
           console.log(e);
         });
     };
-
+    const handleCheckTerm = (event) => {
+            setCheckedTerm(event.target.checked);
+        };
+    const handleSubmitIdea=() =>{
+        if(checkedTerm){
+            setOpen(false)
+        }
+    }
     if (!listideas || !listideas.info) {
         return null;
       }
@@ -92,8 +100,8 @@ const ListIdeas = () => {
                         // onChange={handleChange}
                     >
                         {
-                            listideas.ideas?.map(idea=>(
-                            <MenuItem value={1} >{idea.category}</MenuItem>
+                            listideas.categories?.map(categorie=>(
+                            <MenuItem value={categorie.id} >{categorie.name}</MenuItem>
                             ))
                         }
                     </Select>
@@ -168,8 +176,8 @@ const ListIdeas = () => {
                                         // onChange={handleChange}
                                     >
                                         {
-                                            listideas.categories?.map(category=>(
-                                            <MenuItem value={2} >{category.name}</MenuItem>
+                                            listideas.allCategories?.map(category=>(
+                                            <MenuItem value={category.id} >{category.name}</MenuItem>
                                             ))
                                         }
                                     </Select>
@@ -191,16 +199,23 @@ const ListIdeas = () => {
                                     component="label"
                                     >
                                         <DriveFolderUploadIcon color="primary"/>
-                        
                                     <input
                                         type="file"
                                         hidden
                                     />
                                 </IconButton>
-                                
+
                                 </DialogContent>
                                 <DialogActions className='form-action'>
-                                <Button onClick={handleClose} className="form-action-button">Submit</Button>
+                                    <Stack className='create-action'>
+                                        <FormControlLabel
+                                        value="start"
+                                        control={<Checkbox checked={checkedTerm} onChange={handleCheckTerm} color="primary"/> }
+                                        label="I Agree Terms & Coditions"
+                                        fullWidth
+                                        />
+                                        <Button onClick={handleSubmitIdea} className="form-action-button">Submit</Button>
+                                    </Stack>
                                 </DialogActions>
                             </Dialog>
                         </Grid>
@@ -211,8 +226,8 @@ const ListIdeas = () => {
                 <Grid item xs={11} md={6}>
                  {listideas.ideas?.map(idea =>(
                         <Grid i xs={12} >
-                            <Link to={"/ideas/"+idea.id}  style={{ textDecoration: 'none'}}>
-                                <Paper elevation={4} className="idea" key={idea.id}>
+                            <Link to={"/ideas/"+idea.ideaId}  style={{ textDecoration: 'none'}}>
+                                <Paper elevation={4} className="idea" key={idea.ideaId}>
                                     <Grid container>
                                         <Grid item className='header-idea' xs={12}>
                                             <Stack direction="row" spacing={2} className="avatar-category">
