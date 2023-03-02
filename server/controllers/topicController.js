@@ -48,7 +48,7 @@ exports.list_all_topics = async (req, res) => {
 
 exports.list_all_ideas_by_topic = async (req, res) => {
     try {
-        const id = req.param("topicId");
+        const id = req.params.topicId;
         const topicInfo = await Topic.findAll({
             attributes: ['id', 'name', 'closureDate', 'finalClosureDate', [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']],
             where: {Id: id},
