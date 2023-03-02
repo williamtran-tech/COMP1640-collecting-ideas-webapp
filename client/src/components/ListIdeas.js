@@ -2,7 +2,6 @@ import { Box, Grid, Avatar,Tooltip,Typography, Divider, FormControl, InputLabel,
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import handleApi from '../service/handleApi'
 import { Link } from 'react-router-dom';
@@ -20,17 +19,17 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 const ListIdeas = () => {
     const { id } = useParams();
-    const fileInputRef = useRef(null);
     const [listideas, setlistideas] = useState([]);
     const [open, setOpen] = useState(false);
 
     useEffect(() =>{
+      console.log(id)
       retrievelistideas()
       // eslint-disable-next-line 
     },[])
     
     const retrievelistideas = () => {
-      handleApi.getIdeas_by_topic()
+      handleApi.getIdeas_by_topic(id)
         .then(response => {
           setlistideas(response.data);
           console.log(response.data);
@@ -212,8 +211,8 @@ const ListIdeas = () => {
                 <Grid item xs={11} md={6}>
                  {listideas.ideas?.map(idea =>(
                         <Grid i xs={12} >
-                            <Link to={"/ideas/"+idea.ideaId}  style={{ textDecoration: 'none'}}>
-                                <Paper elevation={4} className="idea" key={idea.ideaId}>
+                            <Link to={"/ideas/"+idea.id}  style={{ textDecoration: 'none'}}>
+                                <Paper elevation={4} className="idea" key={idea.id}>
                                     <Grid container>
                                         <Grid item className='header-idea' xs={12}>
                                             <Stack direction="row" spacing={2} className="avatar-category">
