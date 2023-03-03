@@ -1,6 +1,7 @@
 'use strict';
 const db = require('./../db/models/index.js');
 const models = require('./../db/models');
+const uploadFile = require('../middleware/uploadFile.js');
 const User = models.User;
 const Category = models.Category;
 const Topic = models.Topic;
@@ -134,20 +135,22 @@ exports.list_all_ideas_by_topic = async (req, res) => {
     }
 }
 
+// This function is not done yet
 exports.create_idea = async (req, res) => {
     try {
         const [newIdea, created] = await Idea.findOrCreate({
             where: {
                 "name": req.body.name,
                 "categoryId": req.body.categoryId,
-                "topicId": req.body.topicId,
+                "topicId": req.params.topicId,
                 "userId": req.body.userId,
                 "isAnonymous": req.body.isAnonymous
             },
-            default: {
+            defaults: {
                 "name": req.body.name,
+                "filePath": req.file.path,
                 "categoryId": req.body.categoryId,
-                "topicId": req.body.id,
+                "topicId": req.params.id,
                 "userId": req.body.userId,
                 "isAnonymous": req.body.isAnonymous,
                 "nLike": 0,
@@ -162,7 +165,6 @@ exports.create_idea = async (req, res) => {
             })
         } else {
             // The following code used to set init value for comment and views of the new idea
-
             const setView = await View.create({
                 "ideaId": newIdea.id,
             })
@@ -175,20 +177,6 @@ exports.create_idea = async (req, res) => {
                 idea: newIdea
             });
         }
-
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send("Server Error");
-    }
-}
-
-// This function is not done yet
-exports.upload_file = async (req, res) => {
-    try {
-        res.status(200).json({
-            msg: "Upload in controller"
-        })
     }
     catch (err) {
         console.log(err);
