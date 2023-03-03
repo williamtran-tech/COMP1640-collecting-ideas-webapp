@@ -81,18 +81,24 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                     SUM(reacts.nLike) AS likes, 
                     SUM(reacts.nDislike) AS dislikes,
                     SUM(views.views) AS views,
+                    COALESCE(c.comments, 0) as comments,
                     categories.name AS category,
                     ideas.createdAt, 
                     ideas.updatedAt,
-                    ideas.id as ideaId,
-                    users.id as userId,
-                    categories.id as categoryId
+                ideas.id as ideaId,
+                users.id as userId,
+                categories.id as categoryId
                 FROM reacts
                 INNER JOIN ideas ON reacts.ideaId = ideas.id
                 JOIN categories ON ideas.categoryId = categories.id
                 JOIN topics ON ideas.topicId = topics.id
                 JOIN users ON ideas.userId = users.id
                 JOIN views ON ideas.id = views.ideaId
+                LEFT JOIN (
+                    SELECT ideaId, COUNT(id) as comments
+                    FROM comments
+                    GROUP BY ideaId
+                ) c ON ideas.id = c.ideaId
                 WHERE topics.id = ${id}
                 GROUP BY reacts.ideaId;
                 `);

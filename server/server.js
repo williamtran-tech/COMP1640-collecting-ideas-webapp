@@ -23,10 +23,6 @@ app.use('/users', usersRoutes);
 app.use('/comments', commentsRoutes);
 app.use('/accounts', accountsRoutes);
 
-// app.post('/upload', (req,res) => {
-//     res.status(200).json({msg: "Successful upload"});
-// });
-
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
 });

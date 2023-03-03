@@ -36,8 +36,17 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      
+    },
+    {
+      uniqueKeys: {
+        uniqueView: {
+            fields: ['ideaId', 'userId']
+        }
       }
-    });
+    }
+  );
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Views');
