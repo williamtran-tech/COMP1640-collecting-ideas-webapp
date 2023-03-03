@@ -9,7 +9,7 @@ const topicsRoutes = require('./api/routes/topics');
 const commentsRoutes = require('./api/routes/comments');
 const accountsRoutes = require('./api/routes/accounts');
 
-const PORT = process.env.PORT || '5000';
+const PORT = process.env.PORT || '5050';
 
 app.use(cors());
 app.use(express.json());
