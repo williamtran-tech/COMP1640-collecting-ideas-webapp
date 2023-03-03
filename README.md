@@ -30,7 +30,7 @@ npm install
    > "bcrypt"
    > "jsonwebtoken"
    > "moment-timezone"
-   >  multer": "^1.4.5-lts.1"
+   > multer": "^1.4.5-lts.1"
 
 Sample:
 
@@ -66,6 +66,7 @@ Uploading the project to Github, ref: https://dev.to/birdy/mern-stack-project-se
 5. Unable to resolve dependencies.
 
 ![image](https://user-images.githubusercontent.com/81273649/218241034-3344fd29-bea1-4e02-aae1-2fdf069b86f4.png)
+
 Ref: https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages
 
 ### Steps to using Sequelize
@@ -119,3 +120,12 @@ npx sequelize-cli seed:generate --name demo-user
    ![Example Image](./docs/images/tiemzone1.png)
 
 3. The Date in the function create of Sequelize will return UCT time, which is not the time I want. Therefore, need to create a constance to hold the created thing by the findOne function.
+
+4. The SQL of each local will be different in config (settings). The repo may have a issue of SQL named "ONLY_FULL_GROUP_BY". The picture below illustrates about that problem when using group query
+
+   ![Example Image](./docs/images/groupby_err.png)
+
+   The solution goes like the following picture:
+
+   ![Example Image](./docs/images/groupby_solution.png)  
+   Ref:https://stackoverflow.com/questions/35882816/how-to-disable-only-full-group-by-in-mysql-or-sequelize

@@ -8,8 +8,9 @@ const uploadFile = require('../../middleware/uploadFile.js');
 router.get('/', checkAuth,topicList.list_all_topics);
 router.get('/:topicId', checkAuth, topicList.list_all_ideas_by_topic);
 router.post('/:topicId', checkAuth, topicList.create_idea);
+
 // This function is not done yet
-router.post('/:topicId/upload', checkAuth, uploadFile, topicList.upload_file);
+router.post('/:topicId/upload', checkAuth, uploadFile, topicList.create_idea);
 
 // router.post('/', ideaList.create_an_idea);
 

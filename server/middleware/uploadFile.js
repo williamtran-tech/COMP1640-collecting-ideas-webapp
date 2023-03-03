@@ -18,6 +18,7 @@ module.exports = upload.single('file', (req, res) => {
         if (!req.file){
             console.log("No file upload");
         } else {
+            
             console.log(req.file);
         }
     }
