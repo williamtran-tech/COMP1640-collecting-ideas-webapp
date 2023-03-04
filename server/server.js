@@ -8,8 +8,9 @@ const usersRoutes = require('./api/routes/users');
 const topicsRoutes = require('./api/routes/topics');
 const commentsRoutes = require('./api/routes/comments');
 const accountsRoutes = require('./api/routes/accounts');
+const adminRoutes = require('./api/routes/admin');
 
-const PORT = process.env.PORT || '5050';
+const PORT = process.env.PORT || '5000';
 
 app.use(cors());
 app.use(express.json());
@@ -22,6 +23,7 @@ app.use('/topics', topicsRoutes);
 app.use('/users', usersRoutes);
 app.use('/comments', commentsRoutes);
 app.use('/accounts', accountsRoutes);
+app.use('/admin', adminRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);

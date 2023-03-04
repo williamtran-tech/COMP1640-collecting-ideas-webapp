@@ -135,7 +135,6 @@ exports.list_all_ideas_by_topic = async (req, res) => {
     }
 }
 
-// This function is not done yet
 exports.create_idea = async (req, res) => {
     try {
         const [newIdea, created] = await Idea.findOrCreate({
@@ -184,6 +183,133 @@ exports.create_idea = async (req, res) => {
     }
 }
 
+exports.create_topic = async (req, res) => {
+    try {
+        var date1 = new Date(req.body.closureDate);
+        var date2 = new Date(req.body.finalClosureDate);
+        if (checkInput(req.body.name, req.body.closureDate, req.body.finalClosureDate)){
+            res.status(401).send("Missing inputs");
+            
+        }
+        // Final date must be later than Closure date
+        else if (checkTime(date1, date2)){
+            res.status(401).send("Final closure date must later than Closure date");
+        }
+        else {
+            // Using .replace(/ +/g,' ') for remove all multiple space in string
+            const [newTopic, created] = await Topic.findOrCreate({
+                where: {
+                    "name": req.body.name.trimStart().replace(/ +/g,' '),
+                    "closureDate": req.body.closureDate,
+                    "finalClosureDate": req.body.finalClosureDate
+                },
+                defaults: {
+                    "name": req.body.name.trimStart().replace(/ +/g,' '),
+                    "closureDate": req.body.closureDate,
+                    "finalClosureDate": req.body.finalClosureDate,
+                    "createdAt": new Date(),
+                    "updatedAt": new Date()
+                }
+            });
+    
+            if (!created){
+                console.log("");
+                res.status(406).json({
+                    msg: "Topic exists"
+                })
+            }
+            else {
+                res.status(200).json({
+                    msg: "Successfully create new topic",
+                    topic: newTopic
+                })
+            }
+        
+        }
+    } catch (err) {
+        // Check input existed
+        if (err.parent.code === "ER_DUP_ENTRY") {
+            res.status(500).json({
+                msg: "Topic exists"
+            });
+        }
+        // Check for wrong type input
+        else if (err.parent.code === "ER_WRONG_VALUE"){
+            res.status(500).json({
+                msg: "Wrong value type"
+            });
+        } 
+        else {
+            console.log(err);
+            res.status(500).send("Server Error");
+        }
+    }
+}
+
+exports.update_topic = async (req, res) => {
+    try {
+        const id = req.params.topicId;
+        var date1 = new Date(req.body.closureDate);
+        var date2 = new Date(req.body.finalClosureDate);
+        if (checkInput(req.body.name, req.body.closureDate, req.body.finalClosureDate)){
+            res.status(401).send("Missing inputs");
+        }
+        // This is not check the appropriate date -> Final date must be later than Closure date
+        else if (checkTime(date1, date2)){
+            res.status(401).send("Final closure date must later than Closure date");
+        }
+        else {
+            const updateTopic = await Topic.update({
+                    "name": req.body.name.replace(/ +/g,' '),
+                    "closureDate": req.body.closureDate,
+                    "finalClosureDate": req.body.finalClosureDate,
+                },
+                {
+                    where: {
+                    "id": id
+                    }
+                }
+            );
+            res.status(200).json({
+                "msg": "Update topic successfully"
+            })
+        }
+    } catch (err) {
+        // Check input existed
+        if (err.parent.code === "ER_DUP_ENTRY") {
+            res.status(500).json({
+                msg: "Topic exists"
+            });
+        // Check for wrong type input
+        } else if (err.parent.code === "ER_TRUNCATED_WRONG_VALUE"){
+            res.status(500).json({
+                msg: "Wrong value type"
+            });
+        } 
+        else {
+            console.log(err);
+            res.status(500).send("Server Error");
+        }
+    }
+}
+
+function checkInput(a,b,c) {
+    if (a.trim().length === 0 || b.trim().length === 0|| c.trim().length === 0){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function checkTime(d1, d2) {
+    var diff_date_in_date = d2.getDate() - d1.getDate();
+    var diff_date_in_time = d2.getTime() - d1.getTime();
+    if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 // Paginate ideas in topic detail function - Backup
 // const query = `SELECT  
 // ideas.name AS idea, 
