@@ -16,19 +16,47 @@ import ThumbDown from '@mui/icons-material/ThumbDown';
 import RemoveRedEye from '@mui/icons-material/RemoveRedEye';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import checkToken from '../service/checkToken';
+import jwt_decode from 'jwt-decode';
+
 
 const ListIdeas = () => {
     const { id } = useParams();
     const [listideas, setlistideas] = useState([]);
     const [open, setOpen] = useState(false);
     const [checkedTerm, setCheckedTerm] = useState(false);
-   
+    const initialIdea={
+        name:"",
+        categoryId:"",
+        userId:"",
+        isAnonymous:0,
+        files: [],
+    } 
+    // const [newIdea, setNewIdea]=useState(initialIdea)
+    const [selectedCategory, setSelectedCategory] = useState("");
+    
+    const handleCategoryChange = (event) => {
+        setSelectedCategory(event.target.value);
+    };
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+      };
+    const [inputedIdea, setInputedIdea] = useState("");
+
+    const handleInputChange = (event) => {
+    setInputedIdea(event.target.value);
+    };
+    const token = localStorage.getItem('token');
+    const decodedToken = jwt_decode(token);
     useEffect(() =>{
-      console.log(id)
       retrievelistideas()
       // eslint-disable-next-line 
     },[])
-    
+     const handleCheckTerm = (event) => {
+            setCheckedTerm(event.target.checked);
+        };
     const retrievelistideas = () => {
       handleApi.getIdeas_by_topic(id)
         .then(response => {
@@ -39,12 +67,24 @@ const ListIdeas = () => {
           console.log(e);
         });
     };
-    const handleCheckTerm = (event) => {
-            setCheckedTerm(event.target.checked);
-        };
+    const defaultFile = new File([""], "default.txt", { type: "text/plain" });
     const handleSubmitIdea=() =>{
-        if(checkedTerm){
-            setOpen(false)
+        const formData = new FormData();
+        formData.append("name", inputedIdea);
+        formData.append("categoryId", selectedCategory);
+        formData.append("userId", decodedToken.userId);
+        formData.append("isAnonymous",0);
+        formData.append("file", selectedFile);
+      
+        if (checkedTerm) {
+          handleApi.create_idea(id, formData)
+            .then((response) => {
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          setOpen(false);
         }
     }
     if (!listideas || !listideas.info) {
@@ -171,13 +211,14 @@ const ListIdeas = () => {
                                     <Select
                                         labelId="category"
                                         id="category"
-                                        // value={age}
+                                        value={selectedCategory}
                                         label="category"
+                                        onChange={handleCategoryChange}
                                         // onChange={handleChange}
                                     >
                                         {
                                             listideas.allCategories?.map(category=>(
-                                            <MenuItem value={category.id} >{category.name}</MenuItem>
+                                            <MenuItem value={category.id} key={category.id} >{category.name}</MenuItem>
                                             ))
                                         }
                                     </Select>
@@ -192,6 +233,8 @@ const ListIdeas = () => {
                                     multiline={true}
                                     rows={10}
                                     fontSize={12}
+                                    value={inputedIdea}
+                                    onChange={handleInputChange}
                                 />
                                 
                                 <IconButton
@@ -199,10 +242,11 @@ const ListIdeas = () => {
                                     component="label"
                                     >
                                         <DriveFolderUploadIcon color="primary"/>
-                                    <input
+                                        <input
                                         type="file"
                                         hidden
-                                    />
+                                        onChange={handleFileChange}
+                                        />
                                 </IconButton>
 
                                 </DialogContent>

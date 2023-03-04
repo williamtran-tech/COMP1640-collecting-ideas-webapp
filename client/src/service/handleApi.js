@@ -19,11 +19,16 @@ const post_comment = data => {
 const login = data => {
     return axios.post("/accounts/login", data)
 };
+const create_idea= async (id, data) =>{
+    return axios.post(`/topics/${id}/upload`, data, config());
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
     getIdeaDetail_by_idea,
     post_comment, 
-    login
+    login, 
+    create_idea
+
 };
 export default handleApi
