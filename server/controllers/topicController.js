@@ -255,23 +255,28 @@ exports.update_topic = async (req, res) => {
             res.status(401).send("Missing inputs");
         }
         // This is not check the appropriate date -> Final date must be later than Closure date
-        else if (checkTime(date1, date2)){
+        if (checkTime(date1, date2)){
             res.status(401).send("Final closure date must later than Closure date");
         }
-        else {
-            const updateTopic = await Topic.update({
-                    "name": req.body.name.replace(/ +/g,' '),
-                    "closureDate": req.body.closureDate,
-                    "finalClosureDate": req.body.finalClosureDate,
-                },
-                {
-                    where: {
-                    "id": id
-                    }
+        
+        const updateTopic = await Topic.update({
+                "name": req.body.name.replace(/ +/g,' '),
+                "closureDate": req.body.closureDate,
+                "finalClosureDate": req.body.finalClosureDate,
+            },
+            {
+                where: {
+                "id": id
                 }
-            );
+            }
+        );
+        if (updateTopic[0]){
             res.status(200).json({
                 "msg": "Update topic successfully"
+            })
+        } else {
+            res.status(404).json({
+                "msg": "Not found topic"
             })
         }
     } catch (err) {
@@ -287,6 +292,35 @@ exports.update_topic = async (req, res) => {
             });
         } 
         else {
+            console.log(err);
+            res.status(500).send("Server Error");
+        }
+    }
+}
+
+exports.delete_topic = async (req, res) => {
+    try {
+        const deleteTopic = await Topic.destroy({
+            where: {
+                "id": req.params.topicId
+            }
+        })
+        if (deleteTopic){
+            res.status(200).json({
+                msg: "Successful delete topic " + req.params.topicId
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: "Not Found"
+            })
+        }
+    } catch (err) {
+        if (err.name === "SequelizeForeignKeyConstraintError"){
+            res.status(401).json({
+                msg: "Cannot delete topic exists idea references"
+            })
+        } else {
             console.log(err);
             res.status(500).send("Server Error");
         }

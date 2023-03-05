@@ -7,5 +7,6 @@ const isAdmin = require('../../middleware/isAdmin.js');
 router.get('/topics', isAdmin, topic.list_all_topics);
 router.post('/topics', isAdmin, topic.create_topic);
 router.put('/topics/:topicId', isAdmin, topic.update_topic);
+router.delete('/topics/:topicId', isAdmin, topic.delete_topic);
 
 module.exports = router;
