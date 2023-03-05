@@ -8,7 +8,7 @@ const usersRoutes = require('./api/routes/users');
 const topicsRoutes = require('./api/routes/topics');
 const commentsRoutes = require('./api/routes/comments');
 const accountsRoutes = require('./api/routes/accounts');
-const adminRoutes = require('./api/routes/admin');
+const adminRoutes = require('./api/routes/admin/admin');
 
 const PORT = process.env.PORT || '5000';
 
