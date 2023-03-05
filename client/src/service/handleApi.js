@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from './headerToken';
+import config_form from './header_form';
 
 const getListTopic = async () => {
     return await axios.get("/topics",config());
@@ -20,7 +21,7 @@ const login = data => {
     return axios.post("/accounts/login", data)
 };
 const create_idea= async (id, data) =>{
-    return axios.post(`/topics/${id}/upload`, data, config());
+    return axios.post(`/topics/${id}/upload`, data, config_form());
 }
 const handleApi = {
     getListTopic,

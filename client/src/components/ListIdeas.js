@@ -1,5 +1,5 @@
 import { Box, Grid, Avatar,Tooltip,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, IconButton} from '@mui/material'
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -25,6 +25,8 @@ const ListIdeas = () => {
     const [listideas, setlistideas] = useState([]);
     const [open, setOpen] = useState(false);
     const [checkedTerm, setCheckedTerm] = useState(false);
+    const filePicekerRef = useRef(null)
+
     const initialIdea={
         name:"",
         categoryId:"",
@@ -32,17 +34,29 @@ const ListIdeas = () => {
         isAnonymous:0,
         files: [],
     } 
-    // const [newIdea, setNewIdea]=useState(initialIdea)
+    const [newIdea, setNewIdea]=useState(initialIdea)
     const [selectedCategory, setSelectedCategory] = useState("");
     
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.target.value);
     };
     const [selectedFile, setSelectedFile] = useState(null);
-
+    const [imagePreview, setImagePreview] = useState(null);
+  
     const handleFileChange = (event) => {
+        const reader = new FileReader();
         setSelectedFile(event.target.files[0]);
+        if (selectedFile) {
+            reader.readAsDataURL(selectedFile);
+          }
+        reader.onload = (readerEvent) => {
+       
+            setImagePreview(readerEvent.target.result);
+        };
       };
+     const  clear_file= ()=>{
+        setImagePreview(null);
+     }
     const [inputedIdea, setInputedIdea] = useState("");
 
     const handleInputChange = (event) => {
@@ -53,7 +67,7 @@ const ListIdeas = () => {
     useEffect(() =>{
       retrievelistideas()
       // eslint-disable-next-line 
-    },[])
+    },[checkedTerm])
      const handleCheckTerm = (event) => {
             setCheckedTerm(event.target.checked);
         };
@@ -67,7 +81,8 @@ const ListIdeas = () => {
           console.log(e);
         });
     };
-    const defaultFile = new File([""], "default.txt", { type: "text/plain" });
+    const defaultFile = new File([""], "default.png", { type: "text/plain" });
+
     const handleSubmitIdea=() =>{
         const formData = new FormData();
         formData.append("name", inputedIdea);
@@ -77,14 +92,15 @@ const ListIdeas = () => {
         formData.append("file", selectedFile);
       
         if (checkedTerm) {
-          handleApi.create_idea(id, formData)
+          handleApi.create_idea(id,formData)
             .then((response) => {
               console.log(response.data);
+              setCheckedTerm(false)
             })
             .catch((error) => {
               console.error(error);
             });
-          setOpen(false);
+            setOpen(false);
         }
     }
     if (!listideas || !listideas.info) {
@@ -231,24 +247,35 @@ const ListIdeas = () => {
                                     fullWidth
                                     className='idea-input'
                                     multiline={true}
-                                    rows={10}
+                                    rows={6}
                                     fontSize={12}
                                     value={inputedIdea}
                                     onChange={handleInputChange}
                                 />
-                                
-                                <IconButton
-                                    variant="contained"
-                                    component="label"
-                                    >
-                                        <DriveFolderUploadIcon color="primary"/>
-                                        <input
+                                <div>
+                                   {/* <IconButton onClick={() => filePicekerRef.current.click()}>
+                                        <DriveFolderUploadIcon color="primary"  />
+                                   </IconButton> */}
+                                   <input
+                                        ref={filePicekerRef}
+                                        accept="image/*, video/*"
+                                        onChange={handleFileChange}
                                         type="file"
                                         hidden
-                                        onChange={handleFileChange}
-                                        />
-                                </IconButton>
-
+                                    />
+                                    <button className="btn" onClick={() => filePicekerRef.current.click()}>
+                                        Choose
+                                    </button>
+                                    {(imagePreview) && (
+                                        <button className="btn" onClick={1}>
+                                            x
+                                        </button>
+                                    )}
+                                </div>
+                                       
+                                                            <div className="preview">
+                                    {imagePreview != null && <img src={imagePreview} alt="" />}
+                                </div>
                                 </DialogContent>
                                 <DialogActions className='form-action'>
                                     <Stack className='create-action'>
