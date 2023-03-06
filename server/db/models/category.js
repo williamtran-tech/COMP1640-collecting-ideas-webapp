@@ -9,9 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Category.init({
-    name: DataTypes.STRING,
-    closureDate: DataTypes.DATE,
-    finalClosureDate: DataTypes.DATE
+    name: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Category',

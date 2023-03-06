@@ -8,6 +8,7 @@ const Topic = models.Topic;
 const Idea = models.Idea;
 const View = models.View;
 const React = models.React;
+const validation = require('./../middleware/validateInput');
 
 exports.list_all_topics = async (req, res) => {
     try {
@@ -185,27 +186,27 @@ exports.create_idea = async (req, res) => {
 
 exports.create_topic = async (req, res) => {
     try {
-        if (checkInput(req)){
+        if (validation.checkInput(req)){
             res.status(401).json({
                 msg: "Missing input"
             })
         }
         // Final date must be later than Closure date
-        else if (checkTime(req)){
+        else if (validation.checkTime(req)){
             res.status(401).send("Final closure date must later than Closure date");
         }
         else {
             // Using .replace(/ +/g,' ') for remove all multiple space in string
             const [newTopic, created] = await Topic.findOrCreate({
                 where: {
-                    "name": req.body.name.trimStart().replace(/ +/g,' '),
-                    "description": req.body.description.trimStart().replace(/ +/g,' '),
+                    "name": req.body.name.trim().replace(/ +/g,' '),
+                    "description": req.body.description.trim().replace(/ +/g,' '),
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate
                 },
                 defaults: {
-                    "name": req.body.name.trimStart().replace(/ +/g,' '),
-                    "description": req.body.description.trimStart().replace(/ +/g,' '),
+                    "name": req.body.name.trim().replace(/ +/g,' '),
+                    "description": req.body.description.trim().replace(/ +/g,' '),
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate,
                     "createdAt": new Date(),
@@ -250,15 +251,16 @@ exports.create_topic = async (req, res) => {
 exports.update_topic = async (req, res) => {
     try {
         const id = req.params.topicId;
-        if (checkInput(req)){
+        if (validation.checkInput(req)){
             res.status(401).send("Missing inputs");
         }
         // This is not check the appropriate date -> Final date must be later than Closure date
-        else if (checkTime(req)){
+        else if (validation.checkTime(req)){
             res.status(401).send("Final closure date must later than Closure date");
         } else {
             const updateTopic = await Topic.update({
-                    "name": req.body.name.trimStart().replace(/ +/g,' '),
+                    "name": req.body.name.trim().replace(/ +/g,' '),
+                    "description": req.body.description,
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate,
                 },
@@ -326,25 +328,6 @@ exports.delete_topic = async (req, res) => {
     }
 }
 
-function checkInput(req) {
-    for(var prop in req.body) {
-        if (req.body[prop].trim().length === 0) {
-            return true
-        }
-    }
-    return false
-}
-
-function checkTime(req) {
-    var d1 = new Date(req.body.closureDate);
-    var d2 = new Date(req.body.finalClosureDate);
-    var diff_date_in_date = d2.getDate() - d1.getDate();
-    var diff_date_in_time = d2.getTime() - d1.getTime();
-    if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
-        return true;
-    }
-    return false;
-}
 // Paginate ideas in topic detail function - Backup
 // const query = `SELECT  
 // ideas.name AS idea, 
