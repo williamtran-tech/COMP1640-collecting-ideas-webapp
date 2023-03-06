@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Topic.init({
     name: DataTypes.STRING,
+    description: DataTypes.TEXT,
     closureDate: DataTypes.DATE,
     finalClosureDate: DataTypes.DATE
   }, {

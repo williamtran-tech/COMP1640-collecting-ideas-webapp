@@ -12,6 +12,11 @@ module.exports = (req, res, next) => {
             if (decoded.roleId === 3) {
                 next();
             }
+            else {
+                res.status(401).json({
+                    error: "You not have permission to access"
+                });
+            }
         }
         else {
             console.log(error);

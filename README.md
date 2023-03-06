@@ -129,3 +129,11 @@ npx sequelize-cli seed:generate --name demo-user
 
    ![Example Image](./docs/images/groupby_solution.png)  
    Ref:https://stackoverflow.com/questions/35882816/how-to-disable-only-full-group-by-in-mysql-or-sequelize
+
+5. Error: Can't set headers after they are sent to the client. This is a error that appear when developing a function and that will throw a new response which cause to the principle of Server Responding
+
+   > HTTP uses a cycle that requires one response per request. When the client sends a request (e.g. POST or GET) the server should only send one response back to it.
+
+   ![Example Image](./docs/images/Err_cant-set-headers.png)
+
+   The lesson is ONLY SENT ONE RESPONSE FOR THE CLIENT AFTER A REQUEST

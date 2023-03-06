@@ -51,7 +51,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
     try {
         const id = req.params.topicId;
         const topicInfo = await Topic.findAll({
-            attributes: ['id', 'name', 'closureDate', 'finalClosureDate', [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']],
+            attributes: ['id', 'name', 'description', 'closureDate', 'finalClosureDate', [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']],
             where: {Id: id},
             include: {
                 model: Idea,
@@ -185,14 +185,13 @@ exports.create_idea = async (req, res) => {
 
 exports.create_topic = async (req, res) => {
     try {
-        var date1 = new Date(req.body.closureDate);
-        var date2 = new Date(req.body.finalClosureDate);
-        if (checkInput(req.body.name, req.body.closureDate, req.body.finalClosureDate)){
-            res.status(401).send("Missing inputs");
-            
+        if (checkInput(req)){
+            res.status(401).json({
+                msg: "Missing input"
+            })
         }
         // Final date must be later than Closure date
-        else if (checkTime(date1, date2)){
+        else if (checkTime(req)){
             res.status(401).send("Final closure date must later than Closure date");
         }
         else {
@@ -200,11 +199,13 @@ exports.create_topic = async (req, res) => {
             const [newTopic, created] = await Topic.findOrCreate({
                 where: {
                     "name": req.body.name.trimStart().replace(/ +/g,' '),
+                    "description": req.body.description.trimStart().replace(/ +/g,' '),
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate
                 },
                 defaults: {
                     "name": req.body.name.trimStart().replace(/ +/g,' '),
+                    "description": req.body.description.trimStart().replace(/ +/g,' '),
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate,
                     "createdAt": new Date(),
@@ -238,7 +239,7 @@ exports.create_topic = async (req, res) => {
             res.status(500).json({
                 msg: "Wrong value type"
             });
-        } 
+        }
         else {
             console.log(err);
             res.status(500).send("Server Error");
@@ -249,35 +250,33 @@ exports.create_topic = async (req, res) => {
 exports.update_topic = async (req, res) => {
     try {
         const id = req.params.topicId;
-        var date1 = new Date(req.body.closureDate);
-        var date2 = new Date(req.body.finalClosureDate);
-        if (checkInput(req.body.name, req.body.closureDate, req.body.finalClosureDate)){
+        if (checkInput(req)){
             res.status(401).send("Missing inputs");
         }
         // This is not check the appropriate date -> Final date must be later than Closure date
-        if (checkTime(date1, date2)){
+        else if (checkTime(req)){
             res.status(401).send("Final closure date must later than Closure date");
-        }
-        
-        const updateTopic = await Topic.update({
-                "name": req.body.name.replace(/ +/g,' '),
-                "closureDate": req.body.closureDate,
-                "finalClosureDate": req.body.finalClosureDate,
-            },
-            {
-                where: {
-                "id": id
-                }
-            }
-        );
-        if (updateTopic[0]){
-            res.status(200).json({
-                "msg": "Update topic successfully"
-            })
         } else {
-            res.status(404).json({
-                "msg": "Not found topic"
-            })
+            const updateTopic = await Topic.update({
+                    "name": req.body.name.trimStart().replace(/ +/g,' '),
+                    "closureDate": req.body.closureDate,
+                    "finalClosureDate": req.body.finalClosureDate,
+                },
+                {
+                    where: {
+                    "id": id
+                    }
+                }
+            );
+            if (updateTopic[0]){
+                res.status(200).json({
+                    "msg": "Update topic successfully"
+                })
+            } else {
+                res.status(404).json({
+                    "msg": "Not found topic"
+                })
+            }
         }
     } catch (err) {
         // Check input existed
@@ -327,22 +326,24 @@ exports.delete_topic = async (req, res) => {
     }
 }
 
-function checkInput(a,b,c) {
-    if (a.trim().length === 0 || b.trim().length === 0|| c.trim().length === 0){
-        return true;
-    } else {
-        return false;
+function checkInput(req) {
+    for(var prop in req.body) {
+        if (req.body[prop].trim().length === 0) {
+            return true
+        }
     }
+    return false
 }
 
-function checkTime(d1, d2) {
+function checkTime(req) {
+    var d1 = new Date(req.body.closureDate);
+    var d2 = new Date(req.body.finalClosureDate);
     var diff_date_in_date = d2.getDate() - d1.getDate();
     var diff_date_in_time = d2.getTime() - d1.getTime();
     if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 // Paginate ideas in topic detail function - Backup
 // const query = `SELECT  
