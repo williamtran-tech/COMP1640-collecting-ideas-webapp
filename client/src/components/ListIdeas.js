@@ -1,4 +1,4 @@
-import { Box, Grid, Avatar,Tooltip,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, IconButton} from '@mui/material'
+import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material'
 import React, { useRef } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -10,13 +10,11 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import CreateIcon from '@mui/icons-material/Create';
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import '../style/listitem.css'
 import ThumbDown from '@mui/icons-material/ThumbDown';
 import RemoveRedEye from '@mui/icons-material/RemoveRedEye';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import checkToken from '../service/checkToken';
 import jwt_decode from 'jwt-decode';
 
 
@@ -81,7 +79,6 @@ const ListIdeas = () => {
           console.log(e);
         });
     };
-    const defaultFile = new File([""], "default.png", { type: "text/plain" });
 
     const handleSubmitIdea=() =>{
         const formData = new FormData();
@@ -191,7 +188,7 @@ const ListIdeas = () => {
                             <Typography variant="body" fontWeight="fontWeightBold" color="white"> About this topic</Typography>
                         </Grid>
                         <Grid item xs={12} className='topic-overall'>
-                            <Typography fontSize = {13} align="justify" className='topic-content' > Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</Typography>
+                            <Typography fontSize = {13} align="justify" className='topic-content' >{topic.description}</Typography>
                         </Grid>
                         <Grid item xs={12} className="category">
                         
@@ -255,7 +252,9 @@ const ListIdeas = () => {
                                 <div>
                                    {/* <IconButton onClick={() => filePicekerRef.current.click()}>
                                         <DriveFolderUploadIcon color="primary"  />
-                                   </IconButton> */}
+                                   </IconButton> */}<button className="btn" onClick={() => filePicekerRef.current.click()}>
+                                        Choose
+                                    </button>
                                    <input
                                         ref={filePicekerRef}
                                         accept="image/*, video/*"
@@ -263,9 +262,7 @@ const ListIdeas = () => {
                                         type="file"
                                         hidden
                                     />
-                                    <button className="btn" onClick={() => filePicekerRef.current.click()}>
-                                        Choose
-                                    </button>
+                                    
                                     {(imagePreview) && (
                                         <button className="btn" onClick={1}>
                                             x

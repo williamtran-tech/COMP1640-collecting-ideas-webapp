@@ -1,0 +1,47 @@
+
+.dashboard_window{
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+    background-color: #EFF2F5;
+}
+.dashboard_navigation_container{
+    height: 100vh;
+}
+.dashboard_navigation{
+    height: 96vh;
+    background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(0,0,0,1) 48%, rgba(54,54,54,1) 100%);
+    border-radius: 10px;
+    margin: 2vh;
+    padding:0 6px;
+}
+.admin-logo{
+    padding: 10px 0px;
+    display: flex;
+    justify-content: center;
+}
+.Admin_function_name{
+    color: #EFF2F5;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+}
+.css-1coxqnp-JoySheet-root-JoyTabs-root{
+background-color: transparent !important;
+}
+.css-1bog4bd-JoyTabList-root{
+    background-color: transparent !important;
+}
+.tab{
+   color: #fff !important;
+   
+   box-shadow: none !important;
+   width: 100% !important;
+   font-size: smaller !important;
+}
+.tab:hover{
+    transition: 0.1s;
+    background-color: #096BDE !important;
+ }
+ .css-1bog4bd-JoyTabList-root{
+     width: 100%;
+ }

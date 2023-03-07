@@ -30,6 +30,5 @@ const handleApi = {
     post_comment, 
     login, 
     create_idea
-
 };
 export default handleApi
