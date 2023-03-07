@@ -87,3 +87,75 @@ exports.create_category = async (req, res) => {
         }
     }
 }
+
+exports.update_category = async (req, res) => {
+    try {
+        if (validation.checkInput(req)) {
+            res.status(401).json({
+                msg: "Missing input"
+            })
+        } else {
+            const updateCate = await Category.update({
+                "name": req.body.name.trim().replace(/ +/g,' ')},
+                {where: {
+                    "Id": req.params.categoryId
+                }
+            });
+
+            if (updateCate[0]) {
+                res.status(200).json({
+                    msg: "Successfully update Category"
+                })
+            } else {
+                res.status(404).json({
+                    "msg": "Not found topic"
+                })
+            }
+        } 
+    } catch(err) {
+        // Check input existed
+        if (err.parent.code === "ER_DUP_ENTRY") {
+            res.status(500).json({
+                msg: "Topic exists"
+            });
+        // Check for wrong type input
+        } else if (err.parent.code === "ER_TRUNCATED_WRONG_VALUE"){
+            res.status(500).json({
+                msg: "Wrong value type"
+            });
+        } 
+        else {
+            console.log(err);
+            res.status(500).send("Server Error");
+        }
+    }
+}
+
+exports.delete_category = async (req, res) => {
+    try {
+        const deleteCate = await Category.destroy({
+            where: {
+                "id": req.params.categoryId
+            }
+        })
+        if (deleteCate){
+            res.status(200).json({
+                msg: "Successful delete Category " + req.params.categoryId
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: "Not Found"
+            })
+        }
+    } catch (err){
+        if (err.name === "SequelizeForeignKeyConstraintError"){
+            res.status(401).json({
+                msg: "Cannot delete category exists idea references"
+            })
+        } else {
+            console.log(err);
+            res.status(500).send("Server Error");
+        }
+    }
+}

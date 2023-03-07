@@ -14,7 +14,7 @@ router.delete('/topics/:topicId', isAdmin, topic.delete_topic);
 // CATEGORIES - ADMIN PANEL
 router.get('/categories', isAdmin, category.list_all_categories);
 router.post('/categories', isAdmin, category.create_category);
-// router.put('/categories/:categoryId', isAdmin, topic.update_topic);
-// router.delete('/categories/:category', isAdmin, topic.delete_topic);
+router.put('/categories/:categoryId', isAdmin, category.update_category);
+router.delete('/categories/:categoryId', isAdmin, category.delete_category);
 
 module.exports = router;
