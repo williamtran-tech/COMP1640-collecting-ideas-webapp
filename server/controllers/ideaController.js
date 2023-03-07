@@ -205,11 +205,11 @@ exports.react = async (req, res) => {
             // 1.2. If not -> create a row contains the userId with the ideaId -> Increase nLike by 1.
             const [react, created] = await React.findOrCreate({
                 where: {
-                    ideaId: req.body.ideaId, 
+                    ideaId: req.params.id, 
                     userId: decoded.userId
                 },
                 defaults: {
-                    ideaId: req.body.id,
+                    ideaId: req.params.id,
                     userId: decoded.userId,
                     nLike: db.Sequelize.literal('nLike + 1')
                 }
@@ -221,7 +221,7 @@ exports.react = async (req, res) => {
                         nDislike: db.Sequelize.literal('nDislike - 1'),
                         nLike: db.Sequelize.literal('nLike + 1')},{
                         where: { 
-                            ideaId: req.body.ideaId,
+                            ideaId: req.params.id,
                             userId: decoded.userId
                             }
                         }
@@ -232,7 +232,7 @@ exports.react = async (req, res) => {
                 } else {
                     await React.destroy({
                         where: { 
-                            ideaId: req.body.ideaId,
+                            ideaId: req.params.id,
                             userId: decoded.userId
                             }
                     }
@@ -252,11 +252,11 @@ exports.react = async (req, res) => {
             // Function decrease like in db
             const [react, created] = await React.findOrCreate({
                 where: {
-                    ideaId: req.body.ideaId, 
+                    ideaId: req.params.id, 
                     userId: decoded.userId  
                 },
                 defaults: {
-                    ideaId: req.body.id,
+                    ideaId: req.params.id,
                     userId: decoded.userId,
                     nDislike: db.Sequelize.literal('nDislike + 1')
                 }
@@ -268,7 +268,7 @@ exports.react = async (req, res) => {
                         nDislike: db.Sequelize.literal('nDislike + 1'),
                         nLike: db.Sequelize.literal('nLike - 1')},{
                         where: { 
-                            ideaId: req.body.ideaId,
+                            ideaId: req.params.id,
                             userId: decoded.userId
                             }
                         }
@@ -280,7 +280,7 @@ exports.react = async (req, res) => {
                 }else {
                     await React.destroy({
                         where: { 
-                            ideaId: req.body.ideaId,
+                            ideaId: req.params.id,
                             userId: decoded.userId
                             }
                     }
@@ -294,7 +294,6 @@ exports.react = async (req, res) => {
                     msg: "Successfully dislike the idea"
                 })
             }
-    
         }
     } catch (err) {
         console.log(err);

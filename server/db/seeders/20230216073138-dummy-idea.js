@@ -59,6 +59,70 @@ module.exports = {
           userId: 1,
           createdAt: new Date(),
           updatedAt: new Date()
+        },
+        {
+          name: 'Idea 8',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 9',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 10',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 11',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 12',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 13',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 14',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Idea 15',
+          categoryId: 2,
+          topicId: 2,
+          userId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ], {});
   },
