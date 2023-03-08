@@ -9,6 +9,7 @@ import { useState } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import '../../style/admin.css'
 const AdminNavbar = () => {
   const [value, setValue] = useState(1);
 

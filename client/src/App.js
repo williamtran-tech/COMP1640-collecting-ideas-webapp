@@ -7,11 +7,13 @@ import LoginPage from './pages/LoginPage';
 import User from './pages/User';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import AdminPage from './pages/AdminPage';
+
 import checkToken from './service/checkToken';
 import Layout from './components/AdminComponent/Layout';
-import { TopicManagement } from './components/AdminComponent/TopicManagement';
+
 import CreateNewTopic from './components/AdminComponent/CreateNewTopic';
+
+import TopicTable from './components/AdminComponent/TopicTable';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
@@ -34,7 +36,7 @@ function App() {
   return (
         <Routes>
           {userRole === 2 || userRole === 3 ? (<Route path="/" element={<Layout></Layout>} >
-            <Route path="/"element={<TopicManagement></TopicManagement>} />
+            <Route path="/" element={<TopicTable></TopicTable>} />
             <Route path="/create" element={<CreateNewTopic></CreateNewTopic>} />
           </Route>) : 
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>

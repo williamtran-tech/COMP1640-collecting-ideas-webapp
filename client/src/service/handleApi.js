@@ -22,13 +22,17 @@ const login = data => {
 };
 const create_idea= async (id, data) =>{
     return axios.post(`/topics/${id}/upload`, data, config_form());
-}
+};
+const admin_getListTopic = async () => {
+    return await axios.get("/admin/topics",config());
+  };
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
     getIdeaDetail_by_idea,
     post_comment, 
     login, 
-    create_idea
+    create_idea,
+    admin_getListTopic
 };
 export default handleApi

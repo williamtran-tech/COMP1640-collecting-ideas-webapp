@@ -10,10 +10,9 @@ const Layout = () => {
           <Grid item className="dashboard_navigation_container" xs={4} md={3} lg={2}>
             <AdminNavbar></AdminNavbar>
           </Grid>
-          <Grid item className="dashboard_content">
+          <Grid item className="dashboard_content" xs={8} md={9} lg={10}>
             <Outlet></Outlet>
           </Grid>
-
       </Grid>
     </Box>
   )

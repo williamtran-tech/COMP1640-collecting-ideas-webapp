@@ -29,7 +29,7 @@ const ListTopics = ({isLoggedIn}) => {
     };
       retrievelisttopics()
       // eslint-disable-next-line 
-    },[handleApi])
+    },[])
     
   return (
     <Box>
