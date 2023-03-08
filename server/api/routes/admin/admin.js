@@ -16,5 +16,6 @@ router.get('/categories', isAdmin, category.list_all_categories);
 router.post('/categories', isAdmin, category.create_category);
 router.put('/categories/:categoryId', isAdmin, category.update_category);
 router.delete('/categories/:categoryId', isAdmin, category.delete_category);
+router.delete('/categories/force-delete/:categoryId', isAdmin, category.force_delete);
 
 module.exports = router;

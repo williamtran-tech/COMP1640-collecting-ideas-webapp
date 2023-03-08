@@ -4,6 +4,9 @@ const models = require('./../db/models');
 const validation = require('../middleware/validateInput.js');
 const Category = models.Category;
 const Idea = models.Idea;
+const React = models.React;
+const Comment = models.Comment;
+const View = models.View;
 
 
 exports.list_all_categories = async (req, res) => {
@@ -137,25 +140,112 @@ exports.delete_category = async (req, res) => {
             where: {
                 "id": req.params.categoryId
             }
-        })
+        });
         if (deleteCate){
             res.status(200).json({
                 msg: "Successful delete Category " + req.params.categoryId
-            })
+            });
         }
         else {
             res.status(404).json({
                 msg: "Not Found"
-            })
+            });
         }
     } catch (err){
         if (err.name === "SequelizeForeignKeyConstraintError"){
             res.status(401).json({
                 msg: "Cannot delete category exists idea references"
-            })
+            });
         } else {
             console.log(err);
             res.status(500).send("Server Error");
         }
+    }
+}
+
+// This function not done yet - Remove Comment, React, and Comment first -> Remove Idea -> Remove Category == Topic
+exports.force_delete = async (req, res) => {
+    try {
+        const category = await Category.findOne({
+            where: {
+                "id": req.params.categoryId
+            }
+        });
+        
+        if (!category) {
+            res.status(404).json({
+                err: "Not Found category"
+            })
+        } else {
+            
+            // Getting all ideas of a category
+            const ideas = await Idea.findAll({
+                where: {
+                    "categoryId": req.params.categoryId
+                }
+            });
+            
+            // Remove all references of comments, views, react to ideas list
+            // Remove all selected ideas
+            let result = 1;
+
+            // Use every to break the for loop, if the delete function cannot perform
+            ideas.every(idea => {
+                View.destroy({
+                    where: {
+                        "ideaId": idea.id
+                    }
+                });
+                React.destroy({
+                    where: {
+                        "ideaId": idea.id
+                    }
+                });
+                Comment.destroy({
+                    where: {
+                        "ideaId": idea.id
+                    }
+                });
+                const rmIdea = Idea.destroy({
+                    where: {
+                        "id": idea.id
+                    }
+                });
+
+                if(rmIdea) {
+                    return true;
+                } else {
+                    console.log(idea.id);
+                    result = 0;
+                    return false;
+                }
+            });
+            
+            if (result) {
+                const delCate = await Category.destroy({
+                    where: {
+                        "id": req.params.categoryId
+                    }
+                });
+                if (delCate) {
+                    res.status(200).json({
+                        msg: "Successfully delete Category " + category.name
+                    });
+                } else {
+                    res.status(404).json({
+                        msg: "Not found category"
+                    });
+                }
+            } else {
+                res.status(404).json({
+                    msg: "Delete idea fail"
+                });
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: "Server error"
+        })
     }
 }

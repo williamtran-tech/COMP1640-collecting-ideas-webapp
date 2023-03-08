@@ -33,8 +33,49 @@ module.exports = {
         ideaId: 6,
         createdAt: new Date(),
         updatedAt: new Date()
-      },{
+      },
+      {
         ideaId: 7,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 8,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 9,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 10,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 11,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 12,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 13,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 14,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        ideaId: 15,
         createdAt: new Date(),
         updatedAt: new Date()
       }
