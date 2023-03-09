@@ -8,6 +8,8 @@ const Idea = db.Idea;
 const Comment = db.Comment;
 const React = db.React;
 const View = db.View;
+// Dependence for remove file
+const fs = require('fs');
 
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
@@ -381,11 +383,154 @@ exports.create_idea = async (req, res) => {
         }
     }
     catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        if (err.name === "SequelizeForeignKeyConstraintError") {
+            res.status(401).json({
+                err: "Not acceptable input"
+            })
+        } else {
+            console.log(err);
+            res.status(500).send(err);
+        }
     }
 }
 
+exports.delete_idea = async (req, res) => {
+    try {
+        // Get the idea 
+        const idea = await Idea.findOne({
+            where: {
+                "id": req.params.id
+            }
+        });
+        if (idea) {
+            // Remove file associated with the idea
+            const infoRemove = await this.removeAssociate(idea);
+
+            res.status(infoRemove.code).json({
+                msg: infoRemove.msg,
+                idea: infoRemove.idea
+            })
+        } else {
+            res.status(404).json({
+                err: "Not Found Idea"
+            });
+        }
+        
+    } catch (err){
+        console.log(err);
+        res.status(500).json({
+            err: "Server error"
+        })
+    }
+}
+
+exports.removeAssociate = (idea) =>{
+        if (idea.filePath) {
+            console.log(idea.filePath);
+            fs.unlink(idea.filePath, function(err) {
+                if(err && err.code == 'ENOENT') {
+                    // file doens't exist
+                    console.info("File doesn't exist, won't remove it.");
+                } else if (err) {
+                    // other errors, e.g. maybe we don't have enough permission
+                    console.error("Error occurred while trying to remove file");
+                } else {
+                    console.info(`File removed`);
+                }
+            });
+        }
+        // Remove view, react, comment
+        View.destroy({
+            where: {
+                "ideaId": idea.id
+            }
+        });
+        React.destroy({
+            where: {
+                "ideaId": idea.id
+            }
+        });
+        Comment.destroy({
+            where: {
+                "ideaId": idea.id
+            }
+        });
+        
+        // Delete idea
+        const rmIdea = Idea.destroy({
+            where: {
+                "id": idea.id
+            }
+        });
+
+        if (rmIdea) {
+            return {
+                code: 200,
+                msg: "Successfully delete idea",
+                idea: idea
+            };
+        } else {
+            return {
+                code: 401,
+                msg: "Delete idea failed"
+            };
+        }
+    }
+
+
+ //     if (idea.filePath) {
+
+        //         console.log(idea.filePath);
+        //         fs.unlink(idea.filePath, function(err) {
+        //             if(err && err.code == 'ENOENT') {
+        //                 // file doens't exist
+        //                 console.info("File doesn't exist, won't remove it.");
+        //             } else if (err) {
+        //                 // other errors, e.g. maybe we don't have enough permission
+        //                 console.error("Error occurred while trying to remove file");
+        //             } else {
+        //                 console.info(`File removed`);
+        //             }
+        //         });
+        //     }
+        //     // Remove view, react, comment
+        //     await View.destroy({
+        //         where: {
+        //             "ideaId": idea.id
+        //         }
+        //     });
+        //     await React.destroy({
+        //         where: {
+        //             "ideaId": idea.id
+        //         }
+        //     });
+        //     await Comment.destroy({
+        //         where: {
+        //             "ideaId": idea.id
+        //         }
+        //     });
+            
+        //     // Delete idea
+        //     const rmIdea = await Idea.destroy({
+        //         where: {
+        //             "id": idea.id
+        //         }
+        //     });
+
+        //     if (rmIdea) {
+        //         res.status(200).json({
+        //             msg: "Successfully delete idea",
+        //             idea: idea
+        //         });
+        //     } else {
+        //         res.status(401).json({
+        //             msg: "Delete idea failed"
+        //         })
+        //     }
+        // } else {
+        //     res.status(404).json({
+        //         err: "Not Found Idea"
+        //     })
 // THIS IS FOR BACKUP FUNCTIONS USING NORMAL QUERY
 // var Idea = require('../models/ideas.js');
 // exports.list_all_ideas = function(req, res) {

@@ -2,6 +2,7 @@
 const db = require('./../db/models/index.js');
 const models = require('./../db/models');
 const validation = require('../middleware/validateInput.js');
+const { removeAssociate } = require('./ideaController.js');
 const Category = models.Category;
 const Idea = models.Idea;
 const React = models.React;
@@ -163,7 +164,6 @@ exports.delete_category = async (req, res) => {
     }
 }
 
-// This function not done yet - Remove Comment, React, and Comment first -> Remove Idea -> Remove Category == Topic
 exports.force_delete = async (req, res) => {
     try {
         const category = await Category.findOne({
@@ -191,28 +191,8 @@ exports.force_delete = async (req, res) => {
 
             // Use every to break the for loop, if the delete function cannot perform
             ideas.every(idea => {
-                View.destroy({
-                    where: {
-                        "ideaId": idea.id
-                    }
-                });
-                React.destroy({
-                    where: {
-                        "ideaId": idea.id
-                    }
-                });
-                Comment.destroy({
-                    where: {
-                        "ideaId": idea.id
-                    }
-                });
-                const rmIdea = Idea.destroy({
-                    where: {
-                        "id": idea.id
-                    }
-                });
-
-                if(rmIdea) {
+                const rm = removeAssociate(idea);
+                if(rm.code === 200) {
                     return true;
                 } else {
                     console.log(idea.id);
