@@ -302,39 +302,30 @@ exports.force_delete = async (req, res) => {
                 }
             });
             
-            // Remove all references of comments, views, react to ideas list
             // Remove all selected ideas
-            let result = 1;
-
-            // Use every to break the for loop, if the delete function cannot perform
-            ideas.every(async idea => {
+            for (const idea of ideas) {
+                // Remove all references of comments, views, react to ideas list
                 const rm = await removeAssociate(idea);
-                if(rm.code === 200) {
-                    return true;
-                } else {
+                if (rm.code !== 200) {
                     console.log(idea.id);
-                    result = 0;
-                    return false;
+                    throw new Error("Error deleting idea and associated data");
+                }
+                // Wait for 100 milliseconds before deleting the next idea -> solve problem of promise bc the result cannot immediately happens, need to settimeout
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const delTopic = await Topic.destroy({
+                where: {
+                    "id": req.params.topicId
                 }
             });
-            if (result) {
-                const delTopic = await Topic.destroy({
-                    where: {
-                        "id": req.params.topicId
-                    }
+            if (delTopic) {
+                res.status(200).json({
+                    msg: "Successfully delete Topic " + topic.name
                 });
-                if (delTopic) {
-                    res.status(200).json({
-                        msg: "Successfully delete Topic " + topic.name
-                    });
-                } else {
-                    res.status(404).json({
-                        msg: "Not found topic"
-                    });
-                }
             } else {
                 res.status(404).json({
-                    msg: "Delete Topic fail"
+                    msg: "Not found topic"
                 });
             }
         }

@@ -186,40 +186,30 @@ exports.force_delete = async (req, res) => {
             });
             
             // Remove all references of comments, views, react to ideas list
-            // Remove all selected ideas
-            let result = 1;
-
-            // Use every to break the for loop, if the delete function cannot perform
-            ideas.every(async idea => {
+            for (const idea of ideas) {
+                // Remove all references of comments, views, react to ideas list
                 const rm = await removeAssociate(idea);
-                console.log(rm);
-                if(rm.code === 200) {
-                    return true;
-                } else {
+                if (rm.code !== 200) {
                     console.log(idea.id);
-                    result = 0;
-                    return false;
+                    throw new Error("Error deleting idea and associated data");
+                  }
+
+                // Wait for 100 milliseconds before deleting the next idea
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const delCategory = await Category.destroy({
+                where: {
+                    "id": req.params.categoryId
                 }
             });
-            
-            if (result) {
-                const delCate = await Category.destroy({
-                    where: {
-                        "id": req.params.categoryId
-                    }
+            if (delCategory) {
+                res.status(200).json({
+                    msg: "Successfully delete Topic " + category.name
                 });
-                if (delCate) {
-                    res.status(200).json({
-                        msg: "Successfully delete Category " + category.name
-                    });
-                } else {
-                    res.status(404).json({
-                        msg: "Not found category"
-                    });
-                }
             } else {
                 res.status(404).json({
-                    msg: "Delete Category fail"
+                    msg: "Not found topic"
                 });
             }
         }
