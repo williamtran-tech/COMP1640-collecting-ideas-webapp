@@ -8,6 +8,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { Box, Button, IconButton } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import { useState, useEffect } from 'react';
 import handleApi from '../../service/handleApi';
 const TopicTable = () => {
@@ -41,12 +44,13 @@ const TopicTable = () => {
 
     <Paper sx={{ width: '100%', overflow: 'hidden' }} className="topics_table_list">
       <TableContainer sx={{ maxHeight: '100vh'}}>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="a dense table">
             <TableHead >
               <TableRow className='header_topic_list' sx={{
                 "& th": {
                     color:"white",
-                    backgroundColor: "hsla(212, 92%, 45%, 1)"
+                    backgroundColor: "hsla(212, 92%, 45%, 1)",
+                    textTransform:"uppercase",
                 }
                 }}>
                 <TableCell>
@@ -55,7 +59,7 @@ const TopicTable = () => {
                 <TableCell>
                   Title
                 </TableCell>
-                <TableCell>
+                <TableCell align='center'>
                   Idea quantity
                 </TableCell>
                 <TableCell>
@@ -63,6 +67,9 @@ const TopicTable = () => {
                 </TableCell>
                 <TableCell>
                   Final Closure Date
+                </TableCell>
+                <TableCell align='center'>
+                  Action
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -73,9 +80,19 @@ const TopicTable = () => {
                   <TableRow hover role="checkbox" tabIndex={-1} key={topic.id}>
                     <TableCell>{topic.id}</TableCell>
                     <TableCell>{topic.name}</TableCell>
-                   <TableCell>{topic.idea_quantity}</TableCell>
+                   <TableCell align='center'>{topic.idea_quantity}</TableCell>
                     <TableCell>{topic.closureDate}</TableCell>
                     <TableCell>{topic.finalClosureDate}</TableCell> 
+                    <TableCell align='center'>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button size ='small' className='icon-edit' >
+                          Edit
+                        </Button>
+                        <IconButton size="small" aria-label="delete">
+                          <DeleteIcon fontSize="small" className='icon-delete'/> 
+                        </IconButton>
+                      </Box>
+                    </TableCell> 
                   </TableRow>
                 ))}
             </TableBody>

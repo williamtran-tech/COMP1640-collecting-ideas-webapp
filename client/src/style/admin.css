@@ -50,4 +50,9 @@ background-color: transparent !important;
     padding-top: 2vh;
     padding-right: 2vh;
  }
- 
+ .icon-edit{
+    color: #096BDE !important;
+ }
+ .icon-delete{
+    color: #f27f75;
+}
