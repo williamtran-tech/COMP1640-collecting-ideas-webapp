@@ -424,7 +424,7 @@ exports.delete_idea = async (req, res) => {
     }
 }
 
-exports.removeAssociate = (idea) =>{
+exports.removeAssociate = async(idea) =>{
         if (idea.filePath) {
             console.log(idea.filePath);
             fs.unlink(idea.filePath, function(err) {

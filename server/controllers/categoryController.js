@@ -190,8 +190,9 @@ exports.force_delete = async (req, res) => {
             let result = 1;
 
             // Use every to break the for loop, if the delete function cannot perform
-            ideas.every(idea => {
-                const rm = removeAssociate(idea);
+            ideas.every(async idea => {
+                const rm = await removeAssociate(idea);
+                console.log(rm);
                 if(rm.code === 200) {
                     return true;
                 } else {
@@ -218,7 +219,7 @@ exports.force_delete = async (req, res) => {
                 }
             } else {
                 res.status(404).json({
-                    msg: "Delete idea fail"
+                    msg: "Delete Category fail"
                 });
             }
         }
