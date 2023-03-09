@@ -56,3 +56,26 @@ background-color: transparent !important;
  .icon-delete{
     color: #f27f75;
 }
+.css-6hp17o-MuiList-root-MuiMenu-list{
+display: flex !important;
+
+flex-direction: column !important;
+}
+.header_admin{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+.create_new_btn{
+    background-color: #fff !important;
+    box-shadow: none !important;
+}
+.header_admin{
+    margin-bottom: 2vh;
+    border-radius: 10px !important;
+}
+.topics_table_list{
+    border-radius: 10px !important;
+
+}
