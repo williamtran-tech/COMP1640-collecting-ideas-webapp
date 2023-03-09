@@ -136,54 +136,6 @@ exports.list_all_ideas_by_topic = async (req, res) => {
     }
 }
 
-exports.create_idea = async (req, res) => {
-    try {
-        const [newIdea, created] = await Idea.findOrCreate({
-            where: {
-                "name": req.body.name,
-                "categoryId": req.body.categoryId,
-                "topicId": req.params.topicId,
-                "userId": req.body.userId,
-                "isAnonymous": req.body.isAnonymous
-            },
-            defaults: {
-                "name": req.body.name,
-                "filePath": req.file.path,
-                "categoryId": req.body.categoryId,
-                "topicId": req.params.id,
-                "userId": req.body.userId,
-                "isAnonymous": req.body.isAnonymous,
-                "nLike": 0,
-                "nDislike": 0,
-                "nView": 0
-            }
-        });
-
-        if (!created) {
-            res.status(406).json({
-                msg:"Your idea is exists"
-            })
-        } else {
-            // The following code used to set init value for comment and views of the new idea
-            const setView = await View.create({
-                "ideaId": newIdea.id,
-            })
-            const setReact = await React.create({
-                "ideaId": newIdea.id,
-            })
-
-            res.status(200).json({
-                msg: "Successfully create new idea",
-                idea: newIdea
-            });
-        }
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
-}
-
 exports.create_topic = async (req, res) => {
     try {
         if (validation.checkInput(req)){
