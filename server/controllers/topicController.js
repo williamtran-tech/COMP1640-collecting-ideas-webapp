@@ -10,6 +10,8 @@ const View = models.View;
 const React = models.React;
 const validation = require('./../middleware/validateInput');
 
+const { removeAssociate } = require('./ideaController.js');
+
 exports.list_all_topics = async (req, res) => {
     try {
         // Adding attributes: [] inside the include -> the data will not including the joined table data
@@ -280,6 +282,70 @@ exports.delete_topic = async (req, res) => {
     }
 }
 
+exports.force_delete = async (req, res) => {
+    try {
+        const topic = await Topic.findOne({
+            where: {
+                "id": req.params.topicId
+            }
+        });
+        
+        if (!topic) {
+            res.status(404).json({
+                err: "Not Found topic"
+            })
+        } else {
+            // Getting all ideas of a topic
+            const ideas = await Idea.findAll({
+                where: {
+                    "topicId": req.params.topicId
+                }
+            });
+            
+            // Remove all references of comments, views, react to ideas list
+            // Remove all selected ideas
+            let result = 1;
+
+            // Use every to break the for loop, if the delete function cannot perform
+            ideas.every(async idea => {
+                const rm = await removeAssociate(idea);
+                if(rm.code === 200) {
+                    return true;
+                } else {
+                    console.log(idea.id);
+                    result = 0;
+                    return false;
+                }
+            });
+            if (result) {
+                const delTopic = await Topic.destroy({
+                    where: {
+                        "id": req.params.topicId
+                    }
+                });
+                if (delTopic) {
+                    res.status(200).json({
+                        msg: "Successfully delete Topic " + topic.name
+                    });
+                } else {
+                    res.status(404).json({
+                        msg: "Not found topic"
+                    });
+                }
+            } else {
+                res.status(404).json({
+                    msg: "Delete Topic fail"
+                });
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: "Server error"
+        })
+    }
+}
+
 // Paginate ideas in topic detail function - Backup
 // const query = `SELECT  
 // ideas.name AS idea, 
@@ -288,7 +354,7 @@ exports.delete_topic = async (req, res) => {
 // SUM(reacts.nLike) AS likes, 
 // SUM(reacts.nDislike) AS dislikes,
 // SUM(views.views) AS views,
-// categories.name AS category,
+// categories.name AS topic,
 // ideas.createdAt, 
 // ideas.updatedAt,
 // ideas.id as ideaId,

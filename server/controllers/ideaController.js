@@ -394,6 +394,81 @@ exports.create_idea = async (req, res) => {
     }
 }
 
+exports.update_idea = async (req, res) => {
+    try {
+        // Get the idea
+        const oldIdea = await Idea.findOne({
+            where: {
+                "id": req.params.id
+            }
+        });
+        // Check file exist or not
+        if (!req.file) {
+            this.checkFilePath(oldIdea);
+            const updated = await oldIdea.update({
+                "name": req.body.name,
+                "categoryId": req.body.categoryId,
+                "isAnonymous": req.body.isAnonymous,
+                "filePath": null
+            });
+            if (updated) {
+                res.status(200).json({
+                    msg: "Successfully update idea"
+                })
+            } else {
+                res.status(401).json({
+                    err: "Update idea failed"
+                })
+            }
+        } else {
+            this.checkFilePath(oldIdea);
+            const updated = await oldIdea.update({
+                "name": req.body.name,
+                "categoryId": req.body.categoryId,
+                "isAnonymous": req.body.isAnonymous,
+                "filePath": req.file.path,
+                "userId": req.body.userId
+            });
+            if (updated) {
+                res.status(200).json({
+                    msg: "Successfully update idea"
+                })
+            } else {
+                res.status(401).json({
+                    err: "Update idea failed"
+                })
+            }
+        }
+    } catch (err) {
+        if (err.name === "SequelizeForeignKeyConstraintError"){
+            res.status(401).json({
+                err: "Invalid input"
+            })
+        } else {
+            console.log(err);
+            res.status(500).json({
+                err: "Server error"
+            })
+        }
+    }
+}
+
+exports.checkFilePath = (idea) => {
+    if (idea.filePath) {
+        fs.unlink(idea.filePath, function(err) {
+            if(err && err.code == 'ENOENT') {
+                // file doens't exist
+                console.info("File doesn't exist, won't remove it.");
+            } else if (err) {
+                // other errors, e.g. maybe we don't have enough permission
+                console.error("Error occurred while trying to remove file");
+            } else {
+                console.info(`File removed`);
+            }
+        });
+    }
+}
+
 exports.delete_idea = async (req, res) => {
     try {
         // Get the idea 
@@ -425,20 +500,7 @@ exports.delete_idea = async (req, res) => {
 }
 
 exports.removeAssociate = async(idea) =>{
-        if (idea.filePath) {
-            console.log(idea.filePath);
-            fs.unlink(idea.filePath, function(err) {
-                if(err && err.code == 'ENOENT') {
-                    // file doens't exist
-                    console.info("File doesn't exist, won't remove it.");
-                } else if (err) {
-                    // other errors, e.g. maybe we don't have enough permission
-                    console.error("Error occurred while trying to remove file");
-                } else {
-                    console.info(`File removed`);
-                }
-            });
-        }
+        this.checkFilePath(idea);
         // Remove view, react, comment
         View.destroy({
             where: {
@@ -475,7 +537,7 @@ exports.removeAssociate = async(idea) =>{
                 msg: "Delete idea failed"
             };
         }
-    }
+}
 
 
  //     if (idea.filePath) {
