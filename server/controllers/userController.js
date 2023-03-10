@@ -7,6 +7,7 @@ const Role = db.Role;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
+const validate = require('./../middleware/validateInput.js');
 
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
 exports.create_user = async (req, res) => {
@@ -15,7 +16,6 @@ exports.create_user = async (req, res) => {
       where: {'email': req.body.email}
     });
     if (fUser) {
-      console.log(fUser);
       res.status(409).json({
         message: "Email exists"
       })
@@ -43,6 +43,95 @@ exports.create_user = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+exports.update_user = async (req, res) => {
+  try {
+    // Get the idea
+    const oldUser = await User.findOne({
+      where: {
+          "id": req.params.id
+      }
+    });
+    // Check file exist or not
+    if (!req.file) {
+      validate.checkFilePath(oldUser);
+      const updated = await oldUser.update({
+          "fullName": req.body.name?req.body.name:oldUser.fullName,
+          "profileImage": null,
+          "password": req.body.password?req.body.password:oldUser.password,
+          "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
+          "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
+      });
+      if (updated) {
+          res.status(200).json({
+              msg: "Successfully update User"
+          })
+      } else {
+          res.status(401).json({
+              err: "Update User failed"
+          })
+      }
+    } else {
+      validate.checkFilePath(oldUser);
+      const updated = await oldUser.update({
+        "fullName": req.body.name?req.body.name:oldUser.fullName,
+        "profileImage": req.file.path,
+        "password": req.body.password?req.body.password:oldUser.password,
+        "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
+        "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
+      });
+      if (updated) {
+          res.status(200).json({
+              msg: "Successfully update user"
+          })
+      } else {
+          res.status(401).json({
+              err: "Update user failed"
+          })
+      }
+    }
+    } catch (err) {
+    if (err.name === "SequelizeForeignKeyConstraintError"){
+      res.status(401).json({
+          err: "Invalid input"
+      })
+    } else {
+      console.log(err);
+      res.status(500).json({
+          err: "Server error"
+      })
+    }
+    }
+}
+
+exports.delete_user = async (req, res) => {
+  try {
+    const deleteUser = await User.destroy({
+        where: {
+            "id": req.params.id
+        }
+    });
+    if (deleteUser){
+        res.status(200).json({
+            msg: "Successful delete User " + req.params.id
+        });
+    }
+    else {
+        res.status(404).json({
+            msg: "Not Found"
+        });
+    }
+} catch (err){
+    if (err.name === "SequelizeForeignKeyConstraintError"){
+        res.status(401).json({
+            msg: "Cannot delete user exists idea references"
+        });
+    } else {
+        console.log(err);
+        res.status(500).send("Server Error");
+    }
+}
+}
 
 exports.login_user = async (req, res) => {
   try {

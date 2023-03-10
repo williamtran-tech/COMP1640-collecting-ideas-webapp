@@ -1,3 +1,6 @@
+// Dependence for remove file
+const fs = require('fs');
+
 exports.checkInput = (req) => {
     for(var prop in req.body) {
         if (req.body[prop].trim().length === 0) {
@@ -16,4 +19,32 @@ exports.checkTime = (req) => {
         return true;
     }
     return false;
+}
+
+exports.checkFilePath = (object) => {
+    if (object.filePath) {
+        fs.unlink(object.filePath, function(err) {
+            if(err && err.code == 'ENOENT') {
+                // file doens't exist
+                console.info("File doesn't exist, won't remove it.");
+            } else if (err) {
+                // other errors, e.g. maybe we don't have enough permission
+                console.error("Error occurred while trying to remove file");
+            } else {
+                console.info(`File removed`);
+            }
+        });
+    } else if (object.profileImage) {
+        fs.unlink(object.profileImage, function(err) {
+            if(err && err.code == 'ENOENT') {
+                // file doens't exist
+                console.info("File doesn't exist, won't remove it.");
+            } else if (err) {
+                // other errors, e.g. maybe we don't have enough permission
+                console.error("Error occurred while trying to remove file");
+            } else {
+                console.info(`File removed`);
+            }
+        });
+    }
 }

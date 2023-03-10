@@ -8,8 +8,8 @@ const Idea = db.Idea;
 const Comment = db.Comment;
 const React = db.React;
 const View = db.View;
-// Dependence for remove file
-const fs = require('fs');
+const validate = require('./../middleware/validateInput.js');
+
 
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
@@ -404,12 +404,13 @@ exports.update_idea = async (req, res) => {
         });
         // Check file exist or not
         if (!req.file) {
-            this.checkFilePath(oldIdea);
+            validate.checkFilePath(oldIdea);
             const updated = await oldIdea.update({
                 "name": req.body.name,
                 "categoryId": req.body.categoryId,
                 "isAnonymous": req.body.isAnonymous,
-                "filePath": null
+                "filePath": null,
+                "userId": req.body.userId
             });
             if (updated) {
                 res.status(200).json({
@@ -421,7 +422,7 @@ exports.update_idea = async (req, res) => {
                 })
             }
         } else {
-            this.checkFilePath(oldIdea);
+            validate.checkFilePath(oldIdea);
             const updated = await oldIdea.update({
                 "name": req.body.name,
                 "categoryId": req.body.categoryId,
@@ -453,21 +454,21 @@ exports.update_idea = async (req, res) => {
     }
 }
 
-exports.checkFilePath = (idea) => {
-    if (idea.filePath) {
-        fs.unlink(idea.filePath, function(err) {
-            if(err && err.code == 'ENOENT') {
-                // file doens't exist
-                console.info("File doesn't exist, won't remove it.");
-            } else if (err) {
-                // other errors, e.g. maybe we don't have enough permission
-                console.error("Error occurred while trying to remove file");
-            } else {
-                console.info(`File removed`);
-            }
-        });
-    }
-}
+// exports.checkFilePath = (idea) => {
+//     if (idea.filePath) {
+//         fs.unlink(idea.filePath, function(err) {
+//             if(err && err.code == 'ENOENT') {
+//                 // file doens't exist
+//                 console.info("File doesn't exist, won't remove it.");
+//             } else if (err) {
+//                 // other errors, e.g. maybe we don't have enough permission
+//                 console.error("Error occurred while trying to remove file");
+//             } else {
+//                 console.info(`File removed`);
+//             }
+//         });
+//     }
+// }
 
 exports.delete_idea = async (req, res) => {
     try {
@@ -500,7 +501,7 @@ exports.delete_idea = async (req, res) => {
 }
 
 exports.removeAssociate = async(idea) =>{
-        this.checkFilePath(idea);
+        validate.checkFilePath(idea);
         // Remove view, react, comment
         View.destroy({
             where: {
