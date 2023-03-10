@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const idea = require('../../../controllers/ideaController.js');
 const topic = require('../../../controllers/topicController.js');
-const category = require('../../../controllers/categoryController.js'); 
+const category = require('../../../controllers/categoryController.js');
+const department = require('../../../controllers/departmentController.js'); 
 const isAdmin = require('../../../middleware/isAdmin.js');
 const uploadFile = require('../../../middleware/uploadFile.js');
 
@@ -26,4 +27,12 @@ router.get('/ideas/:id', isAdmin, idea.get_idea_by_id);
 router.put('/ideas/:id', isAdmin, uploadFile, idea.update_idea);
 router.delete('/ideas/:id', isAdmin, idea.delete_idea);
 
+// DEPARTMENT - ADMIN PANEL
+router.get('/departments', isAdmin, department.list_all_departments);
+router.get('/departments/:id', isAdmin, department.list_all_users_by_department);
+router.post('/departments', isAdmin, department.create_department);
+router.put('/departments/:id', isAdmin, department.update_department);
+router.delete('/departments/:id', isAdmin, department.delete_department);
+
+//
 module.exports = router;
