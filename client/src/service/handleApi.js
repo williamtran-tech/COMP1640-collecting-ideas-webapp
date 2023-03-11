@@ -17,6 +17,9 @@ const getIdeaDetail_by_idea = async id => {
 const post_comment = data => {
     return axios.post("/comments", data, config());
   };
+const react = async (id, data) => {
+  return await axios.put(`/ideas/${id}`,data, config());
+};
 const login = data => {
     return axios.post("/accounts/login", data)
 };
@@ -26,7 +29,7 @@ const create_idea= async (id, data) =>{
 const admin_getListTopic = async () => {
     return await axios.get("/admin/topics",config());
   };
-  const admin_create_idea= async (data) =>{
+ const admin_create_idea= async (data) =>{
     return axios.post(`/admin/topics`, data, config());
 };
 const handleApi = {
@@ -34,6 +37,7 @@ const handleApi = {
     getIdeas_by_topic,
     getIdeaDetail_by_idea,
     post_comment, 
+    react,
     login, 
     create_idea,
     admin_getListTopic,

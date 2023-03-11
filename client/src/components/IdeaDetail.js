@@ -17,6 +17,10 @@ import config from '../service/headerToken';
 const IdeaDetail = () => {
     const { id } = useParams();
     const [ideaDetail, setideaDetail] = useState([]);
+    const [contentReact, setContentReact] = useState({
+            ideaId : id,
+            isLike: null
+    })
     const initialideaReact = {
         user_Id: localStorage.getItem("userid"),
         idea_Id: id,
@@ -47,6 +51,9 @@ const IdeaDetail = () => {
                 dislikeStatus: "",
             })
         }
+        setreacted(true)
+        contentReact.isLike= 0
+        post_comment(id, contentReact)
     }
     const handleDislike =()=>{
         if(!react.isDislike || react.isLike){
@@ -69,6 +76,9 @@ const IdeaDetail = () => {
                 dislikeStatus: "",
             })
         }
+        setreacted(true)
+        contentReact.isLike= 1
+        post_comment(id, contentReact)
     }
 
     const initialideaState = {
@@ -78,27 +88,33 @@ const IdeaDetail = () => {
       };
       const [comment, setcomment] = useState(initialideaState);
       const [commented, setcommented] = useState(false);
-      
-    useEffect(()=>{
-        retrieveideaDetail()
-    },[])
+      const [reacted, setreacted] = useState(false);
     const token= localStorage.getItem("token")
 
     useEffect(() =>{
-
             retrieveideaDetail()
-        
-      },[commented])
+      },[commented, reacted])
     const retrieveideaDetail = () => {
          handleApi.getIdeaDetail_by_idea(id)
           .then(response => {
             setideaDetail(response.data);
-            console.log(response.data);
+            // console.log(response.data);
           })
           .catch(e => {
             console.log(e);
           });
       };
+      const post_comment = (id, data) => {
+          console.log(data)
+        handleApi.react(id, data)
+         .then(response => {
+            setreacted(false)
+        //    console.log(response.data);
+         })
+         .catch(e => {
+           console.log(e);
+         });
+     };
       if (!ideaDetail || !ideaDetail.idea || !ideaDetail.views || !ideaDetail.react) {
         return null;
       }

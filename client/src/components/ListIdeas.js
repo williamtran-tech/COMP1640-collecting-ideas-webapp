@@ -258,7 +258,8 @@ const ListIdeas = () => {
                                 <div>
                                    {/* <IconButton onClick={() => filePicekerRef.current.click()}>
                                         <DriveFolderUploadIcon color="primary"  />
-                                   </IconButton> */}<button className="btn" onClick={() => filePicekerRef.current.click()}>
+                                   </IconButton> */}
+                                   <button className="btn" onClick={() => filePicekerRef.current.click()}>
                                         Choose
                                     </button>
                                    <input
