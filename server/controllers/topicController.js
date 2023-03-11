@@ -9,6 +9,7 @@ const Idea = models.Idea;
 const View = models.View;
 const React = models.React;
 const validation = require('./../middleware/validateInput');
+const sendEmail = require('./../middleware/sendMail.js');
 
 const { removeAssociate } = require('./ideaController.js');
 
@@ -175,6 +176,7 @@ exports.create_topic = async (req, res) => {
                 })
             }
             else {
+                sendEmail("ducbalor@gmail.com", "Quá chất", "Có cái gì đâu mà xem bro, test nodemailer thui");
                 res.status(200).json({
                     msg: "Successfully create new topic",
                     topic: newTopic

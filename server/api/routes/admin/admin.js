@@ -40,4 +40,6 @@ router.get('/users', isAdmin, user.list_all_users);
 router.post('/users', isAdmin, user.create_user);
 router.put('/users/:id', isAdmin, uploadFile, user.update_user);
 router.delete('/users/:id', isAdmin, user.delete_user);
+
+
 module.exports = router;
