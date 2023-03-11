@@ -16,7 +16,7 @@ import RemoveRedEye from '@mui/icons-material/RemoveRedEye';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import jwt_decode from 'jwt-decode';
-
+import { Pagination, PaginationItem } from '@mui/material';
 
 const ListIdeas = () => {
     const { id } = useParams();
@@ -24,7 +24,13 @@ const ListIdeas = () => {
     const [open, setOpen] = useState(false);
     const [checkedTerm, setCheckedTerm] = useState(false);
     const filePicekerRef = useRef(null)
-
+    const [page, setPage] = useState(1);
+    const ideasPerPage = 4; // change this to adjust the number of ideas to display per page
+    const start = (page - 1) * ideasPerPage;
+    const end = start + ideasPerPage;
+    const handlePageChange = (event, value) => {
+      setPage(value);
+    };
     const initialIdea={
         name:"",
         categoryId:"",
@@ -292,8 +298,8 @@ const ListIdeas = () => {
                 ))}
                 </Grid>
                 <Grid item xs={11} md={6}>
-                 {listideas.ideas?.map(idea =>(
-                        <Grid i xs={12} >
+                 {listideas.ideas?.slice(start, end).map(idea =>(
+                        <Grid  xs={12} >
                             <Link to={"/ideas/"+idea.ideaId}  style={{ textDecoration: 'none'}}>
                                 <Paper elevation={4} className="idea" key={idea.ideaId}>
                                     <Grid container>
@@ -331,6 +337,21 @@ const ListIdeas = () => {
                             </Link>
                         </Grid>
                         ))}
+                <Grid xs={12} className='pagination'>
+                    <Pagination
+                        count={Math.ceil(listideas.ideas.length / ideasPerPage)}
+                        page={page}
+                        onChange={handlePageChange}
+                        sx={{ "& .Mui-selected": { backgroundColor: "#6D9886" } }}
+                        renderItem={(item) => (
+                            <PaginationItem
+                            component="button"
+                            onClick={() => handlePageChange(null, item.page)}
+                            {...item}
+                            />
+                        )}
+                    />
+                    </Grid>
                 </Grid>
                 
                 <Grid item xs={11} md={3}>
