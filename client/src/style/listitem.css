@@ -202,3 +202,11 @@ margin-right: auto;
   justify-content: center;
   margin-top: 15px;
 }
+.Mui-selected {
+  background-color: #6D9886 !important;
+}
+
+.Mui-selected:hover,
+.Mui-selected:active {
+  background-color: #8FA8A1 !important;
+}

@@ -25,7 +25,7 @@ const ListIdeas = () => {
     const [checkedTerm, setCheckedTerm] = useState(false);
     const filePicekerRef = useRef(null)
     const [page, setPage] = useState(1);
-    const ideasPerPage = 4; // change this to adjust the number of ideas to display per page
+    const ideasPerPage = 5; // change this to adjust the number of ideas to display per page
     const start = (page - 1) * ideasPerPage;
     const end = start + ideasPerPage;
     const handlePageChange = (event, value) => {
@@ -48,15 +48,16 @@ const ListIdeas = () => {
     const [imagePreview, setImagePreview] = useState(null);
   
     const handleFileChange = (event) => {
+        event.preventDefault();
         const reader = new FileReader();
-        setSelectedFile(event.target.files[0]);
-        if (selectedFile) {
-            reader.readAsDataURL(selectedFile);
-          }
-        reader.onload = (readerEvent) => {
-       
-            setImagePreview(readerEvent.target.result);
+        const file = event.target.files[0];
+    
+        reader.onloadend = () => {
+            setSelectedFile(file);
+            setImagePreview(reader.result);
         };
+    
+        reader.readAsDataURL(file);
       };
      const  clear_file= ()=>{
         setImagePreview(null);
@@ -271,7 +272,7 @@ const ListIdeas = () => {
                                     />
                                     
                                     {(imagePreview) && (
-                                        <button className="btn" onClick={1}>
+                                        <button className="btn" onClick={clear_file}>
                                             x
                                         </button>
                                     )}
@@ -343,7 +344,6 @@ const ListIdeas = () => {
                         count={Math.ceil(listideas.ideas.length / ideasPerPage)}
                         page={page}
                         onChange={handlePageChange}
-                        sx={{ "& .Mui-selected": { backgroundColor: "#6D9886" } }}
                         renderItem={(item) => (
                             <PaginationItem
                             component="button"

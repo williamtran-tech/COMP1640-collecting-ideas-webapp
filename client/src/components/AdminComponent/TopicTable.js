@@ -13,10 +13,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useState, useEffect } from 'react';
 import handleApi from '../../service/handleApi';
+import TopicInfo from './TopicInfo';
+import TableIdeas from './TableIdeas';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [open, setOpen] = useState(false);
     const [submited, setSubmited] = useState(false);
     const [formTopic, setFormTopic] = useState({
@@ -77,7 +79,20 @@ const TopicTable = () => {
         setSubmited(false)
         setOpen(false);
     };
-  
+    const [activeRowId, setActiveRowId] = useState(null);
+    const  [topicDeatail, setTopicDetail]= useState([])
+    const handleRowClick = (id_row) => () => {     
+      setActiveRowId(id_row);
+      handleApi.admin_getIdeas_by_topic(id_row).then(
+        response=>{
+          console.log(response.data);
+          setTopicDetail(response.data)
+        }
+      )
+    };
+    // if(!topicDeatail || !topicDeatail.infor[0]){
+    //   return null
+    // }
   return (
     <div> 
        <Paper className='header_admin'>
@@ -165,61 +180,61 @@ const TopicTable = () => {
           </Dialog>
        </Paper>
        <Paper sx={{ width: '100%', overflow: 'hidden' }} className="topics_table_list">
-          <TableContainer sx={{ maxHeight: '100vh'}}>
-              <Table stickyHeader aria-label="a dense table">
-                <TableHead >
-                  <TableRow className='header_topic_list' sx={{
-                    "& th": {
-                        color:"white",
-                        backgroundColor: "hsla(212, 92%, 45%, 1)",
-                        textTransform:"uppercase",
-                    }
-                    }}>
-                    <TableCell>
-                      ID
-                    </TableCell>
-                    <TableCell>
-                      Title
-                    </TableCell>
-                    <TableCell align='center'>
-                      Idea quantity
-                    </TableCell>
-                    <TableCell>
-                      Closure Date
-                    </TableCell>
-                    <TableCell>
-                      Final Closure Date
-                    </TableCell>
-                    <TableCell align='center'>
-                      Action
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {listTopic && listTopic.topics &&listTopic.topics
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(topic => (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={topic.id}>
-                        <TableCell>{topic.id}</TableCell>
-                        <TableCell>{topic.name}</TableCell>
-                      <TableCell align='center'>{topic.idea_quantity}</TableCell>
-                        <TableCell>{topic.closureDate}</TableCell>
-                        <TableCell>{topic.finalClosureDate}</TableCell> 
-                        <TableCell align='center'>
-                          <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Button size ='small' className='icon-edit' >
-                              Edit
-                            </Button>
-                            <IconButton size="small" aria-label="delete">
-                              <DeleteIcon fontSize="small" className='icon-delete'/> 
-                            </IconButton>
-                          </Box>
-                        </TableCell> 
+         <Grid container>
+              <Grid item xs={6} >
+                <TableContainer sx={{ maxHeight: '100vh'}} className='table_topic'>
+                  <Table stickyHeader  size="small" aria-label="a dense table">
+                    <TableHead >
+                      <TableRow className='header_topic_list table-row' sx={{
+                        "& th": {
+                            color:"white",
+                            backgroundColor: "hsla(212, 92%, 45%, 1)",
+                            textTransform:"uppercase",
+                        },
+                        // fontSize: '0.8rem', // reduce font size
+                        // padding: '0px', // remove padding
+                        }}
+                        >
+                        {/* <TableCell>ID</TableCell> */}
+                        <TableCell> Title</TableCell>
+                        <TableCell align='center'>Idea quantity</TableCell>
+                        <TableCell>Closure Date</TableCell>
+                        <TableCell>Final Closure Date</TableCell>
+                        <TableCell align='center'>Action</TableCell>
                       </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-          </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {listTopic && listTopic.topics &&listTopic.topics
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(topic => (
+                          <TableRow hover role="checkbox" tabIndex={-1} key={topic.id} 
+                          onClick={handleRowClick(topic.id)}
+                          style={{
+                            background: activeRowId === topic.id ? '#EEE' : 'transparent',
+                            fontWeight: activeRowId === topic.id ? 'bold' : 'normal',
+                          }}
+                          className="table-row"
+                         >
+                            {/* <TableCell>{topic.id}</TableCell> */}
+                            <TableCell>{topic.name}</TableCell>
+                            <TableCell align='center'>{topic.idea_quantity}</TableCell>
+                            <TableCell>{topic.closureDate}</TableCell>
+                            <TableCell>{topic.finalClosureDate}</TableCell> 
+                            <TableCell align='center'>
+                              <Box sx={{ display: 'flex', gap: 1 }}>
+                                <Button size ='small' className='icon-edit' >
+                                  Edit
+                                </Button>
+                                <IconButton size="small" aria-label="delete">
+                                  <DeleteIcon fontSize="small" className='icon-delete'/> 
+                                </IconButton>
+                              </Box>
+                            </TableCell> 
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+              </TableContainer>
           {listTopic && listTopic.topics && (
             <TablePagination
             rowsPerPageOptions={[1,5,10]}
@@ -231,6 +246,21 @@ const TopicTable = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
           )}
+              </Grid>
+              <Grid item xs={6} className='topic_preview' >
+                { topicDeatail && topicDeatail.info&& (
+                   <TopicInfo inf={topicDeatail.info}></TopicInfo>
+                )
+                }
+                 
+              </Grid>
+              <Grid item xs={12} >
+              { topicDeatail && topicDeatail.ideas&& (
+                  <TableIdeas ideas={topicDeatail.ideas}></TableIdeas>
+                )
+                }
+          </Grid>
+         </Grid>
         </Paper>
     </div>
   )

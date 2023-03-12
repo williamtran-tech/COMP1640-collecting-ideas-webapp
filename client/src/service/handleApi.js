@@ -32,6 +32,9 @@ const admin_getListTopic = async () => {
  const admin_create_idea= async (data) =>{
     return axios.post(`/admin/topics`, data, config());
 };
+const admin_getIdeas_by_topic= async id => {
+  return await axios.get(`/admin/topics/${id}`, config());
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -41,6 +44,7 @@ const handleApi = {
     login, 
     create_idea,
     admin_getListTopic,
-    admin_create_idea
+    admin_create_idea,
+    admin_getIdeas_by_topic
 };
 export default handleApi

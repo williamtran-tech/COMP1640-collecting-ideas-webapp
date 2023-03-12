@@ -47,8 +47,11 @@ background-color: transparent !important;
  }
 
  .dashboard_content{
+     
     padding-top: 2vh;
     padding-right: 2vh;
+    height: 100vh;
+    overflow: scroll;
  }
  .icon-edit{
     color: #096BDE !important;
@@ -76,6 +79,42 @@ flex-direction: column !important;
     border-radius: 10px !important;
 }
 .topics_table_list{
-    border-radius: 10px !important;
+    /* border-radius: 10px !important; */
+   background-color: transparent !important;
+   box-shadow: none !important ;
+}
+.table_topic{
+    background-color: #fff !important;
+    border-radius: 15px !important;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
 }
+.table-row td{
+    font-size: 12px ;
+    padding: 3px;
+ }
+ .table-row th{
+    font-size: 12px ;
+    padding: 3px;
+ }
+ .ideas_list th{
+     background-color: #096BDE !important;
+     color: #fff !important
+ }
+ .item_dashboard{
+     padding: 15px !important;
+    border-radius: 30px !important;
+ }
+ .form_update{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    padding: 5px;
+    background-color: #fff !important;
+    border-radius: 15px;
+ }
+ .topic_preview{
+    padding-left: 15px;
+ }
+ .table_idea_container{
+     border-radius: 15px !important;
+     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+ }
