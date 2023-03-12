@@ -176,7 +176,7 @@ exports.create_topic = async (req, res) => {
                 })
             }
             else {
-                sendEmail("ducbalor@gmail.com", "Quá chất", "Có cái gì đâu mà xem bro, test nodemailer thui");
+                sendEmail("ducbalor@gmail.com", "New Topic was created", "Có cái gì đâu mà xem bro, test nodemailer thui");
                 res.status(200).json({
                     msg: "Successfully create new topic",
                     topic: newTopic
