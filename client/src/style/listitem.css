@@ -197,3 +197,8 @@ margin-right: auto;
 .create-action{
   align-items: center;
 }
+.pagination{
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
