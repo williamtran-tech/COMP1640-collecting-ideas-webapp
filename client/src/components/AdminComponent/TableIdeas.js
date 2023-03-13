@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box ,TableContainer, Table, TableCell, TableBody, Button,IconButton, TablePagination, TableHead, TableRow} from '@material-ui/core'
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useState } from 'react';
-const TableIdeas = ({ideas}) => {
+const TableIdeas = ({ideas, setDisable}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleChangeRowsPerPage = (event) => {
@@ -16,8 +16,10 @@ const TableIdeas = ({ideas}) => {
       const [activeRowId, setActiveRowId] = useState(null);
       const handleRowClick = (id_row) => () => {     
         setActiveRowId(id_row);
-       
       };
+    //  useEffect(()=>{
+    //     setDisable(!false)
+    //  }, [ideas])
   return (
     <>
     <TableContainer sx={{ maxHeight: '100vh'}} className='table_idea_container'>

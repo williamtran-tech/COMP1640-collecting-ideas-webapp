@@ -21,6 +21,7 @@ const TopicTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [open, setOpen] = useState(false);
     const [submited, setSubmited] = useState(false);
+    const [disable, setDisable]= useState(true)
     const [formTopic, setFormTopic] = useState({
       name: '',
       description: '',
@@ -85,11 +86,17 @@ const TopicTable = () => {
       setActiveRowId(id_row);
       handleApi.admin_getIdeas_by_topic(id_row).then(
         response=>{
-          console.log(response.data);
           setTopicDetail(response.data)
         }
       )
+      if(disable===false){
+        setDisable(true)
+      }
     };
+    const disableEditClick =()=>{
+      setDisable(!disable)
+      console.log(disable)
+    }
     // if(!topicDeatail || !topicDeatail.infor[0]){
     //   return null
     // }
@@ -222,7 +229,7 @@ const TopicTable = () => {
                             <TableCell>{topic.finalClosureDate}</TableCell> 
                             <TableCell align='center'>
                               <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Button size ='small' className='icon-edit' >
+                                <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
                                 <IconButton size="small" aria-label="delete">
@@ -249,14 +256,13 @@ const TopicTable = () => {
               </Grid>
               <Grid item xs={6} className='topic_preview' >
                 { topicDeatail && topicDeatail.info&& (
-                   <TopicInfo inf={topicDeatail.info}></TopicInfo>
+                   <TopicInfo inf={topicDeatail.info} isDisable={disable} ></TopicInfo>
                 )
                 }
-                 
               </Grid>
               <Grid item xs={12} >
               { topicDeatail && topicDeatail.ideas&& (
-                  <TableIdeas ideas={topicDeatail.ideas}></TableIdeas>
+                  <TableIdeas ideas={topicDeatail.ideas} ></TableIdeas>
                 )
                 }
           </Grid>
