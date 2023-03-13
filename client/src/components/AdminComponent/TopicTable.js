@@ -21,6 +21,7 @@ const TopicTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [open, setOpen] = useState(false);
     const [submited, setSubmited] = useState(false);
+    const [updated, setUpdated] = useState(false);
     const [disable, setDisable]= useState(true)
     const [formTopic, setFormTopic] = useState({
       name: '',
@@ -30,6 +31,7 @@ const TopicTable = () => {
     });
 
     useEffect(() =>{
+        setUpdated(false)
         const retrievelisttopics = () => {
         handleApi.admin_getListTopic()
           .then(response => {
@@ -42,7 +44,7 @@ const TopicTable = () => {
       };
         retrievelisttopics()
         // eslint-disable-next-line 
-      },[submited])
+      },[submited, updated])
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
@@ -256,7 +258,7 @@ const TopicTable = () => {
               </Grid>
               <Grid item xs={6} className='topic_preview' >
                 { topicDeatail && topicDeatail.info&& (
-                   <TopicInfo inf={topicDeatail.info} isDisable={disable} ></TopicInfo>
+                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setUpdated={setUpdated}></TopicInfo>
                 )
                 }
               </Grid>

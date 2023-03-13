@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { TextField,Button } from '@material-ui/core'
 import { useState } from 'react'
-const TopicInfo = ({inf, isDisable, setDisable}) => {
+import handleApi from '../../service/handleApi';
+const TopicInfo = ({inf, isDisable, setUpdated}) => {
     const [values, setValues] = useState({});
     const [formDisabled, setFormDisabled] = useState(true);
     useEffect(()=>{
@@ -19,6 +20,18 @@ const TopicInfo = ({inf, isDisable, setDisable}) => {
         setValues({ ...values, [name]: value });
         setFormDisabled(false)
       };
+      const handleUpdateTopic = ()=>{
+          const data={
+            name: values.name,
+            description: values.description,
+            closureDate: values.closureDate,
+            finalClosureDate: values.finalClosureDate
+          }
+          handleApi.admin_update_topic(inf[0].id,data ).then( reponse=>{
+              console.log(reponse.data)
+              setUpdated(true)
+          })
+      }
   return (
     <div>
        <form className='form_update'>
@@ -80,7 +93,7 @@ const TopicInfo = ({inf, isDisable, setDisable}) => {
             inputProps={{ style: { fontSize: '12px' } }}
             disabled={isDisable}
         />
-        <Button variant="contained" color="primary"  disabled={formDisabled} style={{ float: 'right', marginTop: 16,  marginBottom: 16 }}>
+        <Button variant="contained" color="primary"  onClick={handleUpdateTopic} disabled={formDisabled} style={{ float: 'right', marginTop: 16,  marginBottom: 16 }}>
           Update
         </Button>
         </form>
