@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
 const validate = require('./../middleware/validateInput.js');
+const sendEmail = require('./../middleware/sendMail.js');
+const htmlMail = require('../mail-template/mail-templates.js');
 
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
 exports.create_user = async (req, res) => {
@@ -33,6 +35,8 @@ exports.create_user = async (req, res) => {
       };
       // If the hash successfully created then the following code will be executed
       User.create(user).then(createdUser => {
+        
+        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user));
         res.status(200).json({
           message: "Successfully added user"
         });
@@ -58,6 +62,7 @@ exports.update_user = async (req, res) => {
       const updated = await oldUser.update({
           "fullName": req.body.name?req.body.name:oldUser.fullName,
           "profileImage": null,
+          "email": req.body.email?req.body.email:oldUser.email,
           "password": req.body.password?req.body.password:oldUser.password,
           "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
           "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
@@ -76,6 +81,7 @@ exports.update_user = async (req, res) => {
       const updated = await oldUser.update({
         "fullName": req.body.name?req.body.name:oldUser.fullName,
         "profileImage": req.file.path,
+        "email": req.body.email?req.body.email:oldUser.email,
         "password": req.body.password?req.body.password:oldUser.password,
         "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
         "roleId": req.body.roleId?req.body.roleId:oldUser.roleId

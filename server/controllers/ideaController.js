@@ -9,6 +9,8 @@ const Comment = db.Comment;
 const React = db.React;
 const View = db.View;
 const validate = require('./../middleware/validateInput.js');
+const sendEmail = require('./../middleware/sendMail.js');
+const htmlMail = require('../mail-template/mail-templates.js');
 
 
 const jwt = require('jsonwebtoken');
@@ -371,14 +373,38 @@ exports.create_idea = async (req, res) => {
             // The following code used to set init value for comment and views of the new idea
             const setView = await View.create({
                 "ideaId": createdIdea.id,
-            })
+            });
             const setReact = await React.create({
                 "ideaId": createdIdea.id,
-            })
+            });
 
+            // Getting all manager-mails to send notify - Role id 2 is manager
+            const managers = await User.findAll({
+                where: {
+                    roleId: 2
+                },
+                attributes: ['email']
+            })
+            const managerMails = managers.map(manager => manager.email);
+
+            const ideaCreator = await User.findOne({where: {
+                "id": createdIdea.userId
+                }},
+                {attributes: ['email', 'fullName']
+            });
+
+            const topicInfo = await Topic.findOne({where: {
+                "id": createdIdea.topicId
+            }}, 
+            {attributes: ["name"]});
+
+            // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+            sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.registration(createdIdea));
+            
             res.status(200).json({
                 msg: "Successfully create new idea",
-                idea: createdIdea
+                idea: createdIdea,
+                managerMails: managerMails
             });
         }
     }

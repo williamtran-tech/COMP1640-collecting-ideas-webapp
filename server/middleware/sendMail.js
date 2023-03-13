@@ -17,7 +17,7 @@ module.exports = function sendEmail(to, subject, message) {
         from: crypt.decrypt(encMail),
         to,
         subject,
-        html: message,
+        html: message, 
     };
     transport.sendMail(mailOptions, (error) => {
         if (error) {
