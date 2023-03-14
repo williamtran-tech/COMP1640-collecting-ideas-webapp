@@ -37,6 +37,10 @@ module.exports = {
         unique: true,
         isEmail: true
       },
+      isVerified: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true
+      },
       password: {
         type: Sequelize.STRING,
         allowNull: false

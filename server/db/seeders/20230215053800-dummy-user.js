@@ -9,6 +9,7 @@ module.exports = {
         roleId: 1,
         departmentId: 1,
         email: "test1@gmail.com",
+        isVerified: true,
         password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -18,6 +19,7 @@ module.exports = {
         roleId: 2,
         departmentId: 1,
         email: "test2@gmail.com",
+        isVerified: true,
         password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -27,6 +29,7 @@ module.exports = {
         roleId: 3,
         departmentId: 1,
         email: "test3@gmail.com",
+        isVerified: true,
         password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -36,6 +39,7 @@ module.exports = {
         roleId: 1,
         departmentId: 2,
         email: "test4@gmail.com",
+        isVerified: true,
         password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()
@@ -45,6 +49,7 @@ module.exports = {
         roleId: 1,
         departmentId: 3,
         email: "test5@gmail.com",
+        isVerified: true,
         password: "123123",
         createdAt: new Date(),
         updatedAt: new Date()

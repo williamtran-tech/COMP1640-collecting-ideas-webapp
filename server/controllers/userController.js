@@ -33,10 +33,20 @@ exports.create_user = async (req, res) => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
+
+      // Generate a token for verifying email of user
+      const token = jwt.sign({
+        email: user.email,
+        name: user.fullName,
+      }, config.env.JWT_key, 
+      {
+        expiresIn: "3d"
+      });
+      
       // If the hash successfully created then the following code will be executed
       User.create(user).then(createdUser => {
         
-        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user));
+        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, token));
         res.status(200).json({
           message: "Successfully added user"
         });
@@ -47,6 +57,33 @@ exports.create_user = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+exports.verify = async (req, res) => {
+  try {
+    const token = req.params.token;
+    jwt.verify(token, config.env.JWT_key);
+    const user = await User.update({
+        isVerified: true
+      },
+      {where: {
+        email: req.body.email
+      }
+    });
+
+    if (user[0] === 0) {
+      throw new Error("User not found");
+    }
+    
+    res.status(200).json({
+      msg: "Verify successfully"
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server Error"
+    });
+  }
+}
 
 exports.update_user = async (req, res) => {
   try {
