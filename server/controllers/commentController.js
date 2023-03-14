@@ -7,6 +7,8 @@ const Category = db.Category;
 const Topic = db.Topic;
 const Idea = db.Idea;
 const Comment = db.Comment;
+const sendEmail = require('./../middleware/sendMail.js');
+const htmlMail = require('../mail-template/mail-templates.js');
 
 exports.create_comment = async (req, res) => {
     try {
@@ -28,9 +30,28 @@ exports.create_comment = async (req, res) => {
             }
         })
 
+        const idea = await Idea.findOne({
+            where: {
+                "id": req.body.ideaId
+            },
+            include: {
+                model: User, 
+                as: "User",
+                attributes: ['email', 'fullName']
+            }
+        });
+
+        const creator = await User.findOne({
+            where: {
+                "id": req.body.userId
+            }
+        })
+
+        sendEmail(idea.User.email, '[GRE IDEAS] Your awesome idea has new comment', htmlMail.commentIdea(idea, commentLatest, creator));
         res.status(200).json({
             message: "Successfully created comment",
-            comment: commentLatest
+            comment: commentLatest,
+            idea: idea
         });
     } catch (error){
         console.log(error);
