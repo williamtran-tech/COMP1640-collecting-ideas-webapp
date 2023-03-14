@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -15,7 +14,7 @@ import { useState, useEffect } from 'react';
 import handleApi from '../../service/handleApi';
 import TopicInfo from './TopicInfo';
 import TableIdeas from './TableIdeas';
-import admin_hanldeDeleteTopic from '../../service/admin_hanldeDeleteTopic';
+import DeleteTopicModal from './DeleteTopicModal';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [page, setPage] = useState(0);
@@ -24,6 +23,7 @@ const TopicTable = () => {
     const [submited, setSubmited] = useState(false);
     const [updated, setUpdated] = useState(false);
     const [disable, setDisable]= useState(true)
+    const [deleted, setDeleted]= useState(false)
     const [formTopic, setFormTopic] = useState({
       name: '',
       description: '',
@@ -45,7 +45,7 @@ const TopicTable = () => {
       };
         retrievelisttopics()
         // eslint-disable-next-line 
-      },[submited, updated])
+      },[submited, updated, deleted])
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
@@ -100,9 +100,17 @@ const TopicTable = () => {
       setDisable(!disable)
       console.log(disable)
     }
-    // if(!topicDeatail || !topicDeatail.infor[0]){
-    //   return null
-    // }
+    const [confirm, setConfirm]= useState(false)
+    const confirmDelete= (id, quantity) =>{
+      if(quantity>0){
+        setConfirm(true)
+      }else{
+        handleApi.admin_force_delete_topic(id).then(response =>{
+          console.log(response.data)
+          setDeleted(!deleted)
+        })
+      }
+    }
   return (
     <div> 
        <Paper className='header_admin'>
@@ -235,9 +243,12 @@ const TopicTable = () => {
                                 <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
-                                <IconButton size="small" aria-label="delete" onClick={()=>{admin_hanldeDeleteTopic(topic.id, topic.idea_quantity)}}>
+                                <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
+                                {
+                                  confirm && <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id}></DeleteTopicModal>
+                                }
                               </Box>
                             </TableCell> 
                           </TableRow>
