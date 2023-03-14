@@ -8,7 +8,7 @@ router.post('/register', user.create_user);
 // router.post('/login', verifyEmail, user.login_user);
 router.post('/login', user.login_user);
 
-router.post('/verify/:token', verifyEmail, user.verify);
+router.get('/verify', user.verify);
 // router.post('/verify', verifyEmail, user.verify);
 
 module.exports = router;

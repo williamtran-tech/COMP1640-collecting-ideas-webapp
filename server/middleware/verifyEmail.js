@@ -13,22 +13,16 @@ module.exports = async (req, res, next) => {
             const token = req.params.token;
 
             decoded = jwt.verify(token, config.env.JWT_key);
-            req.userData = decoded;
-            if (decoded.email !== user.email && decoded.name !== user.fullName) {
-                res.status(401).json({
-                    err: "Hacker lỏd à"
-                })
-            }
-            // console.log(decoded);
             next();
         }
         else if (!req.params.token){
             if(user.isVerified) {
                 next();
             } else {
-                res.status(401).json({
-                    err: "Error Access System"
-                })
+                // res.status(401).json({
+                //     err: "Error Access System"
+                // });
+                res.redirect('/login');
             }
         }
         else {

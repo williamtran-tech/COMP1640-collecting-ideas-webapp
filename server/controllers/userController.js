@@ -60,23 +60,29 @@ exports.create_user = async (req, res) => {
 
 exports.verify = async (req, res) => {
   try {
-    const token = req.params.token;
-    jwt.verify(token, config.env.JWT_key);
-    const user = await User.update({
-        isVerified: true
-      },
-      {where: {
-        email: req.body.email
+    const token = req.query.token;
+    console.log(token);
+    const decoded = jwt.verify(token, config.env.JWT_key);
+
+    const user = await User.findOne({
+      where: {
+        "email": decoded.email
       }
     });
-
-    if (user[0] === 0) {
+    
+    if (!user) {
       throw new Error("User not found");
     }
-    
-    res.status(200).json({
-      msg: "Verify successfully"
-    })
+    if (!user.isVerified) {
+      user.update({isVerified: true});
+      res.status(200).json({
+        msg: "Verify successfully"
+      })
+    } else {
+      res.status(401).json({
+        msg: "Verify already"
+      })
+    }    
   } catch (err) {
     console.log(err);
     res.status(500).json({

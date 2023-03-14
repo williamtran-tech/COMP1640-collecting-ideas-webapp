@@ -26,11 +26,7 @@ exports.registration = (user, token) => {
         <p>To complete your Account set-up just click on the link below to confirm the email address associated with your Gre Ideas ID. The link will expire in 3 days, so please confirm as soon as possible.</p>
         
         <p>Username: ${user.email}</p>
-        <button style="background-color: rgb(0, 197, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:5000/accounts/verify/${token}" style="text-decoration: none; color: #ffffff;"> Verify here</button>
-        <form method="POST" action="http://localhost:5000/accounts/verify">
-            <input type="hidden" name="token" value="${token}">
-            <button type="submit" style="background-color: rgb(0, 197, 0); border-radius: 10px; padding: 10px">Verify</button>
-        </form>
+        <button style="background-color: rgb(0, 197, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:5000/accounts/verify?token=${token}" style="text-decoration: none; color: #ffffff;"> Verify here</button>
 
         </body>
     </html>
