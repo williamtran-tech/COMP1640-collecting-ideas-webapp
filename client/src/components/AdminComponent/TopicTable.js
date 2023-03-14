@@ -15,6 +15,7 @@ import { useState, useEffect } from 'react';
 import handleApi from '../../service/handleApi';
 import TopicInfo from './TopicInfo';
 import TableIdeas from './TableIdeas';
+import admin_hanldeDeleteTopic from '../../service/admin_hanldeDeleteTopic';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [page, setPage] = useState(0);
@@ -198,17 +199,17 @@ const TopicTable = () => {
                         "& th": {
                             color:"white",
                             backgroundColor: "hsla(212, 92%, 45%, 1)",
-                            textTransform:"uppercase",
+                            textTransform:'capitalize',
                         },
                         // fontSize: '0.8rem', // reduce font size
                         // padding: '0px', // remove padding
                         }}
                         >
                         {/* <TableCell>ID</TableCell> */}
-                        <TableCell> Title</TableCell>
+                        <TableCell align='right'> Title</TableCell>
                         <TableCell align='center'>Idea quantity</TableCell>
-                        <TableCell>Closure Date</TableCell>
-                        <TableCell>Final Closure Date</TableCell>
+                        <TableCell align='center'>Closure Date</TableCell>
+                        <TableCell align='center'>Final Date</TableCell>
                         <TableCell align='center'>Action</TableCell>
                       </TableRow>
                     </TableHead>
@@ -225,16 +226,16 @@ const TopicTable = () => {
                           className="table-row"
                          >
                             {/* <TableCell>{topic.id}</TableCell> */}
-                            <TableCell>{topic.name}</TableCell>
+                            <TableCell align='right'>{topic.name}</TableCell>
                             <TableCell align='center'>{topic.idea_quantity}</TableCell>
-                            <TableCell>{topic.closureDate}</TableCell>
-                            <TableCell>{topic.finalClosureDate}</TableCell> 
+                            <TableCell align='center'>{topic.closureDate}</TableCell>
+                            <TableCell align='center'>{topic.finalClosureDate}</TableCell> 
                             <TableCell align='center'>
                               <Box sx={{ display: 'flex', gap: 1 }}>
                                 <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
-                                <IconButton size="small" aria-label="delete">
+                                <IconButton size="small" aria-label="delete" onClick={()=>{admin_hanldeDeleteTopic(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
                               </Box>
@@ -258,7 +259,7 @@ const TopicTable = () => {
               </Grid>
               <Grid item xs={6} className='topic_preview' >
                 { topicDeatail && topicDeatail.info&& (
-                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setUpdated={setUpdated}></TopicInfo>
+                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setDisable={setDisable} setUpdated={setUpdated}></TopicInfo>
                 )
                 }
               </Grid>

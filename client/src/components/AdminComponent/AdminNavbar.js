@@ -1,4 +1,4 @@
-import {Grid,Box, Divider, Typography } from "@material-ui/core";
+import {Grid,Box, Divider, Typography, IconButton } from "@material-ui/core";
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
@@ -9,11 +9,18 @@ import { useState } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from "react-router-dom";
 import '../../style/admin.css'
 const AdminNavbar = () => {
   const [value, setValue] = useState(1);
-
-  const handleChange = (event, newValue) => {
+const navigate = useNavigate();
+  
+  const logout= () => {
+    navigate("/login")
+    localStorage.clear()
+}
+const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   return (
@@ -45,7 +52,14 @@ const AdminNavbar = () => {
            </div>
            <Divider></Divider>
         </Grid>
-
+        <Grid className='admin-logo' xs={12}>
+          <IconButton onClick={logout}>
+              {/* <Badge badgeContent={4} color="error">
+                  <MailIcon className='icon'/>
+              </Badge> */}
+              <LogoutIcon className='icon'></LogoutIcon>
+          </IconButton>
+        </Grid>
     </Box>
   )
 }

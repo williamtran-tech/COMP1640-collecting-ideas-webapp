@@ -38,6 +38,12 @@ const admin_getIdeas_by_topic= async id => {
 const admin_update_topic= async (id,data) => {
   return await axios.put(`/admin/topics/${id}`,data, config());
 }
+const admin_delete_topic= async(id)=>{
+  return await axios.delete(`/admin/topics/${id}`, config());
+}
+const admin_force_delete_topic= async(id)=>{
+  return await axios.delete(`/admin/topics/force-delete/${id}`, config());
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -49,6 +55,8 @@ const handleApi = {
     admin_getListTopic,
     admin_create_idea,
     admin_getIdeas_by_topic,
-    admin_update_topic
+    admin_update_topic,
+    admin_delete_topic,
+    admin_force_delete_topic
 };
 export default handleApi

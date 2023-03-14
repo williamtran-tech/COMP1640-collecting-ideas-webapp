@@ -98,7 +98,7 @@ const IdeaDetail = () => {
          handleApi.getIdeaDetail_by_idea(id)
           .then(response => {
             setideaDetail(response.data);
-            // console.log(response.data);
+            console.log(response.data);
           })
           .catch(e => {
             console.log(e);

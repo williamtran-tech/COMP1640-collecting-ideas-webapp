@@ -35,10 +35,12 @@ function App() {
 // <AdminPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
   return (
         <Routes>
-          {userRole === 2 || userRole === 3 ? (<Route path="/" element={<Layout></Layout>} >
-            <Route path="/" element={<TopicTable></TopicTable>} />
-            <Route path="/create" element={<CreateNewTopic></CreateNewTopic>} />
-          </Route>) : 
+          {userRole === 2 || userRole === 3 ? (
+          <><Route path="/" element={<Layout></Layout>}>
+          <Route path="/" element={<TopicTable></TopicTable>} />
+          <Route path="/create" element={<CreateNewTopic></CreateNewTopic>} />
+          </Route><Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route></>
+          ) : 
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
           <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>
           <Route path="/user" element={<User isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></User>}></Route>

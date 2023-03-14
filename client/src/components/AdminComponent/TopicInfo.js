@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
-import { TextField,Button } from '@material-ui/core'
+import { TextField,Button, Snackbar } from '@material-ui/core'
+import { Alert, Slide } from '@mui/material';
 import { useState } from 'react'
 import handleApi from '../../service/handleApi';
-const TopicInfo = ({inf, isDisable, setUpdated}) => {
+const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
     const [values, setValues] = useState({});
-    const [formDisabled, setFormDisabled] = useState(true);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [open, setOpen]= useState(false)
     useEffect(()=>{
         setValues({
             name: inf[0].name,
@@ -13,12 +15,12 @@ const TopicInfo = ({inf, isDisable, setUpdated}) => {
             finalClosureDate: inf[0].finalClosureDate,
             ideaQuantity: inf[0].idea_quantity
         })
-        setFormDisabled(true)
+        setButtonDisabled(true)
     },[inf])
       const handleChange = (event) => {
         const { name, value } = event.target;
         setValues({ ...values, [name]: value });
-        setFormDisabled(false)
+        setButtonDisabled(false)
       };
       const handleUpdateTopic = ()=>{
           const data={
@@ -30,8 +32,14 @@ const TopicInfo = ({inf, isDisable, setUpdated}) => {
           handleApi.admin_update_topic(inf[0].id,data ).then( reponse=>{
               console.log(reponse.data)
               setUpdated(true)
+              setOpen(true)
+              setDisable(true)
+              setButtonDisabled(true)
           })
       }
+      const handleClose = () => {
+        setOpen(false)
+      };
   return (
     <div>
        <form className='form_update'>
@@ -93,11 +101,22 @@ const TopicInfo = ({inf, isDisable, setUpdated}) => {
             inputProps={{ style: { fontSize: '12px' } }}
             disabled={isDisable}
         />
-        <Button variant="contained" color="primary"  onClick={handleUpdateTopic} disabled={formDisabled} style={{ float: 'right', marginTop: 16,  marginBottom: 16 }}>
+        <Button variant="contained" color="primary"  onClick={handleUpdateTopic} disabled={buttonDisabled} style={{ float: 'right', marginTop: 16,  marginBottom: 16 }}>
           Update
         </Button>
         </form>
-        
+        <Snackbar
+         open={open}
+         onClose={handleClose}
+         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+         autoHideDuration={2000}
+         TransitionComponent={Slide}
+        TransitionProps={{ direction: 'left' }}
+         >
+            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                This is a success message!
+            </Alert>
+        </Snackbar>
     </div>
   )
 }
