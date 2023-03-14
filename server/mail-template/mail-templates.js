@@ -10,8 +10,30 @@ exports.ideaSubmit = (idea, creator, topic) => {
     return html;
 };
 
-exports.commentIdea = (creator, content) => {
+exports.commentIdea = (idea, comment, creator) => {
+    const html = `
+    <html>
+        <body style="color: black; margin-left: 20%; margin-right: 30%">
+            <!-- this ensures Gmail doesn't trim the email -->
+            <span style="opacity: 0"></span>
+            <img src="https://cdn.discordapp.com/attachments/1084789058305269773/1084789117461737482/black_logo.png" alt="logo" width="100">
+            <h2>Dear ${idea.User.fullName},</h2> 
+            
+            <p>Your idea has new comment</p>
+            
+            <p>User: ${creator.fullName}</p>
+            
+            <p>Content: ${comment.content}</p>
+            <p>Commented at: ${comment.createdAt}</p>
+            <p>View detail <a href="http://localhost:5000/ideas/${idea.id}" style="text-decoration: none; color:rgb(0, 2, 102)0;">Your idea</a></p>
 
+            <!-- this ensures Gmail doesn't trim the email -->
+            <span style="opacity: 0"> ${Date.now()} </span>
+        </body>
+    </html>
+    `
+
+    return html
 }
 
 exports.registration = (user, token) => {
