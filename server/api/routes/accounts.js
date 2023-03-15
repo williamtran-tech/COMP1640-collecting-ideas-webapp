@@ -11,7 +11,7 @@ router.get('/verify', user.verify);
 
 // Forgot password function
 router.post('/forgot-password', user.forgot_password);
-router.get('/reset-password', user.verifyToken);
+router.get('/reset-password', user.verifyTokenReset);
 router.post('/reset-password', user.reset_password);
 
 // router.post('/verify', verifyEmail, user.verify);

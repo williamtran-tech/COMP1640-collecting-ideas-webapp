@@ -305,7 +305,7 @@ exports.forgot_password = async (req, res) => {
   }
 }
 
-exports.verifyToken = (req, res) => {
+exports.verifyTokenReset = (req, res) => {
   try {
       // Verify token 
       if (req.query.token) {

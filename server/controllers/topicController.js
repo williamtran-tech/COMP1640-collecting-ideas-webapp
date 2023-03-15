@@ -8,6 +8,8 @@ const Idea = models.Idea;
 const React = models.React;
 const validation = require('./../middleware/validateInput');
 
+const CsvParser = require('json2csv');
+
 const { removeAssociate } = require('./ideaController.js');
 
 exports.list_all_topics = async (req, res) => {
@@ -341,114 +343,64 @@ exports.force_delete = async (req, res) => {
     }
 }
 
+exports.download_topic_csv = async (req, res) => {
+    const id = req.params.id;
 
-// Paginate ideas in topic detail function - Backup
-// const query = `SELECT  
-// ideas.name AS idea, 
-// users.fullName AS ownerName, 
-// users.email AS email, 
-// SUM(reacts.nLike) AS likes, 
-// SUM(reacts.nDislike) AS dislikes,
-// SUM(views.views) AS views,
-// categories.name AS topic,
-// ideas.createdAt, 
-// ideas.updatedAt,
-// ideas.id as ideaId,
-// users.id as userId,
-// categories.id as categoryId
-// FROM reacts
-// INNER JOIN ideas ON reacts.ideaId = ideas.id
-// JOIN categories ON ideas.categoryId = categories.id
-// JOIN topics ON ideas.topicId = topics.id
-// JOIN users ON ideas.userId = users.id
-// JOIN views ON ideas.id = views.ideaId
-// WHERE topics.id = 2
-// GROUP BY reacts.ideaId;`
-// const page = req.param('page'); // current page number
-//         const limit = 5; // number of items per page
-//         const offset = (page - 1) * limit; // offset to skip previous items
+    const topic_info = await Topic.findOne({
+        where: {
+            "id": id
+        }
+    });
 
-//         const ideas = await db.sequelize.query(
-//                 `SELECT  
-//                     ideas.name AS idea, 
-//                     users.fullName AS ownerName, 
-//                     users.email AS email, 
-//                     SUM(reacts.nLike) AS likes, 
-//                     SUM(reacts.nDislike) AS dislikes,
-//                     SUM(views.views) AS views,
-//                     categories.name AS category,
-//                     ideas.createdAt, 
-//                     ideas.updatedAt,
-//                     ideas.id as ideaId,
-//                     users.id as userId,
-//                     categories.id as categoryId
-//                 FROM reacts
-//                 INNER JOIN ideas ON reacts.ideaId = ideas.id
-//                 JOIN categories ON ideas.categoryId = categories.id
-//                 JOIN topics ON ideas.topicId = topics.id
-//                 JOIN users ON ideas.userId = users.id
-//                 JOIN views ON ideas.id = views.ideaId
-//                 WHERE topics.id = ${id}
-//                 GROUP BY reacts.ideaId
-//                 LIMIT ${limit} OFFSET ${offset};
-//                 `);
+    const csvFields = ['id',
+                     "idea",
+                     "ownerName",
+                     "email",
+                     "likes",
+                     "dislikes",
+                     "views",
+                     "comments",
+                     "category",
+                     "createdAt",
+                     "updatedAt"
+                    ];
+    const topic_detail = await db.sequelize.query(
+        `SELECT  
+            ideas.id as id,
+            ideas.name AS idea, 
+            users.fullName AS ownerName, 
+            users.email AS email, 
+            COALESCE(reacts.likes, 0) AS likes, 
+            COALESCE(reacts.dislikes, 0) AS dislikes,
+            SUM(views.views) AS views,
+            COALESCE(c.comments, 0) as comments,
+            categories.name AS category,
+            ideas.createdAt, 
+            ideas.updatedAt
+        FROM ideas
+        JOIN categories ON ideas.categoryId = categories.id
+        JOIN topics ON ideas.topicId = topics.id
+        JOIN users ON ideas.userId = users.id
+        JOIN views ON ideas.id = views.ideaId
+        LEFT JOIN (
+            SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
+            FROM reacts
+            GROUP BY ideaId
+        ) reacts ON ideas.id = reacts.ideaId
+        LEFT JOIN (
+            SELECT ideaId, COUNT(id) as comments
+            FROM comments
+            GROUP BY ideaId
+        ) c ON ideas.id = c.ideaId
+        WHERE topics.id = ${id}
+        GROUP BY ideas.id;
+        `);
+    const csvParser = new CsvParser.Parser({ csvFields });
+    const csvData = csvParser.parse(topic_detail[0]);
 
-//             const categories = await Category.findAll({
-//                 attributes: ['name']
-//             })
-// exports.list_ideas_by_topic = async (req, res) => {
-//     try {
-//         const ideas = await Idea.findAll({
-//             attributes: {exclude: ['createdAt', 'updatedAt', 'CategoryId', 'UserId', 'TopicId','categoryId', 'userId', 'topicId' ]},
-//             include: [
-//                 {
-//                 model: User, as: "User",
-//                 attributes:['id','fullName']
-//                 },
-//                 {
-//                 model: Category, as: "Category",
-//                 attributes:['id','name']
-//                 }
-//             ],
-//             where: {
-//                 TopicId = req.params.id
-//             }
-//         })
-//     } catch (error){
-//         console.log(error);
-//         res.status(500).send("Server Error");
-//     }
-// }
+    res.setHeader('Content-Type', 'text/csv');
+    const filename = "Topic_Detail_"+topic_info.name
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 
-
-
-// var Topic = require('../models/topics.js');
-
-// exports.list_all_topics = function(req, res) {
-//     Topic.getAllTopics((err, topics) => {
-//         if (err) {
-//             res.send(err);
-//         }
-//         // console.log('res', task);
-//         res.status(200).json({
-//             message: 'Hay lam thang nhoc 2',
-//             topics: topics
-//         });
-//     });
-// };
-
-// exports.list_all_ideas_by_topic = function(req, res) {
-//     const message = 'Successfully Get All Ideas By Topic';
-
-//     Topic.getAllIdeasByTopic((err, topicInfo) => {
-//         if (err) {
-//             res.send(err);
-//         }
-        
-//         res.status(200).json({
-//             message: message,
-//             info: topicInfo[0],
-//             ideas: topicInfo[1]
-//         });
-//     }, req.params.topicId);
-// };
+    res.status(200).end(csvData);
+}
