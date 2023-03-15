@@ -48,3 +48,11 @@ exports.checkFilePath = (object) => {
         });
     }
 }
+
+exports.checkPassword = (req) => {
+    if (req.body.password !== req.body.cPassword || this.checkInput(req)) {
+        return false
+    } else {
+        return true
+    }
+}

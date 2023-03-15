@@ -11,6 +11,9 @@ const validate = require('./../middleware/validateInput.js');
 const sendEmail = require('./../middleware/sendMail.js');
 const htmlMail = require('../mail-template/mail-templates.js');
 
+const { v4: uuidv4 } = require('uuid');
+const usedTokenIdentifiers = [];
+
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
 exports.create_user = async (req, res) => {
   try {
@@ -102,11 +105,12 @@ exports.update_user = async (req, res) => {
     // Check file exist or not
     if (!req.file) {
       validate.checkFilePath(oldUser);
+      const hash = await bcrypt.hash(req.body.password, 10);
       const updated = await oldUser.update({
           "fullName": req.body.name?req.body.name:oldUser.fullName,
           "profileImage": null,
           "email": req.body.email?req.body.email:oldUser.email,
-          "password": req.body.password?req.body.password:oldUser.password,
+          "password": req.body.password?hash:oldUser.password,
           "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
           "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
       });
@@ -262,4 +266,117 @@ exports.list_all_users = async (req, res) =>{
         console.error(error);
         res.status(500).send('Server Error');
       }
+}
+
+// This function used for getting email address of user -> send reset-password mail
+exports.forgot_password = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        "email": req.body.email
+      }
+    });
+
+    if (user) {
+      // Generate token - using uuidv4 for identifier
+      const token = jwt.sign({
+        email: user.email,
+        name: user.fullName,
+        tokenIdentifier: uuidv4()
+      }, config.env.JWT_key, 
+      {
+        expiresIn: "3d"
+      });
+
+      sendEmail(user.email, "[GRE IDEAS] RESET YOUR PASSWORD", htmlMail.reset_password(user, token));
+      res.status(200).json({
+        msg: "Mail sent"
+      })
+    } else {
+      res.status(404).json({
+        err: "Not found user"
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server Error"
+    });
+  }
+}
+
+exports.verifyToken = (req, res) => {
+  try {
+      // Verify token 
+      if (req.query.token) {
+          const token = req.query.token;
+          const decoded = jwt.verify(token, config.env.JWT_key);
+      
+          if (decoded) {
+            res.status(200).json({
+              email: decoded.email
+            })
+          } else {
+            res.status(404).json({
+              err: "Error"
+            })
+          }
+      } else {
+          res.status(404).json({
+              err: "Not accessible"
+          });
+      }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server Error"
+    })
+  }
+}
+
+// This function used for reset password
+exports.reset_password = async (req, res) => {
+  try {
+    if (req.query.token) {
+      const token = req.query.token;
+      const decoded = jwt.verify(token, config.env.JWT_key);
+
+      // Check token used 
+      if (usedTokenIdentifiers.includes(decoded.tokenIdentifier)) {
+        return res.status(400).json({ message: 'Token already used' });
+      }
+    
+      if (decoded && validate.checkPassword(req)) {
+        const hash = await bcrypt.hash(req.body.password, 10);
+        const user = await User.update({"password": hash}, {
+          where: {
+            "email": decoded.email
+          }
+        });
+        usedTokenIdentifiers.push(decoded.tokenIdentifier);
+        res.status(200).json({
+          msg: "Successfully reset password"
+        });
+      } else {
+        res.status(406).json({
+          msg: "Invalid input"
+        })
+      }
+    } else {
+      res.status(404).json({
+        err: "Invalid token"
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.name === "JsonWebTokenError") {
+      res.status(500).json({
+        err: "Invalid token"
+      })
+    } else {
+      res.status(500).json({
+        err: "Server Error"
+      })
+    }
+  }
 }
