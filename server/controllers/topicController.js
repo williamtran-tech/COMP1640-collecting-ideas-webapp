@@ -375,8 +375,6 @@ exports.download_topic_csv = async (req, res) => {
             SUM(views.views) AS views,
             COALESCE(c.comments, 0) as comments,
             categories.name AS category,
-            ideas.createdAt, 
-            ideas.updatedAt
         FROM ideas
         JOIN categories ON ideas.categoryId = categories.id
         JOIN topics ON ideas.topicId = topics.id
@@ -395,6 +393,8 @@ exports.download_topic_csv = async (req, res) => {
         WHERE topics.id = ${id}
         GROUP BY ideas.id;
         `);
+
+    // The Date - will display ### in CSV file bc the field is not wide enough to show data 
     const csvParser = new CsvParser.Parser({ csvFields });
     const csvData = csvParser.parse(topic_detail[0]);
 

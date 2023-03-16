@@ -7,6 +7,7 @@ const department = require('../../../controllers/departmentController.js');
 const user = require('../../../controllers/userController.js');
 const isAdmin = require('../../../middleware/isAdmin.js');
 const uploadFile = require('../../../middleware/uploadFile.js');
+const uploadCsv = require('./../../../middleware/uploadCsv.js');
 
 // TOPICS - ADMIN PANEL
 router.get('/topics', isAdmin, topic.list_all_topics);
@@ -40,6 +41,8 @@ router.get('/users', isAdmin, user.list_all_users);
 router.post('/users', isAdmin, user.create_user);
 router.put('/users/:id', isAdmin, uploadFile, user.update_user);
 router.delete('/users/:id', isAdmin, user.delete_user);
+router.get('/users/template-insert/download', isAdmin, user.download_template);
+router.post('/users/bulks-insert', isAdmin, uploadCsv, user.bulk_insert);
 
 
 module.exports = router;
