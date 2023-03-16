@@ -6,11 +6,11 @@ const UserProfile = ({userInf, department}) => {
     const [user, setUser]= useState({
         fulleName: userInf.fullName,
         email: userInf.email,
-        departmentId: userInf.Department.name,
+        departmentId: userInf.Department.id,
         roleId: userInf.Role.id,
         file: null
     })
-    console.log(department)
+    console.log(user)
   return (
     <div className='user_profile'>
     <Stack className="avatar_profile">
@@ -36,14 +36,14 @@ const UserProfile = ({userInf, department}) => {
             variant="outlined"
             fullWidth
             select
-            value={1}
+            value={user.departmentId}
             // onChange={(e) => setDepartment(e.target.value)}
         >
-            {/* {userInf&&userInf.Department&&userInf.Department[0].map(department => (
+            {department&&department.map(department => (
                 <MenuItem key={department.id} value={department.id}>
                     {department.name}
                 </MenuItem>
-            ))} */}
+            ))}
         </TextField>
         <TextField
         label="Role"

@@ -9,7 +9,10 @@ const UsersTable = () => {
  
   const [listUsers, setListUsers]=useState([])
   useEffect(()=>{
-      const get_user_table=()=>{
+     
+      get_user_table()
+  },[]) 
+  const get_user_table=()=>{
           handleApi.admin_get_uset_inf().then(
           response =>{
               console.log(response.data)
@@ -17,8 +20,6 @@ const UsersTable = () => {
           }
       )
       }
-      get_user_table()
-  },[])
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -96,7 +97,7 @@ const UsersTable = () => {
       </Table>
     </TableContainer>
         <Drawer anchor='right' open={openDrawer} onClose={handleCloseDrawer}>
-            <UserProfile userInf={userInf} department={listUsers.Department}></UserProfile>
+            <UserProfile userInf={userInf} department={listUsers.departments}></UserProfile>
         </Drawer> 
     </>
   )
