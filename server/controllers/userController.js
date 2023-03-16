@@ -18,8 +18,63 @@ const usedTokenIdentifiers = [];
 const CsvParser = require('json2csv');
 const path = require('path');
 
+function generatePassword() {
+  let password = '';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 8; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
 exports.create_user = async (req, res) => {
+  try {
+    const fUser = await User.findOne({
+      where: {'email': req.body.email}
+    });
+    if (fUser) {
+      res.status(409).json({
+        message: "Email exists"
+      })
+    } else {
+      const password = generatePassword();
+      const hash = await bcrypt.hash(password, 10);
+
+      const user = {
+        fullName: req.body.fullName,
+        roleId: req.body.roleId,
+        departmentId: req.body.departmentId,
+        email: req.body.email,
+        password: hash,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      // Generate a token for verifying email of user
+      const token = jwt.sign({
+        email: user.email,
+        name: user.fullName,
+      }, config.env.JWT_key, 
+      {
+        expiresIn: "3d"
+      });
+      
+      // If the hash successfully created then the following code will be executed
+      User.create(user).then(createdUser => {
+        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, password, token));
+        res.status(200).json({
+          message: "Successfully added user"
+        });
+      });
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.create_user_root = async (req, res) => {
   try {
     const fUser = await User.findOne({
       where: {'email': req.body.email}
@@ -73,35 +128,41 @@ exports.login_user = async (req, res) => {
     });
 
     if (user) {
-      bcrypt.compare(req.body.password, user.password, (err, result) => {
-        if (err) {
+      if (!user.isVerified) {
+        res.status(406).json({
+          err: "Mail not verified"
+        })
+      } else {
+        bcrypt.compare(req.body.password, user.password, (err, result) => {
+          if (err) {
+            return res.status(404).json({
+              message: "Auth failed"
+            });
+          }
+          if (result) {
+            const token = jwt.sign({
+              email: user.email,
+              name: user.fullName,
+              userId: user.id,
+              roleId: user.roleId
+            }, config.env.JWT_key, 
+            {
+              expiresIn: "1h"
+            });
+            return res.status(200).json({
+              message: "Auth successfully",
+              token: token,
+              userId: user.id,
+              email: user.email,
+              name: user.fullName,
+              roleId: user.roleId
+            });
+          }
           return res.status(404).json({
             message: "Auth failed"
           });
-        }
-        if (result) {
-          const token = jwt.sign({
-            email: user.email,
-            name: user.fullName,
-            userId: user.id,
-            roleId: user.roleId
-          }, config.env.JWT_key, 
-          {
-            expiresIn: "1h"
-          });
-          return res.status(200).json({
-            message: "Auth successfully",
-            token: token,
-            userId: user.id,
-            email: user.email,
-            name: user.fullName,
-            roleId: user.roleId
-          });
-        }
-        return res.status(404).json({
-          message: "Auth failed"
         });
-      });
+      }
     } else {
       res.status(404).json({
         message: "Auth failed mail"
@@ -163,7 +224,6 @@ exports.update_user = async (req, res) => {
           "fullName": req.body.name?req.body.name:oldUser.fullName,
           "profileImage": null,
           "email": req.body.email?req.body.email:oldUser.email,
-          "password": req.body.password?hash:oldUser.password,
           "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
           "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
       });
@@ -182,7 +242,6 @@ exports.update_user = async (req, res) => {
         "fullName": req.body.name?req.body.name:oldUser.fullName,
         "profileImage": req.file.path,
         "email": req.body.email?req.body.email:oldUser.email,
-        "password": req.body.password?req.body.password:oldUser.password,
         "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
         "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
       });
@@ -260,11 +319,17 @@ exports.list_all_users = async (req, res) =>{
           attributes: {
             exclude: ['createdAt', 'updatedAt']
           }
-        })
+        });
+        const roles = await Role.findAll({
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        });
         res.json({
           message: "Successfully get all users",
           users: users,
-          departments: departments
+          departments: departments,
+          roles: roles
         });
       } catch (error) {
         console.error(error);

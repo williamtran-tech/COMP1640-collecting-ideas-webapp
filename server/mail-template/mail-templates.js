@@ -1,3 +1,5 @@
+const { checkPassword } = require("../middleware/validateInput");
+
 // Mail template for submit contribution
 exports.ideaSubmit = (idea, creator, topic) => {
     const html = `
@@ -38,7 +40,7 @@ exports.commentIdea = (idea, comment, creator) => {
 }
 
 // Mail templates for user creation - reset
-exports.registration = (user, token) => {
+exports.registration = (user, password, token) => {
     const html =`
     <html>
         <body style="color: black; margin-left: 20%; margin-right: 30%">
@@ -52,6 +54,7 @@ exports.registration = (user, token) => {
             <p>To complete your Account set-up just click on the link below to confirm the email address associated with your Gre Ideas ID. The link will expire in 3 days, so please confirm as soon as possible.</p>
             
             <p>Username: ${user.email}</p>
+            <p>Password: ${password}</p>
             <button style="background-color: rgb(0, 197, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:5000/accounts/verify?token=${token}" style="text-decoration: none; color: #ffffff;"> Verify here</button>
 
             <!-- this ensures Gmail doesn't trim the email -->
