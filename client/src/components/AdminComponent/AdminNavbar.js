@@ -40,7 +40,7 @@ const handleChange = (event, newValue) => {
               <TabList >
                 <Typography variant="body2" className="Admin_function_name">Topic Management</Typography>
                 <Tab variant={value === 1 ? 'solid' : 'plain'} color={value === 1 ? 'primary' : 'neutral'} iconPosition="start"className="tab" component={Link} to="/"> <ListItemDecorator><VisibilityIcon /></ListItemDecorator>  View all topic</Tab>
-                <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} to="/create"><ListItemDecorator><AddCircleIcon /></ListItemDecorator>Create new topic</Tab>
+                <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} to="/users"><ListItemDecorator><AddCircleIcon /></ListItemDecorator>Create new topic</Tab>
                 <Typography variant="body2" className="Admin_function_name">Category Management</Typography>
                 <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/">View all topic</Tab>
                 <Tab variant={value === 5 ? 'solid' : 'plain'} color={value === 5 ? 'primary' : 'neutral'} className="tab" component={Link} to="/create">Create new topic</Tab>

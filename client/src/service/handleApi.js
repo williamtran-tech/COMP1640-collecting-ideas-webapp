@@ -44,6 +44,9 @@ const admin_delete_topic= async(id)=>{
 const admin_force_delete_topic= async(id)=>{
   return await axios.delete(`/admin/topics/force-delete/${id}`, config());
 }
+const admin_get_uset_inf= async()=>{
+  return await axios.get(`/admin/users`, config());
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -57,6 +60,7 @@ const handleApi = {
     admin_getIdeas_by_topic,
     admin_update_topic,
     admin_delete_topic,
-    admin_force_delete_topic
+    admin_force_delete_topic,
+    admin_get_uset_inf
 };
 export default handleApi

@@ -14,6 +14,7 @@ import Layout from './components/AdminComponent/Layout';
 import CreateNewTopic from './components/AdminComponent/CreateNewTopic';
 
 import TopicTable from './components/AdminComponent/TopicTable';
+import UserManagement from './components/AdminComponent/UserManagement';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
@@ -38,7 +39,7 @@ function App() {
           {userRole === 2 || userRole === 3 ? (
           <><Route path="/" element={<Layout></Layout>}>
           <Route path="/" element={<TopicTable></TopicTable>} />
-          <Route path="/create" element={<CreateNewTopic></CreateNewTopic>} />
+          <Route path="/users" element={<UserManagement></UserManagement>} />
           </Route><Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route></>
           ) : 
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>

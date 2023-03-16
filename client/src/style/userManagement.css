@@ -1,0 +1,23 @@
+.user_infor{
+    display: flex;
+    gap: 5px !important;
+}
+.user_name{
+    font-weight: 600;
+}
+.user_email{
+    font-style:italic;
+    font-weight: lighter;
+}
+.active{
+    color:green !important;
+}
+.inactive{
+    color:red !important ;
+}
+.avatar_profile{
+    align-items: center;
+}
+.user_profile{
+    margin: 20px;
+}
