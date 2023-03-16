@@ -14,6 +14,10 @@ const htmlMail = require('../mail-template/mail-templates.js');
 const { v4: uuidv4 } = require('uuid');
 const usedTokenIdentifiers = [];
 
+
+const CsvParser = require('json2csv');
+const path = require('path');
+
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
 exports.create_user = async (req, res) => {
   try {
@@ -48,7 +52,6 @@ exports.create_user = async (req, res) => {
       
       // If the hash successfully created then the following code will be executed
       User.create(user).then(createdUser => {
-        
         sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, token));
         res.status(200).json({
           message: "Successfully added user"
@@ -61,6 +64,56 @@ exports.create_user = async (req, res) => {
   }
 };
 
+exports.login_user = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        "email": req.body.email
+      }
+    });
+
+    if (user) {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (err) {
+          return res.status(404).json({
+            message: "Auth failed"
+          });
+        }
+        if (result) {
+          const token = jwt.sign({
+            email: user.email,
+            name: user.fullName,
+            userId: user.id,
+            roleId: user.roleId
+          }, config.env.JWT_key, 
+          {
+            expiresIn: "1h"
+          });
+          return res.status(200).json({
+            message: "Auth successfully",
+            token: token,
+            userId: user.id,
+            email: user.email,
+            name: user.fullName,
+            roleId: user.roleId
+          });
+        }
+        return res.status(404).json({
+          message: "Auth failed"
+        });
+      });
+    } else {
+      res.status(404).json({
+        message: "Auth failed mail"
+      });
+    }
+  } catch (error){
+    console.log(error);
+    res.status(500).send("Server Error");
+  }
+}
+
+// This function used for verification user email -> Accept login
 exports.verify = async (req, res) => {
   try {
     const token = req.query.token;
@@ -184,55 +237,6 @@ exports.delete_user = async (req, res) => {
         res.status(500).send("Server Error");
     }
 }
-}
-
-exports.login_user = async (req, res) => {
-  try {
-    const user = await User.findOne({
-      where: {
-        "email": req.body.email
-      }
-    });
-
-    if (user) {
-      bcrypt.compare(req.body.password, user.password, (err, result) => {
-        if (err) {
-          return res.status(404).json({
-            message: "Auth failed"
-          });
-        }
-        if (result) {
-          const token = jwt.sign({
-            email: user.email,
-            name: user.fullName,
-            userId: user.id,
-            roleId: user.roleId
-          }, config.env.JWT_key, 
-          {
-            expiresIn: "1h"
-          });
-          return res.status(200).json({
-            message: "Auth successfully",
-            token: token,
-            userId: user.id,
-            email: user.email,
-            name: user.fullName,
-            roleId: user.roleId
-          });
-        }
-        return res.status(404).json({
-          message: "Auth failed"
-        });
-      });
-    } else {
-      res.status(404).json({
-        message: "Auth failed mail"
-      });
-    }
-  } catch (error){
-    console.log(error);
-    res.status(500).send("Server Error");
-  }
 }
 
 exports.list_all_users = async (req, res) =>{
@@ -378,5 +382,85 @@ exports.reset_password = async (req, res) => {
         err: "Server Error"
       })
     }
+  }
+}
+
+// These functions used for admin to bulkInsert new user
+// This function used for downloading csv template to import massive users
+exports.download_template = async (req, res) => {
+  try {
+    const json2csv = require('json2csv').parse;
+
+    // Create an array of roles and departments with their IDs and names
+    const roles = [
+      {id: 1, name: 'Admin'},
+      {id: 2, name: 'User'},
+      {id: 3, name: 'Staff'}
+    ];
+
+    const departments = [
+      {id: 1, name: 'Sales'},
+      {id: 2, name: 'Marketing'},
+      {id: 3, name: 'Engineering'}
+    ];
+
+    // Create an array of objects with the fields for the CSV file
+    const data = [
+      {fullName: '', roleId: '', departmentId: ''}
+    ];
+
+    // Create a function to generate the dropdown list options for the role and department fields
+    function generateOptions(data) {
+      const options = data.map(item => item.name);
+      return options.join(',');
+    }
+
+    // Set the data validation for the roleId and departmentId fields
+    data.forEach(item => {
+      item.roleId = `=IFERROR(VLOOKUP(B2,Roles!$B$2:$A$4,2,FALSE),"")`;
+      item.departmentId = `=IFERROR(VLOOKUP(C2,Departments!$B$2:$A$4,2,FALSE),"")`;
+    });
+
+    // Create the CSV fields array
+    const csvFields = ['fullName', 'roleId', 'departmentId'];
+
+    // Convert the data array to a CSV string
+    const csv = json2csv(data, { fields: csvFields });
+
+    // Write the Roles and Departments sheets to a separate file
+    const roleFields = ['id', 'name'];
+    const roleCsv = json2csv(roles, { fields: roleFields });
+
+    const departmentFields = ['id', 'name'];
+    const departmentCsv = json2csv(departments, { fields: departmentFields });
+
+    // Set the response headers to download the CSV file and role/department CSV files
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="Insert_Massive_User_Template.csv"');
+    res.status(200).send(`${csv}\n\n\n${roleCsv}\n\n\n${departmentCsv}`);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server Error"
+    })
+  }
+}
+
+exports.bulk_insert = async (req, res) => {
+  try {
+    if (req.file) { 
+      res.status(200).json({
+        msg: "Submitted csv file"
+      })
+    } else {
+      res.status(404).json({
+        err: 'File not Found'
+      })
+    }
+  } catch (err) {
+    res.status(500).json({
+      err: "Server Error"
+    })
   }
 }
