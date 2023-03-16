@@ -21,3 +21,9 @@
 .user_profile{
     margin: 20px;
 }
+.table_user{
+    border-radius: 15px !important;
+}
+.create_user_btn{
+    /* border-radius: 50% !important; */
+}

@@ -3,15 +3,18 @@ import {Drawer, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, 
 import { useState } from 'react';
 import handleApi from '../../service/handleApi';
 import UserProfile from './UserProfile';
-const UsersTable = () => {
+import CreateUserForm from './CreateUserForm';
+import DeleteUserModal from './DeleteUserModal';
+const UsersTable = ({openModal,setOpenModal}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
- 
+    const [sumited, setSumited] = useState(false)
+
   const [listUsers, setListUsers]=useState([])
   useEffect(()=>{
      
       get_user_table()
-  },[]) 
+  },[sumited]) 
   const get_user_table=()=>{
           handleApi.admin_get_uset_inf().then(
           response =>{
@@ -23,7 +26,7 @@ const UsersTable = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
+  
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -42,20 +45,25 @@ const UsersTable = () => {
   const handleCloseDrawer = () => {
     setOpenDrawer(false);
   };
+  const [openDelete, setOpenDelete] = useState(false)
+  const [idDelete, setIdDelete] = useState()
+  const handleOpenModal =(id) =>{
+    setIdDelete(id)
+    setOpenDelete(true)
+  }
   return (
     <>
     <TableContainer >
     <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           count={listUsers&& listUsers.users&&listUsers.users.length}
-          
           rowsPerPage={rowsPerPage}
           page={page}
           component="div"
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      <Table size="small" aria-label="a dense table" >
+    />
+      <Table size="small" aria-label="a dense table" className='table_user' >
         <TableHead >
           <TableRow className='ideas_list'>
             <TableCell>ID</TableCell>
@@ -89,16 +97,18 @@ const UsersTable = () => {
               <TableCell align='center'>
                 <Button onClick={()=>{handleOpenDrawer(user.id)}}>Edit</Button>
                 <Button >Ban</Button>
-                <Button >Delete</Button>
+                <Button onClick={()=>{handleOpenModal(user.id)}}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-        <Drawer anchor='right' open={openDrawer} onClose={handleCloseDrawer}>
-            <UserProfile userInf={userInf} department={listUsers.departments}></UserProfile>
-        </Drawer> 
+    <Drawer anchor='right' open={openDrawer} onClose={handleCloseDrawer}>
+        <UserProfile userInf={userInf} department={listUsers.departments} role={listUsers.roles}></UserProfile>
+    </Drawer> 
+    <CreateUserForm openModal={openModal} setOpenModal={setOpenModal} department={listUsers.departments} role={listUsers.roles}></CreateUserForm>
+    <DeleteUserModal openDelete={openDelete} setOpenDelete={setOpenDelete} id={idDelete} setSumited={setSumited} sumited={sumited}> </DeleteUserModal>
     </>
   )
 }

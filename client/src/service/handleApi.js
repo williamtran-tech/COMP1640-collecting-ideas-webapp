@@ -44,8 +44,17 @@ const admin_delete_topic= async(id)=>{
 const admin_force_delete_topic= async(id)=>{
   return await axios.delete(`/admin/topics/force-delete/${id}`, config());
 }
-const admin_get_uset_inf= async()=>{
+const admin_get_uset_inf = async()=>{
   return await axios.get(`/admin/users`, config());
+}
+const admin_create_user = async(data)=>{
+  return await axios.post(`/admin/users`, data, config());
+}
+const admin_delete_user = async(id)=>{
+  return await axios.delete(`/admin/users/${id}`, config());
+}
+const admin_update_user = async(id, data)=>{
+  return await axios.put(`/admin/users/${id}`,data, config());
 }
 const handleApi = {
     getListTopic,
@@ -61,6 +70,9 @@ const handleApi = {
     admin_update_topic,
     admin_delete_topic,
     admin_force_delete_topic,
-    admin_get_uset_inf
+    admin_get_uset_inf,
+    admin_create_user,
+    admin_delete_user,
+    admin_update_user
 };
 export default handleApi

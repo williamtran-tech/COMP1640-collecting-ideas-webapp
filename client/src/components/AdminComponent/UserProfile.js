@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Avatar, TextField, Typography , Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Stack } from '@mui/material';
-const UserProfile = ({userInf, department}) => {
+import handleApi from '../../service/handleApi';
+const UserProfile = ({userInf, department, role}) => {
     console.log(userInf)
     const [user, setUser]= useState({
         fulleName: userInf.fullName,
@@ -10,7 +11,18 @@ const UserProfile = ({userInf, department}) => {
         roleId: userInf.Role.id,
         file: null
     })
-    console.log(user)
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUser((prevState) => ({
+          ...prevState,
+          [name]: value
+        }));
+      };
+    const updateInf = () =>{
+        handleApi.admin_update_user(userInf.id).then(response =>{
+            console.log(response.data)
+        })
+    }
   return (
     <div className='user_profile'>
     <Stack className="avatar_profile">
@@ -28,8 +40,8 @@ const UserProfile = ({userInf, department}) => {
     </Stack>
     <div>
     <form >
-      <TextField label="Name" value={user.fulleName} fullWidth margin="normal" required />
-      <TextField label="Email" value={user.email} fullWidth margin="normal" required />
+      <TextField label="Name" value={user.fulleName} fullWidth margin="normal" required   onChange={handleInputChange}/>
+      <TextField label="Email" value={user.email} fullWidth margin="normal" required  onChange={handleInputChange} />
       <Stack direction="row" spacing={2}>
         <TextField
             label="Department"
@@ -37,7 +49,7 @@ const UserProfile = ({userInf, department}) => {
             fullWidth
             select
             value={user.departmentId}
-            // onChange={(e) => setDepartment(e.target.value)}
+            onChange={handleInputChange}
         >
             {department&&department.map(department => (
                 <MenuItem key={department.id} value={department.id}>
@@ -50,14 +62,14 @@ const UserProfile = ({userInf, department}) => {
         variant="outlined"
         fullWidth
         select
-        // value={role}
-        // onChange={(e) => setRole(e.target.value)}
+        value={user.roleId}
+        onChange={handleInputChange}
       >
-        {/* {roleOptions.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
+        {role&&role.map((role) => (
+          <MenuItem key={role.id} value={role.id}>
+            {role.name}
           </MenuItem>
-        ))} */}
+        ))}
       </TextField>
       </Stack>
       <Button type="submit" variant="contained" color="primary">
