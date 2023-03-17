@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Avatar, TextField, Typography , Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Stack } from '@mui/material';
-import handleApi from '../../service/handleApi';
+import handleApi from '../../../service/handleApi';
 const UserProfile = ({userInf, department, role}) => {
     console.log(userInf)
     const [user, setUser]= useState({

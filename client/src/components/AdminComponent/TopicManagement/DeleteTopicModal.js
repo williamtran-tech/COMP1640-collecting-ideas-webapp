@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import handleApi from '../../service/handleApi';
+import handleApi from '../../../service/handleApi';
 const DeleteTopicModal = ({setConfirm , setDeleted, deleted, idTopic}) => {
     const [modal,setModalOpen]= useState(true)
     const handleCloseModal = () => {
