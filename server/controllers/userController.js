@@ -10,6 +10,9 @@ const config = require('./../config/default.json');
 const validate = require('./../middleware/validateInput.js');
 const sendEmail = require('./../middleware/sendMail.js');
 const htmlMail = require('../mail-template/mail-templates.js');
+const csv = require('csv-parser');
+const fs = require('fs');
+const validator = require('validator');
 
 const { v4: uuidv4 } = require('uuid');
 const usedTokenIdentifiers = [];
@@ -19,11 +22,23 @@ const CsvParser = require('json2csv');
 const path = require('path');
 
 function generatePassword() {
+  const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+  const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
   let password = '';
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < 8; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+
+  // Add at least one uppercase character
+  password += uppercaseLetters[Math.floor(Math.random() * uppercaseLetters.length)];
+
+  // Add at least one number
+  password += numbers[Math.floor(Math.random() * numbers.length)];
+
+  // Add the remaining characters
+  for (let i = 0; i < 6; i++) {
+    const characters = lowercaseLetters + uppercaseLetters + numbers;
+    password += characters[Math.floor(Math.random() * characters.length)];
   }
+
   return password;
 }
 
@@ -91,6 +106,7 @@ exports.create_user_root = async (req, res) => {
         roleId: req.body.roleId,
         departmentId: req.body.departmentId,
         email: req.body.email,
+        isVerified: req.body.isVerified,
         password: hash,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -107,7 +123,7 @@ exports.create_user_root = async (req, res) => {
       
       // If the hash successfully created then the following code will be executed
       User.create(user).then(createdUser => {
-        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, token));
+        // sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, token));
         res.status(200).json({
           message: "Successfully added user"
         });
@@ -302,7 +318,7 @@ exports.list_all_users = async (req, res) =>{
     try {
         const users = await User.findAll({
           attributes: {
-              exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId']
+              exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
           },
           include: [{
               model: Department, as: "Department",
@@ -456,53 +472,22 @@ exports.download_template = async (req, res) => {
   try {
     const json2csv = require('json2csv').parse;
 
-    // Create an array of roles and departments with their IDs and names
-    const roles = [
-      {id: 1, name: 'Admin'},
-      {id: 2, name: 'User'},
-      {id: 3, name: 'Staff'}
-    ];
-
-    const departments = [
-      {id: 1, name: 'Sales'},
-      {id: 2, name: 'Marketing'},
-      {id: 3, name: 'Engineering'}
-    ];
-
     // Create an array of objects with the fields for the CSV file
     const data = [
-      {fullName: '', roleId: '', departmentId: ''}
+      {email: 'sample@gmail.com', fullName: 'Sample name', role: 'Administrator', department: 'IT'}
     ];
 
-    // Create a function to generate the dropdown list options for the role and department fields
-    function generateOptions(data) {
-      const options = data.map(item => item.name);
-      return options.join(',');
-    }
-
-    // Set the data validation for the roleId and departmentId fields
-    data.forEach(item => {
-      item.roleId = `=IFERROR(VLOOKUP(B2,Roles!$B$2:$A$4,2,FALSE),"")`;
-      item.departmentId = `=IFERROR(VLOOKUP(C2,Departments!$B$2:$A$4,2,FALSE),"")`;
-    });
 
     // Create the CSV fields array
-    const csvFields = ['fullName', 'roleId', 'departmentId'];
+    const csvFields = ['email', 'fullName', 'role', 'department'];
 
     // Convert the data array to a CSV string
     const csv = json2csv(data, { fields: csvFields });
 
-    // Write the Roles and Departments sheets to a separate file
-    const roleFields = ['id', 'name'];
-    const roleCsv = json2csv(roles, { fields: roleFields });
-
-    const departmentFields = ['id', 'name'];
-    const departmentCsv = json2csv(departments, { fields: departmentFields });
-
     // Set the response headers to download the CSV file and role/department CSV files
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename="Insert_Massive_User_Template.csv"');
-    res.status(200).send(`${csv}\n\n\n${roleCsv}\n\n\n${departmentCsv}`);
+    res.status(200).send(csv);
 
   } catch (err) {
     console.log(err);
@@ -515,12 +500,78 @@ exports.download_template = async (req, res) => {
 exports.bulk_insert = async (req, res) => {
   try {
     if (req.file) { 
-      res.status(200).json({
-        msg: "Submitted csv file"
-      })
+      const userData = [];
+      fs.createReadStream(req.file.path)
+        .pipe(csv())
+        .on('data', (data) => {
+          userData.push(data);
+        })
+        .on('end', async () => {
+          console.log('CSV file Successfully processed');
+
+          const [emailExist, email, notValidMail] = await checkEmail(userData);
+          const [roleId, departmentId] = checkRoleDepartment(userData);
+
+          if (emailExist) {
+            res.status(406).json({
+              'err': "Not acceptable input",
+              'existedEmail': email
+            });
+          } else if (validate.checkInputCSV(userData)){
+            res.status(406).json({
+              err: "Missing input from CSV file"
+            })
+          } else if (notValidMail != 0){
+            res.status(406).json({
+              err: "Wrong type email from CSV file - Row " + notValidMail
+            })
+          } else if (roleId == 0) {
+            res.status(406).json({
+              err: "Role value is not accepted"
+            })
+          } else if (departmentId == 0) {
+            res.status(406).json({
+              err: "Department value is not accepted"
+            })
+          } else {
+            // The following code will bulk insert user account -> users table
+            for (const user in userData) {
+              const password = generatePassword();
+              const hash = await bcrypt.hash(password, 10);
+              
+              const creUser = {
+                fullName: userData[user].fullName,
+                roleId: roleId,
+                departmentId: departmentId,
+                email: userData[user].email,
+                password: hash,
+                createdAt: new Date(),
+                updatedAt: new Date()
+              };
+
+              // Generate a token for verifying email of user
+              const token = jwt.sign({
+                email: creUser.email,
+                name: creUser.fullName,
+              }, config.env.JWT_key, 
+              {
+                expiresIn: "3d"
+              });
+              
+              // If the hash successfully created then the following code will be executed
+              User.create(creUser).then(createdUser => {
+                sendEmail(creUser.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(creUser, password, token));
+              });
+            }
+            
+            res.status(200).json({
+              msg: "Bulk insert users users successfully"
+            })
+          }
+        });
     } else {
       res.status(404).json({
-        err: 'File not Found'
+        err: "Find not found"
       })
     }
   } catch (err) {
@@ -528,4 +579,63 @@ exports.bulk_insert = async (req, res) => {
       err: "Server Error"
     })
   }
+}
+
+function checkRoleDepartment(userData) {
+  let roleId = 0;
+  let departmentId = 0;
+  for (const user in userData) {
+    switch(userData[user].role) {
+      case "Administrator": 
+        roleId = 3;
+        break;
+      case "QA Manager":
+        roleId = 2;
+        break;
+      case "Staff":
+        roleId = 1;
+        break;
+      default: 
+        roleId = 0;
+    }
+
+    switch(userData[user].department) {
+      case "IT": 
+        departmentId = 1;
+        break;
+      case "BA":
+        departmentId = 2;
+        break;
+      case "GD":
+        departmentId = 3;
+        break;
+      default: 
+        departmentId = 0;
+    }
+  }
+ 
+  return [roleId, departmentId];
+}
+
+async function checkEmail(users) {
+  let emailExist = false;
+  let email = [];
+  let notValidMail = [];
+  for (let i = 0; i < users.length; i++) {
+    let rowNum = i + 2;
+    const checkUserMail = await User.findOne({
+      where: {
+        'email': users[i].email
+      }
+    });
+    if (checkUserMail) {
+      email.push(users[i].email);
+      emailExist = true;
+    }
+    if (!validator.isEmail(users[i].email)) {
+      notValidMail.push(rowNum);
+    }
+  }
+  
+  return [emailExist, email, notValidMail]
 }

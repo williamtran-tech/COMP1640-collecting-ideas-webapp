@@ -10,6 +10,17 @@ exports.checkInput = (req) => {
     return false
 }
 
+exports.checkInputCSV = (data) => {
+    for (var cells in data) {
+        for (prop in data[cells]) {
+            if (data[cells][prop].trim().length === 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 exports.checkTime = (req) => {
     var d1 = new Date(req.body.closureDate);
     var d2 = new Date(req.body.finalClosureDate);

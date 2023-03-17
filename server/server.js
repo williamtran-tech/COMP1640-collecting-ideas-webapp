@@ -10,7 +10,7 @@ const accountsRoutes = require('./api/routes/accounts');
 const adminRoutes = require('./api/routes/admin/admin');
 const managerRoutes = require('./api/routes/manager/manager');
 
-const PORT = process.env.PORT || '5050';
+const PORT = process.env.PORT || '5000';
 
 app.use(cors());
 app.use(express.json());
