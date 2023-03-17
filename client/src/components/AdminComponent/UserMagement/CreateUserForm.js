@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { MenuItem, Stack } from '@mui/material';
 import handleApi from '../../../service/handleApi';
 import { Typography } from '@material-ui/core';
-const CreateUserForm = ({openModal, setOpenModal, department, role, setSumited, sumited}) => {
+const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited, submited}) => {
     const initialFormState = {
         fullName: '',
         email: '',
@@ -33,7 +33,7 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSumited, 
         handleApi.admin_create_user(user).then(
             response =>{
                 console.log(response.data)
-                setSumited(!sumited)
+                setSubmited(!submited)
             }
         )
         setOpenModal(false);

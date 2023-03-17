@@ -54,7 +54,7 @@ const admin_delete_user = async(id)=>{
   return await axios.delete(`/admin/users/${id}`, config());
 }
 const admin_update_user = async(id, data)=>{
-  return await axios.put(`/admin/users/${id}`,data, config());
+  return await axios.put(`/admin/users/${id}`,data, config_form());
 }
 const handleApi = {
     getListTopic,

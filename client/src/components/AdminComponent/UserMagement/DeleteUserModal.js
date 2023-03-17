@@ -5,11 +5,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import handleApi from '../../../service/handleApi';
 
-const DeleteUserModal = ({openDelete, setOpenDelete,id, setSumited, sumited}) => {
+const DeleteUserModal = ({openDelete, setOpenDelete,id, setSubmited, submited}) => {
     const handleDelete = ()=>{
         handleApi.admin_delete_user(id).then(response=>{
             console.log(response.data)
-            setSumited(!sumited)
+            setSubmited(!submited)
         })
         setOpenDelete(false);
     }

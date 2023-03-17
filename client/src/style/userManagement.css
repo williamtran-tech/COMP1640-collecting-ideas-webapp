@@ -53,3 +53,11 @@
     display: flex;
     justify-content: center;
 }
+.filter_user .Mui-selected {
+    background-color: transparent !important;
+    color: #096BDE !important;
+  }
+.MuiTab-textColorPrimary{
+    color: black !important;
+    text-transform: capitalize !important;
+}

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Avatar, TextField, Typography , Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import handleApi from '../../../service/handleApi';
-const UserProfile = ({userInf, department, role}) => {
+const UserProfile = ({userInf, department, role, setOpenDrawer, setSubmited, submited}) => {
     console.log(userInf)
     const [user, setUser]= useState({
         fulleName: userInf.fullName,
@@ -18,11 +18,21 @@ const UserProfile = ({userInf, department, role}) => {
           [name]: value
         }));
       };
-    const updateInf = () =>{
-        handleApi.admin_update_user(userInf.id).then(response =>{
-            console.log(response.data)
-        })
-    }
+    const handleUpdateUser=(event) =>{
+      event.preventDefault()
+      const formData = new FormData();
+      formData.append("name", user.fulleName);
+      formData.append("departmentId", user.departmentId);
+      formData.append("roleId",user.roleId);
+      formData.append("file", user.file);
+      formData.append("email", userInf.email);
+      formData.append("password", userInf.password);
+      handleApi.admin_update_user(userInf.id,formData).then(response =>{
+        console.log(response.data)
+        setOpenDrawer(false)
+        setSubmited(!submited)
+      })
+  }
   return (
     <div className='user_profile'>
     <Stack className="avatar_profile">
@@ -39,15 +49,16 @@ const UserProfile = ({userInf, department, role}) => {
             </Stack>
     </Stack>
     <div>
-    <form >
-      <TextField label="Name" value={user.fulleName} fullWidth margin="normal" required   onChange={handleInputChange}/>
-      <TextField label="Email" value={user.email} fullWidth margin="normal" required  onChange={handleInputChange} />
+    <form onSubmit={handleUpdateUser}>
+      <TextField label="Name" name='fulleName' value={user.fulleName} fullWidth margin="normal" required   onChange={handleInputChange}/>
+      <TextField label="Email" value={user.email} fullWidth margin="normal" required  disabled />
       <Stack direction="row" spacing={2}>
         <TextField
             label="Department"
             variant="outlined"
             fullWidth
             select
+            name='departmentId'
             value={user.departmentId}
             onChange={handleInputChange}
         >
@@ -62,6 +73,7 @@ const UserProfile = ({userInf, department, role}) => {
         variant="outlined"
         fullWidth
         select
+        name='roleId'
         value={user.roleId}
         onChange={handleInputChange}
       >

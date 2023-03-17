@@ -87,7 +87,8 @@ const ListIdeas = () => {
         });
     };
 
-    const handleSubmitIdea=() =>{
+    const handleSubmitIdea=(event) =>{
+        event.preventDefault()
         const formData = new FormData();
         formData.append("name", inputedIdea);
         formData.append("categoryId", selectedCategory);
