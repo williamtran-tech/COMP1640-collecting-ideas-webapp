@@ -6,6 +6,7 @@
     background-color: #EFF2F5;
 }
 .dashboard_navigation_container{
+    
     height: 100vh;
 }
 .dashboard_navigation{
@@ -14,11 +15,18 @@
     border-radius: 10px;
     margin: 2vh;
     padding:0 6px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content:space-between;
 }
 .admin-logo{
     padding: 10px 0px;
+    position: absolute;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 .Admin_function_name{
     color: #EFF2F5;
@@ -42,22 +50,20 @@ background-color: transparent !important;
     transition: 0.1s;
     background-color: #096BDE !important;
  }
- .css-1bog4bd-JoyTabList-root{
-     width: 100%;
- }
-
- .dashboard_content{
-     
-    padding-top: 2vh;
-    padding-right: 2vh;
-    height: 100vh;
-    overflow: scroll;
- }
- .icon-edit{
-    color: #096BDE !important;
- }
- .icon-delete{
-    color: #f27f75;
+.css-1bog4bd-JoyTabList-root{
+    width: 100%;
+}
+.dashboard_content{
+padding-top: 2vh;
+padding-right: 2vh;
+height: 100vh;
+overflow: scroll;
+}
+.icon-edit{
+color: #096BDE !important;
+}
+.icon-delete{
+color: #f27f75;
 }
 .css-6hp17o-MuiList-root-MuiMenu-list{
 display: flex !important;
@@ -87,7 +93,6 @@ flex-direction: column !important;
     background-color: #fff !important;
     border-radius: 15px !important;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-
 }
 .table-row td{
     font-size: 12px ;
@@ -117,4 +122,18 @@ flex-direction: column !important;
  .table_idea_container{
      border-radius: 15px !important;
      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+ }
+ /* .admin_logout{
+    position: absolute;
+    display: inline-block;
+    bottom: 0px ;
+    transform: translateX(-50%);
+    left: 50%;
+ } */
+ .logo_admin{
+    height: 100px;
+ }
+ .admin_logout{
+     display: flex;
+     align-items: flex-end;
  }
