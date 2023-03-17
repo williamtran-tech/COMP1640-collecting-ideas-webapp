@@ -11,10 +11,9 @@ import { useState, useEffect } from 'react';
 import checkToken from './service/checkToken';
 import Layout from './components/AdminComponent/Layout';
 
-import CreateNewTopic from './components/AdminComponent/CreateNewTopic';
 
-import TopicTable from './components/AdminComponent/TopicTable';
-import UserManagement from './components/AdminComponent/UserManagement';
+import TopicTable from './components/AdminComponent/TopicManagement/TopicTable';
+import UserManagement from './components/AdminComponent/UserMagement/UserManagement';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();

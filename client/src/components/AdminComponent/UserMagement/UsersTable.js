@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import {Drawer, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button } from '@mui/material';
 import { useState } from 'react';
-import handleApi from '../../service/handleApi';
+import handleApi from '../../../service/handleApi';
 import UserProfile from './UserProfile';
 import CreateUserForm from './CreateUserForm';
 import DeleteUserModal from './DeleteUserModal';
+import '../../../style/userManagement.css'
 const UsersTable = ({openModal,setOpenModal}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -95,9 +96,9 @@ const UsersTable = ({openModal,setOpenModal}) => {
               {user.isVerified ? 'Active' : 'Inactive'}
               </TableCell>
               <TableCell align='center'>
-                <Button onClick={()=>{handleOpenDrawer(user.id)}}>Edit</Button>
-                <Button >Ban</Button>
-                <Button onClick={()=>{handleOpenModal(user.id)}}>Delete</Button>
+                <Button size ='small'  onClick={()=>{handleOpenDrawer(user.id)}}>Edit</Button>
+                <Button size ='small'  >Ban</Button>
+                <Button size ='small'  onClick={()=>{handleOpenModal(user.id)}}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
@@ -107,7 +108,7 @@ const UsersTable = ({openModal,setOpenModal}) => {
     <Drawer anchor='right' open={openDrawer} onClose={handleCloseDrawer}>
         <UserProfile userInf={userInf} department={listUsers.departments} role={listUsers.roles}></UserProfile>
     </Drawer> 
-    <CreateUserForm openModal={openModal} setOpenModal={setOpenModal} department={listUsers.departments} role={listUsers.roles}></CreateUserForm>
+    <CreateUserForm openModal={openModal} setOpenModal={setOpenModal} department={listUsers.departments} role={listUsers.roles} setSumited={setSumited}></CreateUserForm>
     <DeleteUserModal openDelete={openDelete} setOpenDelete={setOpenDelete} id={idDelete} setSumited={setSumited} sumited={sumited}> </DeleteUserModal>
     </>
   )

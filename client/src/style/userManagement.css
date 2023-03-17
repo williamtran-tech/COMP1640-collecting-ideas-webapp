@@ -25,5 +25,32 @@
     border-radius: 15px !important;
 }
 .create_user_btn{
-    /* border-radius: 50% !important; */
+    background-color: transparent;
+    box-shadow: none;
+    color: #096BDE;
+    padding: 3px;
+    border-radius: 5px;
+}
+.form_create_user div{
+    margin: 5px !important;
+}
+.MuiTextField-root{
+     margin: 10px 0 !important;
+}
+.action_user_form{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.action_user_form button{
+   background-color: #096BDE;
+   padding: 7px;
+   border-radius: 10px;
+}
+.cancle_btn{
+    background-color: #f27f75 !important;
+}
+.titleform{
+    display: flex;
+    justify-content: center;
 }

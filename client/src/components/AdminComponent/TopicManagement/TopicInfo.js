@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { TextField,Button, Snackbar } from '@material-ui/core'
 import { Alert, Slide } from '@mui/material';
 import { useState } from 'react'
-import handleApi from '../../service/handleApi';
+import handleApi from '../../../service/handleApi';
 const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
     const [values, setValues] = useState({});
     const [buttonDisabled, setButtonDisabled] = useState(true);

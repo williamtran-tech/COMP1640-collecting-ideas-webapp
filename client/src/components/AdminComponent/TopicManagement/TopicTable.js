@@ -11,7 +11,7 @@ import { Box, Button, IconButton, Grid, Typography, Dialog, DialogActions, Dialo
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useState, useEffect } from 'react';
-import handleApi from '../../service/handleApi';
+import handleApi from '../../../service/handleApi';
 import TopicInfo from './TopicInfo';
 import TableIdeas from './TableIdeas';
 import DeleteTopicModal from './DeleteTopicModal';

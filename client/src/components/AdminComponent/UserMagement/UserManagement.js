@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import UsersTable from './UsersTable';
-import { Button, Paper,  Typography } from '@mui/material';
+import { Button, Paper,  Typography } from '@material-ui/core';
 import AddIcon from '@mui/icons-material/Add';
-import '../../style/userManagement.css'
-import CreateUserForm from './CreateUserForm';
+import '../../../style/userManagement.css'
 const UserManagement= () => {
     const [openModal, setOpenModal] = useState(false);
     const handleOpen = () => {
@@ -14,7 +13,7 @@ return(
     <>
     <Paper className='header_admin'>
           <Typography> Topic Management</Typography>
-            <Button variant="contained" startIcon={<AddIcon  />}  onClick={handleOpen}>
+            <Button variant="contained" startIcon={<AddIcon/>} className='create_user_btn' onClick={handleOpen}>
               New User
           </Button>
     </Paper>
@@ -23,8 +22,6 @@ return(
         <UsersTable openModal={openModal} setOpenModal={setOpenModal}></UsersTable>
     </Paper>
     </>
-    
 )
 };
-
 export default UserManagement;
