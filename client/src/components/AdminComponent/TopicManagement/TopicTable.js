@@ -247,7 +247,7 @@ const TopicTable = () => {
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
                                 {
-                                  confirm && <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id}></DeleteTopicModal>
+                                  confirm && <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm}></DeleteTopicModal>
                                 }
                               </Box>
                             </TableCell> 

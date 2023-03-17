@@ -25,9 +25,8 @@
     border-radius: 15px !important;
 }
 .create_user_btn{
-    background-color: transparent;
-    box-shadow: none;
-    color: #096BDE;
+    background-color:  #096BDE !important;
+    color: aliceblue !important;
     padding: 3px;
     border-radius: 5px;
 }

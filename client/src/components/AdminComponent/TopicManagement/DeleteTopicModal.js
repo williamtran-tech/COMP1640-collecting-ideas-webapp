@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import handleApi from '../../../service/handleApi';
-const DeleteTopicModal = ({setConfirm , setDeleted, deleted, idTopic}) => {
-    const [modal,setModalOpen]= useState(true)
+const DeleteTopicModal = ({setConfirm ,confirm, setDeleted, deleted, idTopic}) => {
     const handleCloseModal = () => {
-        setModalOpen(false);
+      setConfirm(false);
       };
     const deleteTopic = () => {
         setConfirm(false)
@@ -15,7 +14,7 @@ const DeleteTopicModal = ({setConfirm , setDeleted, deleted, idTopic}) => {
     }
   return (
     <Dialog
-    open={modal}
+    open={confirm}
     onClose={handleCloseModal}
     aria-labelledby="alert-dialog-title"
     aria-describedby="alert-dialog-description"
