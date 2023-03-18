@@ -4,6 +4,11 @@ const db = require('./../db/models');
 const User = db.User;
 const Department = db.Department;
 const Role = db.Role;
+const View = db.View;
+const React = db.React;
+const Idea = db.Idea;
+const Category = db.Category;
+const Topic = db.Topic;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
@@ -41,99 +46,41 @@ function generatePassword() {
 
   return password;
 }
-
+// This is for USER FUNCTIONS
 // Using salt in bcrypt hash to make the password hash cant be leak if hacker get the database in the dictionary table
-exports.create_user = async (req, res) => {
+// This function used for verification user email -> Accept login
+exports.verify = async (req, res) => {
   try {
-    const fUser = await User.findOne({
-      where: {'email': req.body.email}
+    const token = req.query.token;
+    console.log(token);
+    const decoded = jwt.verify(token, config.env.JWT_key);
+
+    const user = await User.findOne({
+      where: {
+        "email": decoded.email
+      }
     });
-    if (fUser) {
-      res.status(409).json({
-        message: "Email exists"
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (!user.isVerified) {
+      user.update({isVerified: true});
+      res.status(200).json({
+        msg: "Verify successfully"
       })
     } else {
-      const password = generatePassword();
-      const hash = await bcrypt.hash(password, 10);
-
-      const user = {
-        fullName: req.body.fullName,
-        roleId: req.body.roleId,
-        departmentId: req.body.departmentId,
-        email: req.body.email,
-        password: hash,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
-      // Generate a token for verifying email of user
-      const token = jwt.sign({
-        email: user.email,
-        name: user.fullName,
-      }, config.env.JWT_key, 
-      {
-        expiresIn: "3d"
-      });
-      
-      // If the hash successfully created then the following code will be executed
-      User.create(user).then(createdUser => {
-        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, password, token));
-        res.status(200).json({
-          message: "Successfully added user"
-        });
-      });
-    }
-  } catch(error) {
-    console.log(error);
-    res.status(500).send('Server Error');
-  }
-};
-
-exports.create_user_root = async (req, res) => {
-  try {
-    const fUser = await User.findOne({
-      where: {'email': req.body.email}
-    });
-    if (fUser) {
-      res.status(409).json({
-        message: "Email exists"
+      res.status(401).json({
+        msg: "Verify already"
       })
-    } else {
-      const hash = await bcrypt.hash(req.body.password, 10);
-
-      const user = {
-        fullName: req.body.fullName,
-        roleId: req.body.roleId,
-        departmentId: req.body.departmentId,
-        email: req.body.email,
-        isVerified: req.body.isVerified,
-        password: hash,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
-      // Generate a token for verifying email of user
-      const token = jwt.sign({
-        email: user.email,
-        name: user.fullName,
-      }, config.env.JWT_key, 
-      {
-        expiresIn: "3d"
-      });
-      
-      // If the hash successfully created then the following code will be executed
-      User.create(user).then(createdUser => {
-        // sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, token));
-        res.status(200).json({
-          message: "Successfully added user"
-        });
-      });
-    }
-  } catch(error) {
-    console.log(error);
-    res.status(500).send('Server Error');
+    }    
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server Error"
+    });
   }
-};
+}
 
 exports.login_user = async (req, res) => {
   try {
@@ -187,40 +134,6 @@ exports.login_user = async (req, res) => {
   } catch (error){
     console.log(error);
     res.status(500).send("Server Error");
-  }
-}
-
-// This function used for verification user email -> Accept login
-exports.verify = async (req, res) => {
-  try {
-    const token = req.query.token;
-    console.log(token);
-    const decoded = jwt.verify(token, config.env.JWT_key);
-
-    const user = await User.findOne({
-      where: {
-        "email": decoded.email
-      }
-    });
-    
-    if (!user) {
-      throw new Error("User not found");
-    }
-    if (!user.isVerified) {
-      user.update({isVerified: true});
-      res.status(200).json({
-        msg: "Verify successfully"
-      })
-    } else {
-      res.status(401).json({
-        msg: "Verify already"
-      })
-    }    
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      err: "Server Error"
-    });
   }
 }
 
@@ -283,74 +196,6 @@ exports.update_user = async (req, res) => {
       })
     }
     }
-}
-
-exports.delete_user = async (req, res) => {
-  try {
-    const deleteUser = await User.destroy({
-        where: {
-            "id": req.params.id
-        }
-    });
-    if (deleteUser){
-        res.status(200).json({
-            msg: "Successful delete User " + req.params.id
-        });
-    }
-    else {
-        res.status(404).json({
-            msg: "Not Found"
-        });
-    }
-} catch (err){
-    if (err.name === "SequelizeForeignKeyConstraintError"){
-        res.status(401).json({
-            msg: "Cannot delete user exists idea references"
-        });
-    } else {
-        console.log(err);
-        res.status(500).send("Server Error");
-    }
-}
-}
-
-exports.list_all_users = async (req, res) =>{
-    try {
-        const users = await User.findAll({
-          attributes: {
-              exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
-          },
-          include: [{
-              model: Department, as: "Department",
-              attributes:['id','name']
-          },
-          {
-            model: Role, as: "Role",
-            attributes: {exclude: ["createdAt", "updatedAt"]}
-          }]
-        });
-        // User.findAll({ include: 'Instruments' }); // Also works
-        // User.findAll({ include: { association: 'Instruments' } }); // Also works
-        const departments = await Department.findAll({
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          }
-        });
-        const roles = await Role.findAll({
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          }
-        });
-        res.json({
-          message: "Successfully get all users",
-          users: users,
-          departments: departments,
-          roles: roles
-        });
-      } catch (error) {
-        console.error(error);
-        res.status(500).send('Server Error');
-      }
 }
 
 // This function used for getting email address of user -> send reset-password mail
@@ -464,6 +309,292 @@ exports.reset_password = async (req, res) => {
       })
     }
   }
+}
+
+// This is for easy to test
+exports.create_user_root = async (req, res) => {
+  try {
+    const fUser = await User.findOne({
+      where: {'email': req.body.email}
+    });
+    if (fUser) {
+      res.status(409).json({
+        message: "Email exists"
+      })
+    } else {
+      const hash = await bcrypt.hash(req.body.password, 10);
+
+      const user = {
+        fullName: req.body.fullName,
+        roleId: req.body.roleId,
+        departmentId: req.body.departmentId,
+        email: req.body.email,
+        isVerified: req.body.isVerified,
+        password: hash,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      // Generate a token for verifying email of user
+      const token = jwt.sign({
+        email: user.email,
+        name: user.fullName,
+      }, config.env.JWT_key, 
+      {
+        expiresIn: "3d"
+      });
+      
+      // If the hash successfully created then the following code will be executed
+      User.create(user).then(createdUser => {
+        // sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, token));
+        res.status(200).json({
+          message: "Successfully added user"
+        });
+      });
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.personal_info = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    decoded = jwt.verify(token, config.env.JWT_key);
+
+    if (decoded.userId == req.params.id) {
+      // Get information of user
+      const info = await User.findOne({
+        where: {
+          "id": req.params.id
+        },
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
+        },
+        include: [{
+            model: Department, as: "Department",
+            attributes:['id','name']
+        },
+        {
+          model: Role, as: "Role",
+          attributes: {exclude: ["createdAt", "updatedAt"]}
+        }]
+      });
+
+      // Get all ideas that user viewed
+      const viewHistory = await View.findAll({
+        where: {
+          "userId": req.params.id
+        },
+        include: [{
+          model: Idea,
+          as: 'Idea',
+          attributes: { exclude: ['createdAt', 'updatedAt', 'topicId', 'categoryId', 'userId','TopicId', 'CategoryId', 'UserId'] },
+          include: [
+            {
+              model: User,
+              as: 'User',
+              attributes: ['fullName', 'email', 'id']
+            },
+            {
+              model: Category,
+              as: 'Category',
+              attributes: ['name', 'id']
+            },
+            {
+              model: Topic,
+              as: 'Topic',
+              attributes: ['name', 'id']
+            }
+          ]
+        }],
+        attributes: ['createdAt']
+      })
+
+      // Get all ideas that user reacted
+      const reactHistory = await React.findAll({
+        where: {
+          "userId": req.params.id
+        },
+        include: [{
+          model: Idea,
+          as: 'Idea',
+          attributes: { exclude: ['createdAt', 'updatedAt', 'topicId', 'categoryId', 'userId','TopicId', 'CategoryId', 'UserId'] },
+          include: [
+            {
+              model: User,
+              as: 'User',
+              attributes: ['fullName', 'email', 'id']
+            },
+            {
+              model: Category,
+              as: 'Category',
+              attributes: ['name', 'id']
+            },
+            {
+              model: Topic,
+              as: 'Topic',
+              attributes: ['name', 'id']
+            }
+          ]
+        }],
+        attributes: ['createdAt']
+      })
+
+      // Get all contributions of user
+      const contributions = await Idea.findAll({
+        where: {
+          'userId': req.params.id
+        },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'topicId', 'categoryId', 'userId','TopicId', 'CategoryId', 'UserId'] },
+          include: [
+            {
+              model: Category,
+              as: 'Category',
+              attributes: ['name', 'id']
+            },
+            {
+              model: Topic,
+              as: 'Topic',
+              attributes: ['name', 'id']
+            }
+          ]
+      })
+
+      res.status(200).json({
+        info: info,
+        contributions: contributions,
+        viewHistory: viewHistory,
+        reactHistory: reactHistory
+      })
+    } else {
+      res.status(401).json({
+        err: "Cannot access to other profile"
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server Error"
+    })
+  }
+}
+// 
+// ADMIN PANEL FUNCTIONS
+//
+exports.create_user = async (req, res) => {
+  try {
+    const fUser = await User.findOne({
+      where: {'email': req.body.email}
+    });
+    if (fUser) {
+      res.status(409).json({
+        message: "Email exists"
+      })
+    } else {
+      const password = generatePassword();
+      const hash = await bcrypt.hash(password, 10);
+
+      const user = {
+        fullName: req.body.fullName,
+        roleId: req.body.roleId,
+        departmentId: req.body.departmentId,
+        email: req.body.email,
+        password: hash,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      // Generate a token for verifying email of user
+      const token = jwt.sign({
+        email: user.email,
+        name: user.fullName,
+      }, config.env.JWT_key, 
+      {
+        expiresIn: "3d"
+      });
+      
+      // If the hash successfully created then the following code will be executed
+      User.create(user).then(createdUser => {
+        sendEmail(user.email, "[GRE IDEAS] Confirm Letter - Registration", htmlMail.registration(user, password, token));
+        res.status(200).json({
+          message: "Successfully added user"
+        });
+      });
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).send('Server Error');
+  }
+}
+
+exports.list_all_users = async (req, res) =>{
+  try {
+      const users = await User.findAll({
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
+        },
+        include: [{
+            model: Department, as: "Department",
+            attributes:['id','name']
+        },
+        {
+          model: Role, as: "Role",
+          attributes: {exclude: ["createdAt", "updatedAt"]}
+        }]
+      });
+      // User.findAll({ include: 'Instruments' }); // Also works
+      // User.findAll({ include: { association: 'Instruments' } }); // Also works
+      const departments = await Department.findAll({
+        attributes: {
+          exclude: ['createdAt', 'updatedAt']
+        }
+      });
+      const roles = await Role.findAll({
+        attributes: {
+          exclude: ['createdAt', 'updatedAt']
+        }
+      });
+      res.json({
+        message: "Successfully get all users",
+        users: users,
+        departments: departments,
+        roles: roles
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+    }
+}
+
+exports.delete_user = async (req, res) => {
+  try {
+    const deleteUser = await User.destroy({
+        where: {
+            "id": req.params.id
+        }
+    });
+    if (deleteUser){
+        res.status(200).json({
+            msg: "Successful delete User " + req.params.id
+        });
+    }
+    else {
+        res.status(404).json({
+            msg: "Not Found"
+        });
+    }
+} catch (err){
+    if (err.name === "SequelizeForeignKeyConstraintError"){
+        res.status(401).json({
+            msg: "Cannot delete user exists idea references"
+        });
+    } else {
+        console.log(err);
+        res.status(500).send("Server Error");
+    }
+}
 }
 
 // These functions used for admin to bulkInsert new user

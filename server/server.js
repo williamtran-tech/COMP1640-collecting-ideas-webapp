@@ -9,6 +9,7 @@ const commentsRoutes = require('./api/routes/comments');
 const accountsRoutes = require('./api/routes/accounts');
 const adminRoutes = require('./api/routes/admin/admin');
 const managerRoutes = require('./api/routes/manager/manager');
+const userRoutes = require('./api/routes/user.js');
 
 const PORT = process.env.PORT || '5000';
 
@@ -21,6 +22,7 @@ app.use("/uploaded_files", express.static("./uploaded_files"));
 app.use('/ideas', ideasRoutes);
 app.use('/topics', topicsRoutes);
 app.use('/comments', commentsRoutes);
+app.use('/users', userRoutes);
 app.use('/accounts', accountsRoutes);
 app.use('/admin', adminRoutes);
 app.use('/manager', managerRoutes);
