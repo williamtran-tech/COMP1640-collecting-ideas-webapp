@@ -26,12 +26,16 @@ const login = data => {
 const create_idea= async (id, data) =>{
     return axios.post(`/topics/${id}/upload`, data, config_form());
 };
+const get_user_inf= async (id) =>{
+  return axios.get(`/users/profile/${id}`, config());
+};
 const admin_getListTopic = async () => {
     return await axios.get("/admin/topics",config());
   };
- const admin_create_idea= async (data) =>{
+const admin_create_idea= async (data) =>{
     return axios.post(`/admin/topics`, data, config());
 };
+
 const admin_getIdeas_by_topic= async id => {
   return await axios.get(`/admin/topics/${id}`, config());
 }
@@ -64,6 +68,7 @@ const handleApi = {
     react,
     login, 
     create_idea,
+    get_user_inf,
     admin_getListTopic,
     admin_create_idea,
     admin_getIdeas_by_topic,
