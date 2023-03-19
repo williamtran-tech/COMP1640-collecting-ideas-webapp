@@ -2,7 +2,8 @@ import React from 'react'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-const ReactHistory = ({react}) => {
+const Contribution = ({contribution}) => {
+    console.log(contribution)
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleChangeRowsPerPage = (event) => {
@@ -20,40 +21,36 @@ const ReactHistory = ({react}) => {
                       <TableRow className='react_list table-row' sx={{
                         "& th": {
                             color:"white",
-                            backgroundColor: "hsla(212, 92%, 45%, 1)",
+                            backgroundColor: "",
                             textTransform:'capitalize',
                         },
                         }}
                         >
                         {/* <TableCell>ID</TableCell> */}
-                       
                         <TableCell>Idea Name</TableCell>
-                        <TableCell>User</TableCell>
                         <TableCell>Category</TableCell>
                         <TableCell>Topic</TableCell>
-                         <TableCell>React at</TableCell>
+                         {/* <TableCell>Submit at</TableCell> */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {react.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map(react => (
+                      {contribution.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(contribution => (
                           <TableRow hover role="checkbox" tabIndex={-1}
                           className="table-row"
                          >
-                          
                             <TableCell>
-                            <Link to={`/ideas/${react.Idea.id}` } style={{ textDecoration: 'none' }}>
-                            {react.Idea.name}
+                            <Link to={`/ideas/${contribution.id}` } style={{ textDecoration: 'none' }}>
+                            {contribution.name}
                             </Link>
                             </TableCell>
-                            <TableCell>{react.Idea.User.fullName}</TableCell>
-                            <TableCell>{react.Idea.Category.name}</TableCell>
+                            <TableCell>{contribution.Category.name}</TableCell>
                             <TableCell>
-                            <Link to={`/topics/${react.Idea.Topic.id}`} style={{ textDecoration: 'none' }}>
-                            {react.Idea.Topic.name}
+                            <Link to={`/topics/${contribution.Topic.id}`} style={{ textDecoration: 'none' }}>
+                            {contribution.Topic.name}
                             </Link>
                             </TableCell> 
-                            <TableCell>{react.createdAt}</TableCell>
+                            {/* <TableCell>{contribution.createdAt}</TableCell> */}
                           </TableRow>
                         ))}
                     </TableBody>
@@ -63,7 +60,7 @@ const ReactHistory = ({react}) => {
             <TablePagination
             rowsPerPageOptions={[1,5,10]}
             component="div"
-            count={react.length}
+            count={contribution.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -73,4 +70,4 @@ const ReactHistory = ({react}) => {
   )
 }
 
-export default ReactHistory
+export default Contribution

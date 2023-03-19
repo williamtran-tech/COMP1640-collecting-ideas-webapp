@@ -30,21 +30,21 @@ const UsersTable = ({openModal,setOpenModal}) => {
           }
       )
       }
-      useEffect(() => {
-        if (listUsers && listUsers.users) {
-          setFilteredUsers(
-            listUsers.users.filter(user => {
-              if (statusFilter === 'active') {
-                return user.isVerified;
-              } else if (statusFilter === 'inactive') {
-                return !user.isVerified;
-              } else {
-                return true;
-              }
-            })
-          );
+useEffect(() => {
+  if (listUsers && listUsers.users) {
+    setFilteredUsers(
+      listUsers.users.filter(user => {
+        if (statusFilter === 'active') {
+          return user.isVerified;
+        } else if (statusFilter === 'inactive') {
+          return !user.isVerified;
+        } else {
+          return true;
         }
-      }, [submited, statusFilter, listUsers]);
+      })
+    );
+  }
+}, [submited, statusFilter, listUsers]);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
