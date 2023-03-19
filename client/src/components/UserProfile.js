@@ -42,6 +42,8 @@ const UserProfile = () => {
             <Stack className="avatar_profile">
             { profile && profile.info &&(
               <>
+              <div className='background_profile'>
+                <div className="avatar_profile">
                 <Badge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -52,10 +54,14 @@ const UserProfile = () => {
                 }>
                 <Avatar                                     
                         src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
-                        style={{ width: 150, height: 150 }}/>
+                        style={{ width: 150, height: 150 }}
+                        />
                 </Badge>
-                
-                <Typography variant="h5"> {profile.info.fullName} </Typography>
+                </div>
+              </div>
+               
+              <div className='user_information'>
+                <Typography variant="h5" sx={{ textAlign: 'center' }}> {profile.info.fullName} </Typography>
                 <Stack direction={'row'} spacing={1}>
                     <Typography >{profile.info.email}  • </Typography>
                 <Typography className={profile.info  ? 'active' : 'inactive'}> {profile.info ? 'Active' : 'Inactive'}
@@ -66,7 +72,7 @@ const UserProfile = () => {
                     <Typography variant="subtitle1" gutterBottom>
                       
                     </Typography>
-                    <Button variant="contained" size="small" sx={{ mr: 2 }}>
+                    <Button variant="contained" size="small">
                       Change Password
                     </Button>
                     </Stack>
@@ -78,11 +84,13 @@ const UserProfile = () => {
                       Role: {profile.info.Role.name}
                     </Typography>
                 </div>
+              </div>
+                
               </>     
             )}
            </Stack>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} className='user_table'>
           <Tabs value={tabValue} onChange={handleTabChange} indicatorColor="none" centered> 
               <Tab label="Contributions" />
               <Tab label="View History" />

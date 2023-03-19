@@ -69,6 +69,7 @@ const ReactHistory = ({react}) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+          
     </div>
   )
 }
