@@ -2,12 +2,35 @@ import React from 'react'
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { Avatar } from '@material-ui/core';
+import { useState, useRef } from 'react';
 const UploadProfilePic = ({openModal,setOpenModal}) => {
-
+    const filePicekerRef = useRef(null)
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+   
+   
+    const handleChooseClick = () => {
+        filePicekerRef.current.click();
+    };
+    const handleFileChange = (event) => {
+        event.preventDefault();
+        const reader = new FileReader();
+        const file = event.target.files[0];
+    
+        reader.onloadend = () => {
+            setSelectedFile(file);
+            setImagePreview(reader.result); 
+        };
+    
+        reader.readAsDataURL(file);
+    }; 
     const handleClose = () => {
         setOpenModal(false);
+        setImagePreview(null);
       };
+    // console.log(imagePreview)
+    //         console.log(filePicekerRef)
   return (
     <div>
             <Modal
@@ -25,18 +48,31 @@ const UploadProfilePic = ({openModal,setOpenModal}) => {
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             }}>
-            <Typography id="modal-title" variant="h6" component="h2">
-                Are you sure you want to delete this item?
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-                <Button variant="contained" >
-                Delete
-                </Button>
-                <Button variant="contained" onClick={handleClose} sx={{ ml: 2 }}>
-                Cancel
-                </Button>
-            </Box>
+                <Avatar                                     
+                        src={imagePreview}
+                        style={{ width: 150, height: 150 }}/>
+                <div style={{ marginTop: 10, display:'flex', gap: 10}}>
+                    <Button variant="contained" onClick={handleChooseClick}>
+                        Upload
+                        <input
+                        ref={filePicekerRef}
+                        accept="image/*, video/*"
+                        onChange={handleFileChange}
+                        type="file"
+                        hidden
+                    />
+                    </Button>
+                    <Button variant="contained" onClick={handleClose}>
+                    Cancel
+                    </Button>
+                </div>
+                
+           
             </Box>
         </Modal>
   </div>

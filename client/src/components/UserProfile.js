@@ -41,7 +41,7 @@ const UserProfile = () => {
           <Grid item xs={12}>
             <Stack className="avatar_profile">
             { profile && profile.info &&(
-                  <>
+              <>
                 <Badge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -49,12 +49,10 @@ const UserProfile = () => {
                   <IconButton onClick={handleOpen}>
                     <CameraAltIcon></CameraAltIcon>
                   </IconButton>
-                }
-              >
-
+                }>
                 <Avatar                                     
                         src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
-                        style={{ width: 150, height: 150 }}> hello</Avatar>
+                        style={{ width: 150, height: 150 }}/>
                 </Badge>
                 
                 <Typography variant="h5"> {profile.info.fullName} </Typography>
