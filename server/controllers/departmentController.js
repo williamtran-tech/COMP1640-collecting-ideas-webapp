@@ -217,3 +217,18 @@ exports.delete_department = async (req, res) => {
         }
     }
 }
+
+// Insight for QA Manager
+exports.insight = async (req, res) => {
+    try {
+        // Number of ideas each department
+        
+        // Number of contributors each department weekly, ..
+        
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            err: "Server error"
+        })
+    }
+}

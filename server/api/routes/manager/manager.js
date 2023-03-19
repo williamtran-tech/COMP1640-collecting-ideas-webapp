@@ -9,5 +9,7 @@ const isManager = require('../../../middleware/isManager.js');
 const uploadFile = require('../../../middleware/uploadFile.js');
 
 router.get('/csv-topic/download/:id', isManager, topic.download_topic_csv);
+router.get('/statistic', isManager, topic.insight);
+router.get('/statistic/topics/:id', isManager, topic.most_viewed_ideas);
 
 module.exports = router;
