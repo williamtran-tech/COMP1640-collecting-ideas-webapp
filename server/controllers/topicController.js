@@ -404,3 +404,108 @@ exports.download_topic_csv = async (req, res) => {
 
     res.status(200).end(csvData);
 }
+
+// These functions used for statistical Data
+
+// TOP topics having idea quantity
+exports.insight = async (req, res) => {
+    try {
+        const topics = await Topic.findAll({
+            attributes: [
+              'id',
+              'name',
+              'closureDate',
+              'finalClosureDate',
+              [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']
+            ],
+            include: [
+              {
+                model: Idea,
+                attributes:[],
+                require: true
+              }
+            ],
+            group: ['id'],
+            order: [['idea_quantity', "DESC"]]
+          });
+        
+        const categories = await Category.findAll({
+            attributes: [
+                'id',
+                'name',
+                [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']
+              ],
+              include: [
+                {
+                  model: Idea,
+                  attributes:[],
+                  require: true
+                }
+              ],
+              group: ['id'],
+              order: [['idea_quantity', "DESC"]]
+        })
+
+        res.status(200).json({
+            msg: "Successfully get insight",
+            topics: topics,
+            categories: categories
+        })
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({
+            err: err
+        })
+    }
+}
+
+// MOST Viewed ideas of a topic
+exports.most_viewed_ideas = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const ideas = await db.sequelize.query(
+        `SELECT  
+            ideas.name AS idea, 
+            users.fullName AS ownerName, 
+            users.email AS email, 
+            COALESCE(reacts.likes, 0) AS likes, 
+            COALESCE(reacts.dislikes, 0) AS dislikes,
+            SUM(views.views) AS views,
+            COALESCE(c.comments, 0) as comments,
+            categories.name AS category,
+            ideas.createdAt, 
+            ideas.updatedAt,
+            ideas.id as ideaId,
+            users.id as userId,
+            categories.id as categoryId
+        FROM ideas
+        JOIN categories ON ideas.categoryId = categories.id
+        JOIN topics ON ideas.topicId = topics.id
+        JOIN users ON ideas.userId = users.id
+        JOIN views ON ideas.id = views.ideaId
+        LEFT JOIN (
+            SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
+            FROM reacts
+            GROUP BY ideaId
+        ) reacts ON ideas.id = reacts.ideaId
+        LEFT JOIN (
+            SELECT ideaId, COUNT(id) as comments
+            FROM comments
+            GROUP BY ideaId
+        ) c ON ideas.id = c.ideaId
+        WHERE topics.id = ${id}
+        GROUP BY ideas.id
+        ORDER BY views DESC;
+            `);
+
+        res.status(200).json({
+            msg: "Successfully get statistical data",
+            mostView: ideas[0]
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            err: "Server error"
+        })
+    }
+}

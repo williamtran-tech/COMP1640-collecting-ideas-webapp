@@ -480,22 +480,6 @@ exports.update_idea = async (req, res) => {
     }
 }
 
-// exports.checkFilePath = (idea) => {
-//     if (idea.filePath) {
-//         fs.unlink(idea.filePath, function(err) {
-//             if(err && err.code == 'ENOENT') {
-//                 // file doens't exist
-//                 console.info("File doesn't exist, won't remove it.");
-//             } else if (err) {
-//                 // other errors, e.g. maybe we don't have enough permission
-//                 console.error("Error occurred while trying to remove file");
-//             } else {
-//                 console.info(`File removed`);
-//             }
-//         });
-//     }
-// }
-
 exports.delete_idea = async (req, res) => {
     try {
         // Get the idea 
@@ -565,7 +549,6 @@ exports.removeAssociate = async(idea) =>{
             };
         }
 }
-
 
  //     if (idea.filePath) {
 
