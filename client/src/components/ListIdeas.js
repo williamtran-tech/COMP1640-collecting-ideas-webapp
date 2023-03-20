@@ -28,6 +28,7 @@ const ListIdeas = () => {
     const ideasPerPage = 5; // change this to adjust the number of ideas to display per page
     const start = (page - 1) * ideasPerPage;
     const end = start + ideasPerPage;
+    const [checkedAnonymous, setCheckedAnonymous] = useState(false);
     const handlePageChange = (event, value) => {
       setPage(value);
     };
@@ -92,7 +93,7 @@ const ListIdeas = () => {
         formData.append("name", inputedIdea);
         formData.append("categoryId", selectedCategory);
         formData.append("userId", decodedToken.userId);
-        formData.append("isAnonymous",0);
+        formData.append("isAnonymous",checkedAnonymous);
         formData.append("file", selectedFile);
       
         if (checkedTerm) {
@@ -120,7 +121,9 @@ const ListIdeas = () => {
     const handleClick = () => {
         console.log('You clicked the Chip.');
       };
-
+    const switchHandler = (event) => {
+        setCheckedAnonymous(event.target.checked);
+      };
   return (
         <Box className="body-container">
              {listideas.info?.map(topic=>(
@@ -225,7 +228,7 @@ const ListIdeas = () => {
                                     sx={{ width: 30, height: 30 }}
                                     />
                                     <Typography variant="body2">{decodedToken.name}</Typography>
-                                    <FormControlLabel control={<Switch defaultChecked size="small" />}  sx={{ '& .MuiFormControlLabel-label': { fontSize: '14px' } }} label="Anonymous" />
+                                    <FormControlLabel control={<Switch  size="small" checked={checkedAnonymous}  onChange={switchHandler}/>}  sx={{ '& .MuiFormControlLabel-label': { fontSize: '14px' } }} label="Anonymous" />
                                 </Stack>
                                 <FormControl fullWidth size="small">
                                     <InputLabel id="category">Category</InputLabel>
@@ -324,7 +327,7 @@ const ListIdeas = () => {
                                             <Stack direction="row" spacing={1}>
                                                 <Chip icon={<ThumbDown />} label={idea.dislikes} variant="outlined" size="small" color="default" />
                                                 <Chip icon={<ThumbUpIcon />} label={idea.likes} variant="outlined" size="small" color="default"/>
-                                                <Chip icon={<ChatBubbleIcon/>} label={idea.views} variant="outlined"size="small" color="default" />
+                                                <Chip icon={<ChatBubbleIcon/>} label={idea.comments} variant="outlined"size="small" color="default" />
                                             </Stack>
                                         </Grid>
                                         <Grid item xs={12} className="idea-content">

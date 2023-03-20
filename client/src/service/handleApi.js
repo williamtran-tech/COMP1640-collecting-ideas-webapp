@@ -63,6 +63,9 @@ const admin_delete_user = async(id)=>{
 const admin_update_user = async(id, data)=>{
   return await axios.put(`/admin/users/${id}`,data, config_form());
 }
+const QA_get_statistic = async()=>{
+  return await axios.get(`/manager/statistic`, config());
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -82,6 +85,7 @@ const handleApi = {
     admin_create_user,
     admin_delete_user,
     admin_update_user,
-    update_avatar
+    update_avatar,
+    QA_get_statistic
 };
 export default handleApi

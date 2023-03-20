@@ -101,15 +101,13 @@ const UploadProfilePic = ({openModal,setOpenModal, id, setUploaded, uploaded, av
                         hidden
                     />
                     </Button> */}
-                    <Button variant="contained" onClick={handleUploadAvatar}>
+                    <Button variant="contained" color='primary' onClick={handleUploadAvatar}>
                         Upload
                     </Button>
-                    <Button variant="contained" onClick={handleClose}>
+                    <Button  onClick={handleClose}>
                         Cancel
                     </Button>
                 </div>
-                
-           
             </Box>
         </Modal>
   </div>

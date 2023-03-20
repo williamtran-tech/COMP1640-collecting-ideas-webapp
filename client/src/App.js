@@ -14,6 +14,7 @@ import Layout from './components/AdminComponent/Layout';
 
 import TopicTable from './components/AdminComponent/TopicManagement/TopicTable';
 import UserManagement from './components/AdminComponent/UserMagement/UserManagement';
+import StatisticLayout from './components/AdminComponent/Statistic/StatisticLayout';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
@@ -39,6 +40,7 @@ function App() {
           <><Route path="/" element={<Layout></Layout>}>
           <Route path="/" element={<TopicTable></TopicTable>} />
           <Route path="/users" element={<UserManagement></UserManagement>} />
+          <Route path="/statistic" element={<StatisticLayout></StatisticLayout>} />
           </Route><Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route></>
           ) : 
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
