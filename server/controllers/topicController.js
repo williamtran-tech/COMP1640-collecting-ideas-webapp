@@ -410,6 +410,30 @@ exports.download_topic_csv = async (req, res) => {
 // TOP topics having idea quantity
 exports.insight = async (req, res) => {
     try {
+        const department_ideas = await db.sequelize.query(
+            `SELECT
+                departments.id as id,
+                departments.name as name,
+                count(ideas.id) as idea_quantity
+            FROM ideas
+            JOIN users ON ideas.userId = users.id
+            JOIN departments ON users.departmentId = departments.id
+            GROUP BY users.departmentId;`
+        );
+
+        // Way to get the unique count
+        const department_contributors = await db.sequelize.query(
+            `SELECT
+                departments.id as id,
+                departments.name as name,
+                count(distinct users.id) as contributors
+            FROM ideas
+            JOIN users ON ideas.userId = users.id
+            JOIN departments ON users.departmentId = departments.id
+            GROUP BY users.departmentId;
+            `
+        )
+
         const topics = await Topic.findAll({
             attributes: [
               'id',
@@ -448,6 +472,8 @@ exports.insight = async (req, res) => {
 
         res.status(200).json({
             msg: "Successfully get insight",
+            department_ideas: department_ideas[0],
+            department_contributors: department_contributors[0],
             topics: topics,
             categories: categories
         })
