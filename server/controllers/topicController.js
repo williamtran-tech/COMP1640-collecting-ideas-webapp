@@ -81,7 +81,8 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 `SELECT  
                 ideas.name AS idea, 
                 users.fullName AS ownerName, 
-                users.email AS email, 
+                users.email AS email,
+                users.profileImage AS imagePath,
                 COALESCE(reacts.likes, 0) AS likes, 
                 COALESCE(reacts.dislikes, 0) AS dislikes,
                 SUM(views.views) AS views,
@@ -111,7 +112,6 @@ exports.list_all_ideas_by_topic = async (req, res) => {
             GROUP BY ideas.id;
                 `);
 
-            const newIdea = await React.findAll();
             const allCategories = await Category.findAll({
                 attributes: ['id','name']
             })
@@ -135,8 +135,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
             info: topicInfo,
             ideas: ideas[0],
             allCategories: allCategories,
-            categories: categories,
-            react: newIdea
+            categories: categories
         })
     } catch(error){
         console.log(error);

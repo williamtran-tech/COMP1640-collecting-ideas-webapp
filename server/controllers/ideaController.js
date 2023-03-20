@@ -25,7 +25,7 @@ exports.all_ideas = async (req, res) => {
             include: [
                 {
                 model: User, as: "User",
-                attributes:['id','fullName']
+                attributes:['id','fullName', 'profileImage']
                 },
                 {
                 model: Topic, as: "Topic",
@@ -90,7 +90,7 @@ exports.get_idea_by_id = async (req, res) => {
             include: [
                 {
                     model: User, as: "User",
-                    attributes:['id','fullName'],
+                    attributes:['id','fullName', 'profileImage'],
                     require: true
                 },
                 {
@@ -125,7 +125,7 @@ exports.get_idea_by_id = async (req, res) => {
             include: [{
                 model: User,
                 as: "User",
-                attributes: ['id','fullName']
+                attributes: ['id','fullName', 'profileImage']
             }]
         });
 
@@ -140,7 +140,7 @@ exports.get_idea_by_id = async (req, res) => {
             include: [{
                 model: User,
                 as: "User",
-                attributes: ['id','fullName']
+                attributes: ['id','fullName', 'profileImage']
             }]
         });
 
@@ -156,7 +156,7 @@ exports.get_idea_by_id = async (req, res) => {
         // })
 
         const comments = await Comment.findAll({
-            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'createdAt', 'updatedAt'],
+            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'createdAt', 'updatedAt'],
             where: {'ideaId': req.params.id},
             include: {
                 model: User, 
@@ -180,6 +180,21 @@ exports.get_idea_by_id = async (req, res) => {
             },
             attributes: [[db.Sequelize.fn('sum', db.sequelize.col('views')), 'views']]
         });
+
+        const viewedBy = await View.findAll({
+            where: {
+                ideaId: req.params.id,
+                views: 1
+            },
+            attributes: [
+                'createdAt', 'updatedAt'
+            ],
+            include: [{
+                model: User,
+                as: "User",
+                attributes: ['id','fullName', 'profileImage']
+            }]
+        })
 
         // The code above need to refactor because of the repeated code - Separated Code for readability
         let token="";
@@ -214,6 +229,7 @@ exports.get_idea_by_id = async (req, res) => {
             likedBy: likedBy,
             dislikedBy: dislikedBy,
             views: views[0].views,
+            viewedBy: viewedBy,
             comments: comments,
             nComments: numComments[0].quantity,
             react: react
