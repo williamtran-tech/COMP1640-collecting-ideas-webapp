@@ -383,28 +383,60 @@ exports.personal_info = async (req, res) => {
       })
 
       // Get all contributions of user
-      const contributions = await Idea.findAll({
-        where: {
-          'userId': req.params.id
-        },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'topicId', 'categoryId', 'userId','TopicId', 'CategoryId', 'UserId'] },
-          include: [
-            {
-              model: Category,
-              as: 'Category',
-              attributes: ['name', 'id']
-            },
-            {
-              model: Topic,
-              as: 'Topic',
-              attributes: ['name', 'id']
-            }
-          ]
-      })
+      // const ideas = await Idea.findAll({
+      //   where: {
+      //     'userId': req.params.id
+      //   },
+      //   attributes: { exclude: ['updatedAt', 'topicId', 'categoryId', 'userId','TopicId', 'CategoryId', 'UserId'] },
+      //     include: [
+      //       {
+      //         model: Category,
+      //         as: 'Category',
+      //         attributes: ['name', 'id']
+      //       },
+      //       {
+      //         model: Topic,
+      //         as: 'Topic',
+      //         attributes: ['name', 'id']
+      //       }
+      //     ]
+      // })
 
+      const contributions = await db.sequelize.query(
+        `SELECT  
+            ideas.id as ideaId,
+            ideas.name AS idea,  
+            COALESCE(reacts.likes, 0) AS likes, 
+            COALESCE(reacts.dislikes, 0) AS dislikes,
+            SUM(views.views) AS views,
+            COALESCE(c.comments, 0) as comments,
+            categories.id as categoryId,
+            categories.name as category,
+            topics.id as topicId,
+            topics.name as topic,
+            ideas.createdAt, 
+            ideas.updatedAt
+        FROM ideas
+        JOIN categories ON ideas.categoryId = categories.id
+        JOIN topics ON ideas.topicId = topics.id
+        JOIN users ON ideas.userId = users.id
+        JOIN views ON ideas.id = views.ideaId
+        LEFT JOIN (
+            SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
+            FROM reacts
+            GROUP BY ideaId
+        ) reacts ON ideas.id = reacts.ideaId
+        LEFT JOIN (
+            SELECT ideaId, COUNT(id) as comments
+            FROM comments
+            GROUP BY ideaId
+        ) c ON ideas.id = c.ideaId
+        WHERE ideas.userId = ${req.params.id}
+        GROUP BY ideas.userId;
+        `);
       res.status(200).json({
         info: info,
-        contributions: contributions,
+        contributions: contributions[0],
         viewHistory: viewHistory,
         reactHistory: reactHistory
       })
@@ -425,7 +457,6 @@ exports.update_avatar = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     decoded = jwt.verify(token, config.env.JWT_key);
-    console.log(req.file);
     if (req.file && decoded.userId == req.params.id) {
       const oldUser = await User.findOne({
         where: {

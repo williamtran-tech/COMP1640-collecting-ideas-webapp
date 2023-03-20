@@ -114,16 +114,46 @@ exports.get_idea_by_id = async (req, res) => {
             ]
         });
 
-        const reactPeople = await React.findAll({
-            where: {ideaId: req.params.id}, 
-            attributes: [[db.Sequelize.literal("User.fullName"), "user"]],
+        const likedBy = await React.findAll({
+            where: {
+                ideaId: req.params.id,
+                nLike: 1
+            },
+            attributes: [
+                'createdAt', 'updatedAt'
+            ],
             include: [{
                 model: User,
                 as: "User",
-                attributes: [],
-                nested: true
+                attributes: ['id','fullName']
             }]
-        })
+        });
+
+        const dislikedBy = await React.findAll({
+            where: {
+                ideaId: req.params.id,
+                nDislike: 1
+            },
+            attributes: [
+                'createdAt', 'updatedAt'
+            ],
+            include: [{
+                model: User,
+                as: "User",
+                attributes: ['id','fullName']
+            }]
+        });
+
+        // const reactPeople = await React.findAll({
+        //     where: {ideaId: req.params.id}, 
+        //     attributes: [[db.Sequelize.literal("User.fullName"), "user"], [db.Sequelize.literal("User.id"), "id"]],
+        //     include: [{
+        //         model: User,
+        //         as: "User",
+        //         attributes: [],
+        //         nested: true
+        //     }]
+        // })
 
         const comments = await Comment.findAll({
             attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'createdAt', 'updatedAt'],
@@ -181,11 +211,12 @@ exports.get_idea_by_id = async (req, res) => {
         res.status(200).json({
             message: "Successfully get all comments by idea id " + idea[0].id,
             idea: idea,
+            likedBy: likedBy,
+            dislikedBy: dislikedBy,
             views: views[0].views,
             comments: comments,
             nComments: numComments[0].quantity,
-            react: react,
-            reactBy: reactPeople
+            react: react
         });
         
     } catch (error){
