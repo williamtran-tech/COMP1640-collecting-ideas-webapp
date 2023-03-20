@@ -137,66 +137,6 @@ exports.login_user = async (req, res) => {
   }
 }
 
-exports.update_user = async (req, res) => {
-  try {
-    // Get the idea
-    const oldUser = await User.findOne({
-      where: {
-          "id": req.params.id
-      }
-    });
-    // Check file exist or not
-    if (!req.file) {
-      validate.checkFilePath(oldUser);
-      const hash = await bcrypt.hash(req.body.password, 10);
-      const updated = await oldUser.update({
-          "fullName": req.body.name?req.body.name:oldUser.fullName,
-          "profileImage": null,
-          "email": req.body.email?req.body.email:oldUser.email,
-          "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
-          "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
-      });
-      if (updated) {
-          res.status(200).json({
-              msg: "Successfully update User"
-          })
-      } else {
-          res.status(401).json({
-              err: "Update User failed"
-          })
-      }
-    } else {
-      validate.checkFilePath(oldUser);
-      const updated = await oldUser.update({
-        "fullName": req.body.name?req.body.name:oldUser.fullName,
-        "profileImage": req.file.path,
-        "email": req.body.email?req.body.email:oldUser.email,
-        "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
-        "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
-      });
-      if (updated) {
-          res.status(200).json({
-              msg: "Successfully update user"
-          })
-      } else {
-          res.status(401).json({
-              err: "Update user failed"
-          })
-      }
-    }
-    } catch (err) {
-    if (err.name === "SequelizeForeignKeyConstraintError"){
-      res.status(401).json({
-          err: "Invalid input"
-      })
-    } else {
-      console.log(err);
-      res.status(500).json({
-          err: "Server error"
-      })
-    }
-    }
-}
 
 // This function used for getting email address of user -> send reset-password mail
 exports.forgot_password = async (req, res) => {
@@ -480,6 +420,45 @@ exports.personal_info = async (req, res) => {
     })
   }
 }
+
+exports.update_avatar = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    decoded = jwt.verify(token, config.env.JWT_key);
+    console.log(req.file);
+    if (req.file && decoded.userId == req.params.id) {
+      const oldUser = await User.findOne({
+        where: {
+            "id": req.params.id
+        }
+      });
+      validate.checkFilePath(oldUser);
+
+      const updated = await oldUser.update({
+        "profileImage": req.file.path,
+      });
+
+      if (updated) {
+          res.status(200).json({
+              msg: "Successfully update avatar"
+          })
+      } else {
+          res.status(401).json({
+              err: "Update avatar failed"
+          })
+      }
+    } else {
+      res.status(406).json({
+        err: "File not found"
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server error"
+    })
+  }
+}
 // 
 // ADMIN PANEL FUNCTIONS
 //
@@ -527,6 +506,67 @@ exports.create_user = async (req, res) => {
     console.log(error);
     res.status(500).send('Server Error');
   }
+}
+
+exports.update_user = async (req, res) => {
+  try {
+    // Get the idea
+    const oldUser = await User.findOne({
+      where: {
+          "id": req.params.id
+      }
+    });
+    // Check file exist or not
+    if (!req.file) {
+      validate.checkFilePath(oldUser);
+      const hash = await bcrypt.hash(req.body.password, 10);
+      const updated = await oldUser.update({
+          "fullName": req.body.name?req.body.name:oldUser.fullName,
+          "profileImage": null,
+          "email": req.body.email?req.body.email:oldUser.email,
+          "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
+          "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
+      });
+      if (updated) {
+          res.status(200).json({
+              msg: "Successfully update User"
+          })
+      } else {
+          res.status(401).json({
+              err: "Update User failed"
+          })
+      }
+    } else {
+      validate.checkFilePath(oldUser);
+      const updated = await oldUser.update({
+        "fullName": req.body.name?req.body.name:oldUser.fullName,
+        "profileImage": req.file.path,
+        "email": req.body.email?req.body.email:oldUser.email,
+        "departmentId": req.body.departmentId?req.body.departmentId:oldUser.departmentId,
+        "roleId": req.body.roleId?req.body.roleId:oldUser.roleId
+      });
+      if (updated) {
+          res.status(200).json({
+              msg: "Successfully update user"
+          })
+      } else {
+          res.status(401).json({
+              err: "Update user failed"
+          })
+      }
+    }
+    } catch (err) {
+    if (err.name === "SequelizeForeignKeyConstraintError"){
+      res.status(401).json({
+          err: "Invalid input"
+      })
+    } else {
+      console.log(err);
+      res.status(500).json({
+          err: "Server error"
+      })
+    }
+    }
 }
 
 exports.list_all_users = async (req, res) =>{
@@ -702,7 +742,7 @@ exports.bulk_insert = async (req, res) => {
         });
     } else {
       res.status(404).json({
-        err: "Find not found"
+        err: "File not found"
       })
     }
   } catch (err) {
