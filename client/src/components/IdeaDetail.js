@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography, Stack, Chip, Avatar, Tooltip, Divider,Input, IconButton } from '@mui/material'
+import { Box, Grid, Paper, Typography, Stack, Chip, Avatar, Tooltip, Divider,Input, IconButton, AvatarGroup } from '@mui/material'
 import Moment from "moment"
 import CreateIcon from '@mui/icons-material/Create';
 import ThumbDown from '@mui/icons-material/ThumbDown';
@@ -156,7 +156,7 @@ const IdeaDetail = () => {
                                 <Stack >
                                     <Avatar
                                     alt="T"
-                                    src='http://localhost:5050/uploaded_files/images/ideas/1677664453782_IMG_20220918_091000_505.jpg'
+                                    src={`http://localhost:5050/${ideaDetail.idea[0].User.profileImage}`}
                                     sx={{ width: 30, height: 30, justifySelf: "center" }}
                                     className='avatar'
                                     />
@@ -174,10 +174,26 @@ const IdeaDetail = () => {
                         </Grid>
                         <Grid item xs={12} className="idea-content">
                             <Typography align="justify" variant="subtitle2"> {ideaDetail.idea[0].name} </Typography>
+                            {
+                                ideaDetail.idea[0].filePath &&(
+                                    <Paper>
+                                        <img src={`http://localhost:5050/${ideaDetail.idea[0].filePath}`} alt=""  className='imageIdea_preview'/>
+                                    </Paper>
+                                )
+                            }
                         </Grid>
-                        <Divider/>
                         <Grid item className='footer-idea' xs={12}>
-                            <Chip icon={<RemoveRedEye/>} label={ideaDetail.views} size="small" sx={{backgroundColor: "#6D9886"}} />
+                            {
+                                ideaDetail.viewedBy &&(
+                                    <AvatarGroup max={3} sx={{
+                                        '& .MuiAvatar-root': { width: 15, height: 15, fontSize: 10 },
+                                      }}>
+                                        {ideaDetail.viewedBy.map(view =>(
+                                             <Avatar alt="Remy Sharp" src={`http://localhost:5050/${view.User.profileImage}`} />
+                                        ))}
+                                    </AvatarGroup>
+                                ) 
+                            }
                             <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
                         </Grid>
                     </Grid>
@@ -195,7 +211,7 @@ const IdeaDetail = () => {
                                     <Tooltip title={comment.owner} arrow>
                                         <Avatar
                                         alt="T"
-                                        src="https://static.india.com/wp-content/uploads/2022/11/FotoJet-91-1.jpg"
+                                        src={`http://localhost:5050/${comment.imagePath}`}
                                         sx={{ width: 30, height: 30  }}
                                         />
                                     </Tooltip>
@@ -210,7 +226,6 @@ const IdeaDetail = () => {
                     </Grid>
                         ))
                     }
-                    
                 </Stack>
                 <Grid> 
                     <form onSubmit={handleComment}>

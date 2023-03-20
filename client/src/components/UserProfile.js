@@ -15,13 +15,13 @@ const UserProfile = () => {
   const [tabValue, setTabValue] = useState(0);
   const [openModal, setOpenModal] = useState(false)
   const [profile, setProfile] = useState([])
+  const [uploaded, setUploaded] = useState(false)
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
-
   const token = localStorage.getItem('token');
   const decodedToken = jwt_decode(token);
-
+  console.log(decodedToken)
   useEffect(()=>{
     if(decodedToken){
        handleApi.get_user_inf(decodedToken.userId).then(response=>{
@@ -29,8 +29,7 @@ const UserProfile = () => {
       setProfile(response.data)
     })
     }
-   
-  }, [])
+  }, [uploaded])
   const handleOpen = () =>{
     setOpenModal(true)
   }
@@ -53,7 +52,7 @@ const UserProfile = () => {
                   </IconButton>
                 }>
                 <Avatar                                     
-                        src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
+                        src={profile.info.profileImage}
                         style={{ width: 150, height: 150 }}
                         />
                 </Badge>
@@ -107,7 +106,9 @@ const UserProfile = () => {
       )}
         </Grid>
         </Grid>
-        <UploadProfilePic openModal={openModal} setOpenModal={setOpenModal}></UploadProfilePic>
+        {
+        profile&& profile.info && (<UploadProfilePic openModal={openModal} setOpenModal={setOpenModal} id={decodedToken.userId} uploaded={uploaded} setUploaded={setUploaded} avatar={profile.info.profileImage}></UploadProfilePic>)
+        }
       </Box>
     </div>
   )

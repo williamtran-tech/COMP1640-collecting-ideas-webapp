@@ -29,6 +29,9 @@ const create_idea= async (id, data) =>{
 const get_user_inf= async (id) =>{
   return axios.get(`/users/profile/${id}`, config());
 };
+const update_avatar= async (id, data) =>{
+  return axios.put(`/users/update-avatar/${id}`,data, config_form());
+};
 const admin_getListTopic = async () => {
     return await axios.get("/admin/topics",config());
   };
@@ -78,6 +81,7 @@ const handleApi = {
     admin_get_uset_inf,
     admin_create_user,
     admin_delete_user,
-    admin_update_user
+    admin_update_user,
+    update_avatar
 };
 export default handleApi

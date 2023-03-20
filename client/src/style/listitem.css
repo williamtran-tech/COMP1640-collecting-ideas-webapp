@@ -210,3 +210,14 @@ margin-right: auto;
 .Mui-selected:active {
   background-color: #8FA8A1 !important;
 }
+
+.preview{
+  width: 100%;
+}
+.image_preview{
+  margin-top: 10px;
+  width: 100%;
+}
+.imageIdea_preview{
+  width: 100%;
+}

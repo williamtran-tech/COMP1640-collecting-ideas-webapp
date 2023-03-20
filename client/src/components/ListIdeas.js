@@ -1,4 +1,4 @@
-import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material'
+import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch} from '@mui/material'
 import React, { useRef } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -86,7 +86,6 @@ const ListIdeas = () => {
           console.log(e);
         });
     };
-
     const handleSubmitIdea=(event) =>{
         event.preventDefault()
         const formData = new FormData();
@@ -225,7 +224,8 @@ const ListIdeas = () => {
                                     src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
                                     sx={{ width: 30, height: 30 }}
                                     />
-                                    <Typography variant="body2">Vo Hoang Tam</Typography>
+                                    <Typography variant="body2">{decodedToken.name}</Typography>
+                                    <FormControlLabel control={<Switch defaultChecked size="small" />}  sx={{ '& .MuiFormControlLabel-label': { fontSize: '14px' } }} label="Anonymous" />
                                 </Stack>
                                 <FormControl fullWidth size="small">
                                     <InputLabel id="category">Category</InputLabel>
@@ -278,9 +278,9 @@ const ListIdeas = () => {
                                         </button>
                                     )}
                                 </div>
-                                       
-                                                            <div className="preview">
-                                    {imagePreview != null && <img src={imagePreview} alt="" />}
+
+                                <div className="preview">
+                                    {imagePreview != null && <img src={imagePreview} alt=""  className='image_preview'/>}
                                 </div>
                                 </DialogContent>
                                 <DialogActions className='form-action'>
@@ -311,7 +311,7 @@ const ListIdeas = () => {
                                             <Stack >
                                                 <Avatar
                                                 alt="T"
-                                                src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
+                                                src={`http://localhost:5050/${idea.imagePath}`}
                                                 sx={{ width: 30, height: 30, justifySelf: "center" }}
                                                 className='avatar'
                                                 />

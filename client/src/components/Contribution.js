@@ -30,6 +30,10 @@ const Contribution = ({contribution}) => {
                         <TableCell>Idea Name</TableCell>
                         <TableCell>Category</TableCell>
                         <TableCell>Topic</TableCell>
+                        <TableCell>Comment</TableCell>
+                        <TableCell>Like</TableCell>
+                        <TableCell>Dislike</TableCell>
+                        <TableCell>Submit at</TableCell>
                          {/* <TableCell>Submit at</TableCell> */}
                       </TableRow>
                     </TableHead>
@@ -41,16 +45,19 @@ const Contribution = ({contribution}) => {
                          >
                             <TableCell>
                             <Link to={`/ideas/${contribution.id}` } style={{ textDecoration: 'none' }}>
-                            {contribution.name}
+                            {contribution.idea}
                             </Link>
                             </TableCell>
-                            <TableCell>{contribution.Category.name}</TableCell>
+                            <TableCell>{contribution.category}</TableCell>
                             <TableCell>
-                            <Link to={`/topics/${contribution.Topic.id}`} style={{ textDecoration: 'none' }}>
-                            {contribution.Topic.name}
+                            <Link to={`/topics/${contribution.topicId}`} style={{ textDecoration: 'none' }}>
+                            {contribution.topic}
                             </Link>
                             </TableCell> 
-                            {/* <TableCell>{contribution.createdAt}</TableCell> */}
+                            <TableCell>{contribution.comments}</TableCell>
+                            <TableCell>{contribution.likes}</TableCell>
+                            <TableCell>{contribution.dislikes}</TableCell>
+                            <TableCell>{contribution.updatedAt}</TableCell>
                           </TableRow>
                         ))}
                     </TableBody>

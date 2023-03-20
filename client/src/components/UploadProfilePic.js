@@ -2,14 +2,17 @@ import React from 'react'
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { Avatar } from '@material-ui/core';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+
+import { Avatar, IconButton, Badge } from '@material-ui/core';
 import { useState, useRef } from 'react';
-const UploadProfilePic = ({openModal,setOpenModal}) => {
+import handleApi from '../service/handleApi'
+const UploadProfilePic = ({openModal,setOpenModal, id, setUploaded, uploaded, avatar}) => {
     const filePicekerRef = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreview, setImagePreview] = useState(avatar);
    
-   
+   console.log(imagePreview)
     const handleChooseClick = () => {
         filePicekerRef.current.click();
     };
@@ -27,10 +30,21 @@ const UploadProfilePic = ({openModal,setOpenModal}) => {
     }; 
     const handleClose = () => {
         setOpenModal(false);
-        setImagePreview(null);
+        setImagePreview(avatar);
       };
     // console.log(imagePreview)
     //         console.log(filePicekerRef)
+    const handleUploadAvatar=(event) =>{
+        event.preventDefault()
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        handleApi.update_avatar(id,formData ).then(response => {
+            console.log(response.data)
+            setUploaded(!uploaded)
+            setOpenModal(false)
+        })
+    }
+    
   return (
     <div>
             <Modal
@@ -53,11 +67,31 @@ const UploadProfilePic = ({openModal,setOpenModal}) => {
             alignItems: 'center',
             justifyContent: 'center',
             }}>
+                <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                badgeContent={
+                  <IconButton onClick={handleChooseClick}>
+                    <CameraAltIcon></CameraAltIcon>
+                    <input
+                        ref={filePicekerRef}
+                        accept="image/*, video/*"
+                        onChange={handleFileChange}
+                        type="file"
+                        hidden
+                    />
+                  </IconButton>
+                }>
                 <Avatar                                     
                         src={imagePreview}
-                        style={{ width: 150, height: 150 }}/>
+                        style={{ width: 150, height: 150 }}
+                        />
+                </Badge>
+                {/* <Avatar                                     
+                        src={imagePreview}
+                        style={{ width: 150, height: 150 }}/> */}
                 <div style={{ marginTop: 10, display:'flex', gap: 10}}>
-                    <Button variant="contained" onClick={handleChooseClick}>
+                    {/* <Button variant="contained" onClick={handleChooseClick}>
                         Upload
                         <input
                         ref={filePicekerRef}
@@ -66,9 +100,12 @@ const UploadProfilePic = ({openModal,setOpenModal}) => {
                         type="file"
                         hidden
                     />
+                    </Button> */}
+                    <Button variant="contained" onClick={handleUploadAvatar}>
+                        Upload
                     </Button>
                     <Button variant="contained" onClick={handleClose}>
-                    Cancel
+                        Cancel
                     </Button>
                 </div>
                 
