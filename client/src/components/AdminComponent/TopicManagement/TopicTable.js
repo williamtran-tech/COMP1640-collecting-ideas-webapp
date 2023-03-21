@@ -15,6 +15,7 @@ import handleApi from '../../../service/handleApi';
 import TopicInfo from './TopicInfo';
 import TableIdeas from './TableIdeas';
 import DeleteTopicModal from './DeleteTopicModal';
+import DownloadIcon from '@mui/icons-material/Download';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [page, setPage] = useState(0);
@@ -240,9 +241,13 @@ const TopicTable = () => {
                             <TableCell align='center'>{topic.finalClosureDate}</TableCell> 
                             <TableCell align='center'>
                               <Box sx={{ display: 'flex', gap: 1 }}>
+                                
                                 <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
+                                <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
+                                  <DownloadIcon fontSize="small" className='icon-download'/> 
+                                </IconButton>
                                 <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>

@@ -61,10 +61,16 @@ overflow: scroll;
 }
 .icon-edit{
 color: #096BDE !important;
+font-size: smaller !important;
 }
 .icon-delete{
 color: #f27f75;
+font-size: smaller !important;
 }
+.icon-download{
+    color: #237150;
+    font-size: smaller !important;
+    }
 .css-6hp17o-MuiList-root-MuiMenu-list{
 display: flex !important;
 

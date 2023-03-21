@@ -16,7 +16,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import { useNavigate } from "react-router-dom";
 import '../../style/admin.css'
 const AdminNavbar = () => {
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
 const navigate = useNavigate();
   
   const logout= () => {
@@ -43,7 +43,7 @@ const handleChange = (event, newValue) => {
                 <Tab variant={value === 1 ? 'solid' : 'plain'} color={value === 1 ? 'primary' : 'neutral'}  iconPosition="start" className="tab" component={Link} to="/users"><ListItemDecorator><AccountBoxIcon /></ListItemDecorator>User Management</Tab>
                 <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"><ListItemDecorator><CategoryIcon /></ListItemDecorator>Category Management</Tab>
                 <Tab variant={value === 3 ? 'solid' : 'plain'} color={value === 3 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"><ListItemDecorator><ClassIcon /></ListItemDecorator>Department Management</Tab>
-                <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic"><ListItemDecorator><BarChartIcon /></ListItemDecorator>Statistic</Tab>
+                <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic" ><ListItemDecorator><BarChartIcon /></ListItemDecorator>Statistic</Tab>
                </TabList>
              </Tabs>
            </div>

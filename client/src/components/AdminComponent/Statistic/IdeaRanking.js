@@ -11,8 +11,8 @@ const IdeaRanking = ({ranking}) => {
             {
                 label: 'Top 10 Favorite Idea',
                 data: ranking.map(idea => idea.likes),
-                borderColor: '#d90429',
-                backgroundColor: '#d90429',
+                borderColor: 'rgba(255, 206, 86, 0.5)',
+                backgroundColor: 'rgba(255, 206, 86, 0.5)',
             }
         ]
     }

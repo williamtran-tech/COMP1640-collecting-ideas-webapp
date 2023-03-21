@@ -66,6 +66,9 @@ const admin_update_user = async(id, data)=>{
 const QA_get_statistic = async()=>{
   return await axios.get(`/manager/statistic`, config());
 }
+const QA_dowload_topic = async(id)=>{
+  return await axios.get(`/manager/topics/${id}`, config());
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
