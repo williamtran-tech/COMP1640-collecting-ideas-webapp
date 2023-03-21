@@ -143,3 +143,8 @@ flex-direction: column !important;
      display: flex;
      align-items: flex-end;
  }
+ .menu_item{
+     width: 100%;
+     display: flex;
+     gap: 15px;
+ }
