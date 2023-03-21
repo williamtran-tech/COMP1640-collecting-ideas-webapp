@@ -431,7 +431,42 @@ exports.insight = async (req, res) => {
             JOIN departments ON users.departmentId = departments.id
             GROUP BY users.departmentId;
             `
-        )
+        );
+
+        // Get the top staff contribution top 10 over the system
+        const top_contributors = await db.sequelize.query(
+            `SELECT 
+                users.departmentId,
+                departments.name as departmentName,
+                users.id,
+                users.fullName,
+                count(ideas.id) as contributions
+            FROM ideas
+            JOIN users ON ideas.userId = users.id
+            JOIN departments ON users.departmentId = departments.id
+            GROUP BY users.id
+            ORDER BY contributions DESC
+            LIMIT 10;`
+        );
+
+        const top_like_ideas = await db.sequelize.query(
+            `SELECT 
+                users.departmentId,
+                departments.name as departmentName,
+                users.id,
+                users.fullName,
+                ideas.id as ideaId,
+                ideas.name as idea,
+                sum(reacts.nLike) as likes
+            FROM ideas
+            JOIN users ON ideas.userId = users.id
+            JOIN departments ON users.departmentId = departments.id
+            JOIN reacts ON ideas.id = reacts.ideaId
+            GROUP BY ideas.id
+            ORDER BY likes DESC
+            LIMIT 10;
+            `
+        );
 
         const topics = await Topic.findAll({
             attributes: [
@@ -473,6 +508,8 @@ exports.insight = async (req, res) => {
             msg: "Successfully get insight",
             department_ideas: department_ideas[0],
             department_contributors: department_contributors[0],
+            top_contributors: top_contributors[0],
+            top_like_ideas: top_like_ideas[0],
             topics: topics,
             categories: categories
         })
