@@ -2,11 +2,11 @@ import React from 'react'
 // import { Chart as ChartJS, ArcElement, Tooltip,Title, Legend } from 'chart.js';
 import 'chart.js/auto'
 
-import { Pie, Line } from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
 import { Grid } from '@mui/material';
 import { Typography } from '@material-ui/core';
 // ChartJS.register(ArcElement, Tooltip,Title, Legend);
-const DeparmentIdea = ({department_ideas}) => {
+const DeparmentIdea = ({department_ideas, department_contributors}) => {
     console.log(department_ideas)
     const data = {
         labels: department_ideas.map(department => department.name),
@@ -48,9 +48,14 @@ const DeparmentIdea = ({department_ideas}) => {
             data: department_ideas.map(department => department.idea_quantity),
             fill: false,
             borderColor: '#00509d',
-            tension: 0.1,
-            pointStyle: 'circle',
-            pointRadius: 5,
+            backgroundColor: '#00509d',
+          },
+          {
+            label: 'Number of Contributor',
+            data: department_contributors.map(department => department.contributors),
+            fill: false,
+            borderColor: '#a2d6f9',
+            backgroundColor: '#a2d6f9',
           }
         ]
       };
@@ -111,13 +116,13 @@ const DeparmentIdea = ({department_ideas}) => {
     <div className='department_ideas_chart'>
         <Grid container>
             <Grid item xs={12}>
-                <Typography className='title_chart' variant="body1" >Idea from department</Typography>
+                <Typography className='title_chart' variant="body1" >Ideas from departments</Typography>
             </Grid>
             <Grid item xs={4}>
                 <Pie data={data} options={options1}/>
             </Grid>
             <Grid item xs={8}>
-                <Line data={data2} options={options2}></Line>
+                <Bar data={data2} options={options2}></Bar>
             </Grid>
         </Grid>
         

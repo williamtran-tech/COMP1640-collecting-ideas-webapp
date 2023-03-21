@@ -4,3 +4,10 @@
 .title_chart{
     font-weight: bolder !important;
 }
+.chart_container1{
+    margin-top: 10px !important;
+    padding-right: 10px;
+  }
+  .chart_container2{
+    margin-top: 10px !important;
+  }

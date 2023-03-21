@@ -3,22 +3,21 @@ import 'chart.js/auto'
 import {Bar} from 'react-chartjs-2'
 import { Grid } from '@material-ui/core'
 import { Typography } from '@mui/material'
-
-const UserRanking = ({ranking}) => {
-    const data = {
-        labels: ranking.map(user => user.fullName),
-        datasets: [
-          {
-            label: 'Top 10 contributor',
-            data: ranking.map(user => user.contributions),
-            borderColor: '#d90429',
-            backgroundColor: '#d90429',
-            
-          },
-        ],
-      };
-      const options = {
-        indexAxis: 'y',
+const TopicIdea = ({topics_idea}) => {
+    console.log(topics_idea)
+    const data={
+        labels: topics_idea.map(topic=> topic.name),
+        datasets:[
+            {
+                label: 'Top 10 Favorite Idea',
+                data: topics_idea.map(topic => topic.idea_quantity),
+                borderColor: '#d90429',
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            }
+        ]
+    }
+    const options = {
+        indexAxis: 'x',
         scales: {
           xAxes: [
             {
@@ -62,7 +61,7 @@ const UserRanking = ({ranking}) => {
     <div>
         <Grid xs={12}>
             <Typography className='title_chart' variant="body1">
-                Top 10 Contributors
+                Ideas From Topic
             </Typography>
             <Bar data={data} options={options}></Bar>
         </Grid>
@@ -70,4 +69,4 @@ const UserRanking = ({ranking}) => {
   )
 }
 
-export default UserRanking
+export default TopicIdea
