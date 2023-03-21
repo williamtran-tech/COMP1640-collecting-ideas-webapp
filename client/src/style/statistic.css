@@ -1,6 +1,6 @@
 .chart_item{
-    /* padding: 10px; */
+    padding: 10px;
 }
-.department_ideas_chart{
-    display: flex;
+.title_chart{
+    font-weight: bolder !important;
 }

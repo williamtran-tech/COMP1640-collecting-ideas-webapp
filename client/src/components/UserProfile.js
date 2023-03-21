@@ -69,13 +69,11 @@ const UserProfile = () => {
                 <div>
                     <Stack direction={'row'} spacing={1}> 
                     <Typography variant="subtitle1" gutterBottom>
-                      
                     </Typography>
                     <Button variant="contained" size="small">
                       Change Password
                     </Button>
                     </Stack>
-                    
                     <Typography variant="body1" gutterBottom>
                       Department: {profile.info.Department.name}
                     </Typography>
@@ -84,7 +82,6 @@ const UserProfile = () => {
                     </Typography>
                 </div>
               </div>
-                
               </>     
             )}
            </Stack>

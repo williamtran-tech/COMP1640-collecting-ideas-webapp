@@ -203,8 +203,8 @@ const ListIdeas = () => {
                         <Grid item xs={12} className="category">
                         
                             <Grid direction="row" spacing={2}>
-                                {listideas.ideas?.map(category =>(
-                                <Chip label={category.category} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick} className="category_chip"/>          
+                                {listideas.categories?.map(category =>(
+                                <Chip label={category.name} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick} className="category_chip"/>          
                             ))}
                             </Grid>
                         </Grid>

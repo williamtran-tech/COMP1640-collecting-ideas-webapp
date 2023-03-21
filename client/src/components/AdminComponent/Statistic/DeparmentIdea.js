@@ -4,6 +4,7 @@ import 'chart.js/auto'
 
 import { Pie, Line } from 'react-chartjs-2';
 import { Grid } from '@mui/material';
+import { Typography } from '@material-ui/core';
 // ChartJS.register(ArcElement, Tooltip,Title, Legend);
 const DeparmentIdea = ({department_ideas}) => {
     console.log(department_ideas)
@@ -14,13 +15,13 @@ const DeparmentIdea = ({department_ideas}) => {
             data: department_ideas.map(department => department.idea_quantity),
             backgroundColor: [
               '#FF6384',
-              '#36A2EB',
-              '#FFCE56'
+              '#fad643',
+              '#52b788'
             ],
             hoverBackgroundColor: [
               '#FF6384',
-              '#36A2EB',
-              '#FFCE56'
+              '#edc531',
+              '#40916c'
             ]
           }
         ],
@@ -46,12 +47,46 @@ const DeparmentIdea = ({department_ideas}) => {
             label: 'Number of Ideas',
             data: department_ideas.map(department => department.idea_quantity),
             fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
+            borderColor: '#00509d',
+            tension: 0.1,
+            pointStyle: 'circle',
+            pointRadius: 5,
           }
         ]
       };
       const options1 = {
+        plugins: {
+          title: {
+            display: false ,
+            text: 'Department Ideas',
+            font: {
+              size: 18,
+              weight: 'bold'
+            },
+            padding: {
+              top: 10,
+              bottom: 10
+            },
+            position: 'bottom'
+          },
+          legend: {
+            display: true,
+            position: 'right',
+            align: 'center',
+            labels: {
+              usePointStyle: true,
+              boxWidth: 10,
+              font: {
+                size: 10
+              },
+              padding: 20
+            }
+          }
+        },
+
+        
+      };
+      const options2 = {
         plugins: {
           title: {
             display: false,
@@ -60,31 +95,32 @@ const DeparmentIdea = ({department_ideas}) => {
           },
           legend: {
             display: true,
-            position: "right",
-          },
-        },           
-      }
-      const options2 = {
-        plugins: {
-          title: {
-            display: true,
-            text: 'Department Ideas',
-            position: 'bottom'
-          },
-          legend: {
-            display: true,
             position: "top",
+            labels: {
+                usePointStyle: true,
+                boxWidth: 10,
+                font: {
+                  size: 10
+                },
+                padding: 20
+              }
           },
         },           
       }
   return (
     <div className='department_ideas_chart'>
-        <Grid xs={4}>
-             <Pie data={data} options={options1}/>
+        <Grid container>
+            <Grid item xs={12}>
+                <Typography className='title_chart' variant="body1" >Idea from department</Typography>
+            </Grid>
+            <Grid item xs={4}>
+                <Pie data={data} options={options1}/>
+            </Grid>
+            <Grid item xs={8}>
+                <Line data={data2} options={options2}></Line>
+            </Grid>
         </Grid>
-        <Grid xs={8}>
-             <Line data={data2} options={options2}></Line>
-        </Grid>
+        
     </div>
   )
 }

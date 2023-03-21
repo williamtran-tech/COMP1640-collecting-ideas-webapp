@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import handleApi from '../../../service/handleApi'
 import DeparmentIdea from './DeparmentIdea'
 import '../../../style/statistic.css'
+import UserRanking from './UserRanking'
 const StatisticLayout = () => {
     const [data, setData]= useState([])
     useEffect(()=>{
@@ -16,8 +17,8 @@ const StatisticLayout = () => {
   return (
     <div>
             <Grid container>
-                <Grid item xs={12} className="chart_item">
-                    <Paper>
+                <Grid item xs={12} >
+                    <Paper className="chart_item">
                         {
                         data && data.department_ideas&&(
                             <DeparmentIdea department_ideas={data.department_ideas}></DeparmentIdea>
@@ -26,16 +27,16 @@ const StatisticLayout = () => {
                     </Paper>
                     
                 </Grid>
-                {/* <Grid item xs={8} className="chart_item">
-                    <Paper>
+                <Grid item xs={12} >
+                    <Paper className="chart_item">
                         {
-                        data && data.department_ideas&&(
-                            <DeparmentIdea department_ideas={data.department_ideas}></DeparmentIdea>
+                        data && data.top_contributors&&(
+                            <UserRanking ranking={data.top_contributors}></UserRanking>
                         )
                     }
                     </Paper>
                     
-                </Grid> */}
+                </Grid>
             </Grid>
         
     </div>

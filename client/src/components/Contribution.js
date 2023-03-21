@@ -44,7 +44,7 @@ const Contribution = ({contribution}) => {
                           className="table-row"
                          >
                             <TableCell>
-                            <Link to={`/ideas/${contribution.id}` } style={{ textDecoration: 'none' }}>
+                            <Link to={`/ideas/${contribution.ideaId}` } style={{ textDecoration: 'none' }}>
                             {contribution.idea}
                             </Link>
                             </TableCell>
