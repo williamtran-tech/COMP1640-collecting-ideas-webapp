@@ -35,7 +35,7 @@ const UserProfile = ({userInf, department, role, setOpenDrawer, setSubmited, sub
   }
   return (
     <div className='user_profile'>
-    <Stack className="avatar_profile">
+    <Stack className="avatar_profile1">
         <Avatar                                     
         src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
         style={{ width: 150, height: 150 }}/>

@@ -58,7 +58,7 @@ const admin_create_user = async(data)=>{
   return await axios.post(`/admin/users`, data, config());
 }
 const admin_delete_user = async(id)=>{
-  return await axios.delete(`/admin/users/${id}`, config());
+  return await axios.delete(`/admin/users/force-delete/${id}`, config());
 }
 const admin_update_user = async(id, data)=>{
   return await axios.put(`/admin/users/${id}`,data, config_form());
@@ -67,7 +67,7 @@ const QA_get_statistic = async()=>{
   return await axios.get(`/manager/statistic`, config());
 }
 const QA_dowload_topic = async(id)=>{
-  return await axios.get(`/manager/topics/${id}`, config());
+  return await axios.get(`/manager/csv-topic/download/${id}`, config());
 }
 const handleApi = {
     getListTopic,
@@ -89,6 +89,7 @@ const handleApi = {
     admin_delete_user,
     admin_update_user,
     update_avatar,
-    QA_get_statistic
+    QA_get_statistic,
+    QA_dowload_topic,
 };
 export default handleApi

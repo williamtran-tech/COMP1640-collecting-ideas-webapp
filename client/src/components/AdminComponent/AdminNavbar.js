@@ -40,10 +40,10 @@ const handleChange = (event, newValue) => {
              onChange={handleChange}
             >
               <TabList >
-                <Tab variant={value === 0 ? 'solid' : 'plain'} color={value === 0 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"> <ListItemDecorator className="menu_item"><TopicIcon />Topic Management <LockIcon fontSize="small"/></ListItemDecorator></Tab>
+                <Tab variant={value === 0 ? 'solid' : 'plain'} color={value === 0 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"> <ListItemDecorator className="menu_item"><TopicIcon />Topic Management </ListItemDecorator></Tab>
                 <Tab variant={value === 1 ? 'solid' : 'plain'} color={value === 1 ? 'primary' : 'neutral'}  className="tab" component={Link} to="/users"><ListItemDecorator  className="menu_item"><AccountBoxIcon />User Management</ListItemDecorator></Tab>
-                <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"><ListItemDecorator  className="menu_item"><CategoryIcon />Category Management</ListItemDecorator></Tab>
-                <Tab variant={value === 3 ? 'solid' : 'plain'} color={value === 3 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"><ListItemDecorator  className="menu_item"><ClassIcon />Department Management <LockIcon fontSize="small"/></ListItemDecorator></Tab>
+                <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} ><ListItemDecorator  className="menu_item"><CategoryIcon />Category Management</ListItemDecorator></Tab>
+                <Tab variant={value === 3 ? 'solid' : 'plain'} color={value === 3 ? 'primary' : 'neutral'} className="tab" component={Link} ><ListItemDecorator  className="menu_item"><ClassIcon />Department Management </ListItemDecorator></Tab>
                 <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic" ><ListItemDecorator  className="menu_item"><BarChartIcon />Statistic</ListItemDecorator></Tab>
                </TabList>
              </Tabs>

@@ -112,6 +112,11 @@ const TopicTable = () => {
         })
       }
     }
+    const donwloadTopic = (topicId)=>{
+        handleApi.QA_dowload_topic(topicId).then(response=>{
+          console.log(response.data)
+        })
+    }
   return (
     <div> 
        <Paper className='header_admin'>
@@ -245,18 +250,17 @@ const TopicTable = () => {
                                 <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
-                                <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
+                                <IconButton size="small" aria-label="delete" onClick={()=>{donwloadTopic(topic.id)}}>
                                   <DownloadIcon fontSize="small" className='icon-download'/> 
                                 </IconButton>
                                 <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
-                                {
-                                  confirm && <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm}></DeleteTopicModal>
-                                }
+                                <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm}></DeleteTopicModal>
                               </Box>
                             </TableCell> 
                           </TableRow>
+                          
                         ))}
                     </TableBody>
                   </Table>

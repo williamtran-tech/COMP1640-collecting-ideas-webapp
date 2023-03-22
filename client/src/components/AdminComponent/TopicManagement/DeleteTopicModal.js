@@ -19,7 +19,7 @@ const DeleteTopicModal = ({setConfirm ,confirm, setDeleted, deleted, idTopic}) =
     aria-labelledby="alert-dialog-title"
     aria-describedby="alert-dialog-description"
   >
-    <DialogTitle id="alert-dialog-title">Delete Item</DialogTitle>
+    <DialogTitle id="alert-dialog-title">Delete Topic</DialogTitle>
     <DialogContent>
       <DialogContentText id="alert-dialog-description">
         This topic contain available ideas. Are you sure you want to delete this Topic?

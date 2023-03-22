@@ -15,11 +15,11 @@
 .inactive{
     color:red !important ;
 }
-.avatar_profile{
+.avatar_profile1{
     align-items: center;
 }
 .user_profile{
-    margin: 20px;
+    padding: 10px;
 }
 .table_user{
     border-radius: 15px !important;
