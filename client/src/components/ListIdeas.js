@@ -17,7 +17,9 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import jwt_decode from 'jwt-decode';
 import { Pagination, PaginationItem } from '@mui/material';
-
+import { InputAdornment } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import CategoryIcon from '@mui/icons-material/Category';
 const ListIdeas = () => {
     const { id } = useParams();
     const [listideas, setlistideas] = useState([]);
@@ -25,6 +27,13 @@ const ListIdeas = () => {
     const [checkedTerm, setCheckedTerm] = useState(false);
     const filePicekerRef = useRef(null)
     const [page, setPage] = useState(1);
+    const [sortValue, setSortValue]= useState(0)
+    const [categoryFilter, setCategoryFilter]= useState(0)
+    const searchIdeaInitailize={
+        id: null,
+        idea:''
+    }
+    const [searchFilter, setSearchFilter]= useState(searchIdeaInitailize)
     const ideasPerPage = 5; // change this to adjust the number of ideas to display per page
     const start = (page - 1) * ideasPerPage;
     const end = start + ideasPerPage;
@@ -39,6 +48,8 @@ const ListIdeas = () => {
         isAnonymous:0,
         files: [],
     } 
+    
+    const [preIdeaData, setPreIdeaData]= useState([])
     const [newIdea, setNewIdea]=useState(initialIdea)
     const [selectedCategory, setSelectedCategory] = useState("");
     
@@ -57,36 +68,79 @@ const ListIdeas = () => {
             setSelectedFile(file);
             setImagePreview(reader.result);
         };
-    
         reader.readAsDataURL(file);
       };
      const  clear_file= ()=>{
         setImagePreview(null);
      }
     const [inputedIdea, setInputedIdea] = useState("");
-
     const handleInputChange = (event) => {
-    setInputedIdea(event.target.value);
+        setInputedIdea(event.target.value);
     };
+    const sortByDate = (event) => {
+        setSortValue(event.target.value);
+    };
+    const sortByCategory = (event) => {
+        setCategoryFilter(event.target.value);
+    };
+    const searchIdea = (event, value) => {
+        setSearchFilter(value);
+        console.log(value.id)
+    };
+    const handleAutocompleteBlur = (event) => {
+        if (event.target.value === '') {
+          setSearchFilter(searchIdeaInitailize);
+        }
+      };
     const token = localStorage.getItem('token');
     const decodedToken = jwt_decode(token);
     useEffect(() =>{
       retrievelistideas()
       // eslint-disable-next-line 
     },[checkedTerm])
+    const filterIdea= (ideas, categoryId, sortBy, Id) => {
+        const filteredIdeas = ideas.filter((idea) => {
+            if (categoryId && idea.categoryId !== categoryId) {
+              return false;
+            }
+            if (Id && idea.ideaId !== Id) {
+                return false;
+              }
+            return true;
+          });
+        
+          // Sort the filtered ideas based on the sort order
+          if (sortBy == 1) {
+            filteredIdeas.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          } else if (sortBy == 2) {
+            filteredIdeas.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          }
+          
+    
+          return filteredIdeas;
+    }
+    useEffect(()=>{
+        if(preIdeaData && preIdeaData.ideas){
+            setlistideas(filterIdea(preIdeaData.ideas, categoryFilter, sortValue, searchFilter.id))
+            console.log(searchFilter.id)
+        }
+    },[preIdeaData, sortValue, categoryFilter, searchFilter])
      const handleCheckTerm = (event) => {
             setCheckedTerm(event.target.checked);
         };
     const retrievelistideas = () => {
       handleApi.getIdeas_by_topic(id)
         .then(response => {
-          setlistideas(response.data);
+          setPreIdeaData(response.data);
           console.log(response.data);
+          console.log(preIdeaData);
         })
         .catch(e => {
           console.log(e);
         });
     };
+    
+   
     const handleSubmitIdea=(event) =>{
         event.preventDefault()
         const formData = new FormData();
@@ -108,9 +162,7 @@ const ListIdeas = () => {
             setOpen(false);
         }
     }
-    if (!listideas || !listideas.info) {
-        return null;
-      }
+    
     const handleClickOpen = () => {
       setOpen(true);
     };
@@ -126,7 +178,7 @@ const ListIdeas = () => {
       };
   return (
         <Box className="body-container">
-             {listideas.info?.map(topic=>(
+             {preIdeaData.info?.map(topic=>(
             <Grid container  className='header' key={topic.id}>
                 <Grid item xs={12}  className='header-item'>
                             <Typography variant='h3' fontWeight="fontWeightBold" color="white" >
@@ -136,51 +188,80 @@ const ListIdeas = () => {
             </Grid>
              ))}
             <Grid container className='filter'>
-                <Grid item xs={4} md={2} className="filter-item">
-                    <FormControl fullWidth size="small">
-                    <InputLabel id="sortby">Sort by</InputLabel>
-                    <Select 
-                        labelId="sortby"
-                        id="sortby"
-                        // value={age}
-                        label="sortby"
-                        // onChange={handleChange}
-                    >
-                        <MenuItem value={10} >Latest</MenuItem>
-                        <MenuItem value={20}>Oldest</MenuItem>
-                    </Select>
-                    </FormControl>
+                <Grid item  className="filter-item">
+                        <TextField
+                        className='sort'
+                        variant="standard"
+                        size='small'
+                        select
+                        name="departmentId"
+                        value={sortValue}
+                        onChange={sortByDate}
+                        required
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <FilterListIcon />
+                              </InputAdornment>
+                            ),
+                            disableUnderline: true
+                          }}
+                        >
+                            <MenuItem key={0} value={0}>
+                                None
+                            </MenuItem>
+                            <MenuItem key={1} value={1}>
+                                Oldest
+                            </MenuItem>
+                            <MenuItem key={2} value={2}>
+                                Newest
+                            </MenuItem>
+                        </TextField>
                 </Grid>
                 <Divider orientation="vertical" flexItem/>
-                <Grid item xs={4} md={2} className="filter-item">
-                    <FormControl fullWidth size="small">
-                    <InputLabel id="category">Category</InputLabel>
-                    <Select
-                        labelId="category"
-                        id="category"
-                        // value={age}
-                        label="category"
-                        // onChange={handleChange}
-                    >
+                <Grid item className="filter-item">
+                     <TextField
+                        variant="standard"
+                        size='small'
+                        select
+                        name="departmentId"
+                        value={categoryFilter}
+                        onChange={sortByCategory}
+                        required
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <CategoryIcon />
+                              </InputAdornment>
+                            ),
+                            disableUnderline: true
+                          }}
+                        >
+                        <MenuItem value={0} >All</MenuItem>
                         {
-                            listideas.categories?.map(categorie=>(
+                            
+                            preIdeaData.categories?.map(categorie=>(
                             <MenuItem value={categorie.id} >{categorie.name}</MenuItem>
                             ))
                         }
-                    </Select>
-                    </FormControl>
+                        </TextField>
                 </Grid>
                 <Divider orientation="vertical" flexItem/>
-                <Grid item xs={8} md={4} className="filter-item">
+                <Grid item xs={8} md={4} className="search">
                 <Autocomplete size="small"
                     freeSolo
                     id="free-solo-2-demo"
                     disableClearable
-                    options={listideas.ideas?.map((option) => option.idea)}
+                    // onInputChange={searchIdea}
+                    value={searchFilter}
+                    onBlur={handleAutocompleteBlur}
+                    onChange={searchIdea}
+                    options={listideas.map((option) => ({ id: option.ideaId, idea: option.idea }))}
+                    getOptionLabel={(option) => (option ? option.idea : "")}
                     renderInput={(params) => (
                     <TextField
                         {...params}
-                        label="Search input"
+                        label="Search ideas"
                         InputProps={{
                         ...params.InputProps,
                         type: 'search',
@@ -191,7 +272,7 @@ const ListIdeas = () => {
             </Grid>
             <Grid container className='listidea'> 
                 <Grid item xs={11} md={3} className='topics-table'>
-                {listideas.info?.map(topic=>(
+                {preIdeaData.info?.map(topic=>(
                    <Paper className='topic-container'>
                     <Grid container className='topic-placeholder'>
                         <Grid item xs={12} className="topic-header">
@@ -203,20 +284,20 @@ const ListIdeas = () => {
                         <Grid item xs={12} className="category">
                         
                             <Grid direction="row" spacing={2}>
-                                {listideas.categories?.map(category =>(
+                                {preIdeaData.categories?.map(category =>(
                                 <Chip label={category.name} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick} className="category_chip"/>          
                             ))}
                             </Grid>
                         </Grid>
                         <Grid xs={12} className="date">
-                            <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closureDate).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
+                            <Chip icon={<AccessTimeIcon/>} label={Moment(preIdeaData.closureDate).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
                             <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.finalClosureDate).format('YYYY/MM/DD')} size="small" color="error" variant='outlined'/>
                         </Grid>
                         <Grid item xs={12} className="create-topic">
                             <Chip icon={<EmojiObjectsIcon/>} label={topic.idea_quantity} size="small" color="primary" className='chip'/>
-                            <Chip icon={<EmojiObjectsIcon/>} label="Have idea? Summit here" size="small" color="primary" onClick={handleClickOpen}/>
+                            <Chip icon={<EmojiObjectsIcon/>} label="Have idea? Submit here" size="small" color="primary" onClick={handleClickOpen}/>
                             <Dialog open={open} onClose={handleClose} className="create_idea_form">
-                                <DialogTitle className="title_idea_form" >{listideas.info[0].name}</DialogTitle>
+                                <DialogTitle className="title_idea_form" >{preIdeaData.info[0].name}</DialogTitle>
                                 <DialogContent>
                                 <DialogContentText>
                                     To contribute idea to this topic, please enter your content. Thank for your contribution
@@ -241,7 +322,7 @@ const ListIdeas = () => {
                                         // onChange={handleChange}
                                     >
                                         {
-                                            listideas.allCategories?.map(category=>(
+                                            preIdeaData.allCategories?.map(category=>(
                                             <MenuItem value={category.id} key={category.id} >{category.name}</MenuItem>
                                             ))
                                         }
@@ -304,7 +385,7 @@ const ListIdeas = () => {
                 ))}
                 </Grid>
                 <Grid item xs={11} md={6}>
-                 {listideas.ideas?.slice(start, end).map(idea =>(
+                 {listideas.slice(start, end).map(idea =>(
                         <Grid  xs={12} >
                             <Link to={"/ideas/"+idea.ideaId}  style={{ textDecoration: 'none'}}>
                                 <Paper elevation={4} className="idea" key={idea.ideaId}>
@@ -345,7 +426,7 @@ const ListIdeas = () => {
                         ))}
                 <Grid xs={12} className='pagination'>
                     <Pagination
-                        count={Math.ceil(listideas.ideas.length / ideasPerPage)}
+                        count={Math.ceil(listideas.length / ideasPerPage)}
                         page={page}
                         onChange={handlePageChange}
                         renderItem={(item) => (

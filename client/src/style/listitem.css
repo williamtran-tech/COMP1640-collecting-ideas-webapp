@@ -87,11 +87,16 @@ padding: 10px 0;
 }
 .filter-item{
   padding: 0px  30px;
+  display: flex;
+  align-items: center;
+}
+.search{
+  padding: 0px  30px;
 }
 .filter{
   display: flex;
   justify-content: center;
-  padding: 10px 0px;
+  padding: 5px 0px;
   box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
 }
 .chip{
@@ -220,4 +225,8 @@ margin-right: auto;
 }
 .imageIdea_preview{
   width: 100%;
+}
+.sort{
+  border: none !important;
+  border: #6D9886 !important;
 }
