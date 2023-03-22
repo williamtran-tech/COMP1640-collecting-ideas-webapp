@@ -83,6 +83,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 users.fullName AS ownerName, 
                 users.email AS email,
                 users.profileImage AS imagePath,
+                ideas.isAnonymous,
                 COALESCE(reacts.likes, 0) AS likes, 
                 COALESCE(reacts.dislikes, 0) AS dislikes,
                 SUM(views.views) AS views,
