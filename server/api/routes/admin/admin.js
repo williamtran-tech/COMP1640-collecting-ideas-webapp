@@ -41,6 +41,7 @@ router.get('/users', isAdmin, user.list_all_users);
 router.post('/users', isAdmin, user.create_user);
 router.put('/users/:id', isAdmin, uploadFile, user.update_user);
 router.delete('/users/:id', isAdmin, user.delete_user);
+router.delete('/users/force-delete/:id', isAdmin, user.force_delete_user);
 router.get('/users/template-insert/download', isAdmin, user.download_template);
 router.post('/users/bulks-insert', isAdmin, uploadCsv, user.bulk_insert);
 

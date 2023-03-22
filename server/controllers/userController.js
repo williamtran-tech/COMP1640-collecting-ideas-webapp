@@ -18,6 +18,7 @@ const htmlMail = require('../mail-template/mail-templates.js');
 const csv = require('csv-parser');
 const fs = require('fs');
 const validator = require('validator');
+const ideaController = require('./../controllers/ideaController.js');
 
 const { v4: uuidv4 } = require('uuid');
 const usedTokenIdentifiers = [];
@@ -667,6 +668,59 @@ exports.delete_user = async (req, res) => {
         res.status(500).send("Server Error");
     }
 }
+}
+
+exports.force_delete_user = async(req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+          "id": req.params.id
+      }
+    });
+    
+    if (!user) {
+        res.status(404).json({
+            err: "Not Found user"
+        })
+    } else {
+      // Getting all ideas created by this user
+      const ideas = await Idea.findAll({
+        where: {
+            "userId": req.params.id
+        }
+      });
+
+      for (const idea of ideas) {
+        // Remove all references of comments, views, react to ideas list
+        const rm = await ideaController.removeAssociate(idea);
+        if (rm.code !== 200) {
+            console.log(idea.id);
+            throw new Error("Error deleting idea and associated data");
+        }
+        // Wait for 100 milliseconds before deleting the next idea -> solve problem of promise bc the result cannot immediately happens, need to settimeout
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      const delUser = await User.destroy({
+        where: {
+            "id": req.params.id
+        }
+      });
+      if (delUser) {
+          res.status(200).json({
+              msg: "Successfully delete User " + user.fullName
+          });
+      } else {
+          res.status(404).json({
+              msg: "Not found user"
+          });
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      err: "Server error"
+    })
+  }
 }
 
 // These functions used for admin to bulkInsert new user

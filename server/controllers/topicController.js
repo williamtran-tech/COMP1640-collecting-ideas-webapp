@@ -374,7 +374,7 @@ exports.download_topic_csv = async (req, res) => {
             COALESCE(reacts.dislikes, 0) AS dislikes,
             SUM(views.views) AS views,
             COALESCE(c.comments, 0) as comments,
-            categories.name AS category,
+            categories.name AS category
         FROM ideas
         JOIN categories ON ideas.categoryId = categories.id
         JOIN topics ON ideas.topicId = topics.id
@@ -390,7 +390,7 @@ exports.download_topic_csv = async (req, res) => {
             FROM comments
             GROUP BY ideaId
         ) c ON ideas.id = c.ideaId
-        WHERE topics.id = ${id}
+        WHERE topics.id = 3
         GROUP BY ideas.id;
         `);
 
@@ -399,8 +399,8 @@ exports.download_topic_csv = async (req, res) => {
     const csvData = csvParser.parse(topic_detail[0]);
 
     res.setHeader('Content-Type', 'text/csv');
-    const filename = "Topic_Detail_"+topic_info.name
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    var filename = "Topic_Detail_" + topic_info.name + ".csv";
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);;
 
     res.status(200).end(csvData);
 }
