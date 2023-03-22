@@ -107,7 +107,8 @@ exports.login_user = async (req, res) => {
               email: user.email,
               name: user.fullName,
               userId: user.id,
-              roleId: user.roleId
+              roleId: user.roleId,
+              imagePath: user.profileImage
             }, config.env.JWT_key, 
             {
               expiresIn: "1h"
