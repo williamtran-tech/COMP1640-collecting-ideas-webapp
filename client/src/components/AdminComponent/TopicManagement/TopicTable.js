@@ -92,6 +92,7 @@ const TopicTable = () => {
       handleApi.admin_getIdeas_by_topic(id_row).then(
         response=>{
           setTopicDetail(response.data)
+          console.log(response.data)
         }
       )
       if(disable===false){
@@ -292,7 +293,7 @@ const TopicTable = () => {
               </Grid>
               <Grid item xs={12} >
               { topicDeatail && topicDeatail.ideas&& (
-                  <TableIdeas ideas={topicDeatail.ideas} ></TableIdeas>
+                  <TableIdeas ideas={topicDeatail.ideas}  setUpdated={setUpdated} updated={updated}></TableIdeas>
                 )
                 }
           </Grid>

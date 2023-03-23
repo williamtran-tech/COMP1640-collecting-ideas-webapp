@@ -3,9 +3,13 @@ import { Box ,TableContainer, Table, TableCell, TableBody, Button,IconButton, Ta
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useState } from 'react';
-const TableIdeas = ({ideas, setDisable}) => {
+import { handle } from 'express/lib/router';
+import DeleteIdeaModal from './DeleteIdeaModal';
+const TableIdeas = ({ideas, setUpdated, updated}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false)
+    const [id, setId]=useState()
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -17,9 +21,10 @@ const TableIdeas = ({ideas, setDisable}) => {
       const handleRowClick = (id_row) => () => {     
         setActiveRowId(id_row);
       };
-    //  useEffect(()=>{
-    //     setDisable(!false)
-    //  }, [ideas])
+      const handleOpenModal =(idDelete) =>{
+        setId(idDelete)
+        setOpenDeleteModal(true)
+      }
   return (
     <>
     <TableContainer sx={{ maxHeight: '100vh'}} className='table_idea_container'>
@@ -70,10 +75,7 @@ const TableIdeas = ({ideas, setDisable}) => {
                             <TableCell align='center'>{idea.updatedAt}</TableCell>
                             <TableCell align='center'>
                               <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Button size ='small' className='icon-edit' >
-                                  Edit
-                                </Button>
-                                <IconButton size="small" aria-label="delete">
+                                <IconButton size="small" aria-label="delete" onClick={()=>{handleOpenModal(idea.ideaId)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
                               </Box>
@@ -93,6 +95,7 @@ const TableIdeas = ({ideas, setDisable}) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+          <DeleteIdeaModal setOpenDeleteModal={setOpenDeleteModal} openDeleteModal={openDeleteModal} id={id} setUpdated={setUpdated} updated={updated}></DeleteIdeaModal>
     </>
   )
 }
