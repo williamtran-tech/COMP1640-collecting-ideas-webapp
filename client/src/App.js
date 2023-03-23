@@ -37,7 +37,7 @@ function App() {
   return (
         <Routes>
           {userRole === 2 || userRole === 3 ? (
-          <><Route path="/" element={<Layout></Layout>}>
+          <><Route path="/" element={<Layout userRole={userRole}></Layout>}>
           <Route path="/" element={<TopicTable></TopicTable>} />
           <Route path="/users" element={<UserManagement></UserManagement>} />
           <Route path="/statistic" element={<StatisticLayout></StatisticLayout>} />

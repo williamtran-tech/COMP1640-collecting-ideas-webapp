@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from './headerToken';
+import config_download from './header_download';
 import config_form from './header_form';
 
 const getListTopic = async () => {
@@ -33,41 +34,45 @@ const update_avatar= async (id, data) =>{
   return axios.put(`/users/update-avatar/${id}`,data, config_form());
 };
 const admin_getListTopic = async () => {
-    return await axios.get("/admin/topics",config());
+    return await axios.get("/management/topics",config());
   };
 const admin_create_idea= async (data) =>{
-    return axios.post(`/admin/topics`, data, config());
+    return axios.post(`/management/topics`, data, config());
 };
 
 const admin_getIdeas_by_topic= async id => {
-  return await axios.get(`/admin/topics/${id}`, config());
+  return await axios.get(`/management/topics/${id}`, config());
 }
 const admin_update_topic= async (id,data) => {
-  return await axios.put(`/admin/topics/${id}`,data, config());
+  return await axios.put(`/management/topics/${id}`,data, config());
 }
 const admin_delete_topic= async(id)=>{
-  return await axios.delete(`/admin/topics/${id}`, config());
+  return await axios.delete(`/management/topics/${id}`, config());
 }
 const admin_force_delete_topic= async(id)=>{
-  return await axios.delete(`/admin/topics/force-delete/${id}`, config());
+  return await axios.delete(`/management/topics/force-delete/${id}`, config());
+}
+const admin_force_delete_ideas= async(id)=>{
+  return await axios.delete(`management/ideas/${id}`, config());
 }
 const admin_get_uset_inf = async()=>{
-  return await axios.get(`/admin/users`, config());
+  return await axios.get(`/management/users`, config());
 }
 const admin_create_user = async(data)=>{
-  return await axios.post(`/admin/users`, data, config());
+  return await axios.post(`/management/users`, data, config());
 }
 const admin_delete_user = async(id)=>{
-  return await axios.delete(`/admin/users/force-delete/${id}`, config());
+  return await axios.delete(`/management/users/force-delete/${id}`, config());
 }
 const admin_update_user = async(id, data)=>{
-  return await axios.put(`/admin/users/${id}`,data, config_form());
+  return await axios.put(`/management/users/${id}`,data, config_form());
 }
 const QA_get_statistic = async()=>{
-  return await axios.get(`/manager/statistic`, config());
+  return await axios.get(`/management/statistic`, config());
 }
+
 const QA_dowload_topic = async(id)=>{
-  return await axios.get(`/manager/csv-topic/download/${id}`, config());
+  return await axios.get(`/management/csv-topic/download/${id}`, {responseType: 'blob', ...config_download()});
 }
 const handleApi = {
     getListTopic,
@@ -84,6 +89,7 @@ const handleApi = {
     admin_update_topic,
     admin_delete_topic,
     admin_force_delete_topic,
+    admin_force_delete_ideas,
     admin_get_uset_inf,
     admin_create_user,
     admin_delete_user,

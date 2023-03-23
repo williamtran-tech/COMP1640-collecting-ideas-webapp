@@ -392,15 +392,28 @@ const ListIdeas = () => {
                                     <Grid container>
                                         <Grid item className='header-idea' xs={12}>
                                             <Stack direction="row" spacing={2} className="avatar-category">
-                                            <Stack >
+                                            {
+                                               idea.isAnonymous == 1 ? 
+                                               (<Stack >
+                                                <Avatar
+                                                alt="A"
+                                                sx={{ width: 30, height: 30, justifySelf: "center" }}
+                                                className='avatar'
+                                                />
+                                                <Typography variant="subtitle2" className='name-user'>Anonymous</Typography>
+                                            </Stack>)
+                                               :
+                                               ( <Stack >
                                                 <Avatar
                                                 alt="T"
                                                 src={`http://localhost:5050/${idea.imagePath}`}
                                                 sx={{ width: 30, height: 30, justifySelf: "center" }}
                                                 className='avatar'
                                                 />
-                                                <Typography variant="subtitle2">{idea.ownerName}</Typography>
-                                            </Stack>
+                                                <Typography variant="subtitle2" className='name-user'>{idea.ownerName}</Typography>
+                                            </Stack>) 
+                                            }
+                                           
                                                 <Stack direction="row" spacing={1}>
                                                     <Chip label={idea.category} sx={{backgroundColor: "#F2E7D5"}} size="small" onClick={handleClick}/>
                                                 </Stack>

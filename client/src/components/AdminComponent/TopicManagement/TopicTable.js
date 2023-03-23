@@ -16,6 +16,7 @@ import TopicInfo from './TopicInfo';
 import TableIdeas from './TableIdeas';
 import DeleteTopicModal from './DeleteTopicModal';
 import DownloadIcon from '@mui/icons-material/Download';
+import FileSaver from 'file-saver';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [page, setPage] = useState(0);
@@ -112,9 +113,15 @@ const TopicTable = () => {
         })
       }
     }
+    
     const donwloadTopic = (topicId)=>{
         handleApi.QA_dowload_topic(topicId).then(response=>{
-          console.log(response.data)
+          
+          const blob = new Blob([response.data], { type: 'text/csv' });
+          FileSaver.saveAs(blob, `Topic ${topicId}.csv`)
+          console.log(response);
+        }).catch(error=>{
+          console.error("Failed to download topic CSV file.", error);
         })
     }
   return (

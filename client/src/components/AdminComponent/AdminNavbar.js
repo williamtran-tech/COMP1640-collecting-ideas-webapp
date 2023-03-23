@@ -5,7 +5,7 @@ import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TopicIcon from '@mui/icons-material/Topic';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
@@ -16,8 +16,15 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import { useNavigate } from "react-router-dom";
 import '../../style/admin.css'
 import LockIcon from '@mui/icons-material/Lock';
-const AdminNavbar = () => {
+const AdminNavbar = ({userRole}) => {
   const [value, setValue] = useState(0);
+  const [disable, setDisable] = useState(false);
+  useEffect(()=>{
+    if(userRole&&userRole==3){
+        setDisable(true)
+      }
+  },[])
+  
 const navigate = useNavigate();
   
   const logout= () => {
@@ -44,7 +51,7 @@ const handleChange = (event, newValue) => {
                 <Tab variant={value === 1 ? 'solid' : 'plain'} color={value === 1 ? 'primary' : 'neutral'}  className="tab" component={Link} to="/users"><ListItemDecorator  className="menu_item"><AccountBoxIcon />User Management</ListItemDecorator></Tab>
                 <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} ><ListItemDecorator  className="menu_item"><CategoryIcon />Category Management</ListItemDecorator></Tab>
                 <Tab variant={value === 3 ? 'solid' : 'plain'} color={value === 3 ? 'primary' : 'neutral'} className="tab" component={Link} ><ListItemDecorator  className="menu_item"><ClassIcon />Department Management </ListItemDecorator></Tab>
-                <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic" ><ListItemDecorator  className="menu_item"><BarChartIcon />Statistic</ListItemDecorator></Tab>
+                <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic" disabled={disable}><ListItemDecorator  className="menu_item"><BarChartIcon />Statistic {userRole ==3&&( <LockIcon></LockIcon>)} </ListItemDecorator></Tab>
                </TabList>
              </Tabs>
            </div>
