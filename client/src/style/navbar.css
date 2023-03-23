@@ -26,3 +26,21 @@
     color:aliceblue;
   }
 
+.container_notfound{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #7ccfb3;
+}
+.notfound{
+    color: aliceblue;
+    font-size: 50px;
+    font-weight: bolder;
+    text-shadow: 0 0 5px rgb(0, 0, 0);
+   
+}
+.linkto{
+    text-decoration: none;
+    color: blue;
+}
