@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('./../config/default.json');
+const config = require('../config/default.json');
 const moment = require('moment-timezone');
 
 module.exports = (req, res, next) => {
@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
             decoded = jwt.verify(token, config.env.JWT_key);
             req.userData = decoded;
-            if (decoded.roleId === 3) {
+            if (decoded.roleId === 3 || decoded.roleId === 2) {
                 next();
             }
             else {

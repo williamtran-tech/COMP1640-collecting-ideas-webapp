@@ -1,5 +1,3 @@
-const { checkPassword } = require("../middleware/validateInput");
-
 // Mail template for submit contribution
 exports.ideaSubmit = (idea, creator, topic) => {
     const html = `
@@ -28,7 +26,7 @@ exports.commentIdea = (idea, comment, creator) => {
             
             <p>Content: ${comment.content}</p>
             <p>Commented at: ${comment.createdAt}</p>
-            <p>View detail <a href="http://localhost:5000/ideas/${idea.id}" style="text-decoration: none; color:rgb(0, 2, 102)0;">Your idea</a></p>
+            <p>View detail <a href="http://localhost:3000/ideas/${idea.id}" style="text-decoration: none; color:rgb(0, 2, 102)0;">Your idea</a></p>
 
             <!-- this ensures Gmail doesn't trim the email -->
             <span style="opacity: 0"> ${Date.now()} </span>
@@ -55,7 +53,7 @@ exports.registration = (user, password, token) => {
             
             <p>Username: ${user.email}</p>
             <p>Password: ${password}</p>
-            <button style="background-color: rgb(0, 197, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:5000/accounts/verify?token=${token}" style="text-decoration: none; color: #ffffff;"> Verify here</button>
+            <button style="background-color: rgb(0, 110, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:3000/accounts/verify?token=${token}" style="text-decoration: none; color: #ffffff;"> Verify here</button>
 
             <!-- this ensures Gmail doesn't trim the email -->
             <span style="opacity: 0"> ${Date.now()} </span>
@@ -77,9 +75,9 @@ exports.reset_password = (user, token) => {
             
             <p>Thank you for choosing Gre Ideas! Welcome to your new and shiny Gre Ideas ID. You can use your new account to submit or contribute ideas and participate in the online Gre Ideas Community. Plus, it easy to update your account information at any time.</p>
             
-            <p>To complete reset your Account password just click on the link below to create new password. The link will expire in 3 days, so please access as soon as possible.</p>
+            <p>To complete reset your Account password just click on the link below to create new password. The link will expire in 15 minutes, so please access immediately.</p>
             
-            <button style="background-color: rgb(0, 197, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:5000/accounts/reset-password?token=${token}" style="text-decoration: none; color: #ffffff;"> Reset Password</button>
+            <button style="background-color: rgb(0, 110, 0); border-radius: 10px; padding: 10px"><a href="http://localhost:3000/accounts/reset-password?token=${token}" style="text-decoration: none; color: #ffffff;"> Reset Password</button>
 
             <!-- this ensures Gmail doesn't trim the email -->
             <span style="opacity: 0"> ${Date.now()} </span>

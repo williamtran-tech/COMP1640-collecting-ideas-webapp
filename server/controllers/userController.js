@@ -139,7 +139,6 @@ exports.login_user = async (req, res) => {
   }
 }
 
-
 // This function used for getting email address of user -> send reset-password mail
 exports.forgot_password = async (req, res) => {
   try {
@@ -157,7 +156,7 @@ exports.forgot_password = async (req, res) => {
         tokenIdentifier: uuidv4()
       }, config.env.JWT_key, 
       {
-        expiresIn: "3d"
+        expiresIn: "15m"
       });
 
       sendEmail(user.email, "[GRE IDEAS] RESET YOUR PASSWORD", htmlMail.reset_password(user, token));
