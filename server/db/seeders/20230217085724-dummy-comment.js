@@ -6,6 +6,7 @@ module.exports = {
     await queryInterface.bulkInsert('Comments', [
       {
         content: `There are many variationst anything embarrassing hidden in the middle of text.`,
+        isAnonymous: false,
         userId: 2,
         ideaId: 3,
         createdAt: new Date(),
@@ -13,6 +14,7 @@ module.exports = {
       },
       {
         content: `Lorem ipsum dolor sit amet, consec accumsan turpis dapibus id.`,
+        isAnonymous: false,
         userId: 1,
         ideaId: 3,
         createdAt: new Date(),
@@ -20,6 +22,7 @@ module.exports = {
       },
       {
         content: `Lorem ipsum d dapibus id.`,
+        isAnonymous: false,
         userId: 3,
         ideaId: 3,
         createdAt: new Date(),

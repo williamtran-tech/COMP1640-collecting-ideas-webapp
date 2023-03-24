@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Comment.init({
     content: DataTypes.TEXT,
+    isAnonymous: DataTypes.BOOLEAN,
     ideaId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER
   }, {

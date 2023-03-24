@@ -11,7 +11,8 @@ const View = db.View;
 const validate = require('./../middleware/validateInput.js');
 const sendEmail = require('./../middleware/sendMail.js');
 const htmlMail = require('../mail-template/mail-templates.js');
-
+const fs = require('fs');
+const path = require('path');
 
 const jwt = require('jsonwebtoken');
 const config = require('./../config/default.json');
@@ -156,8 +157,11 @@ exports.get_idea_by_id = async (req, res) => {
         // })
 
         const comments = await Comment.findAll({
-            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'createdAt', 'updatedAt'],
-            where: {'ideaId': req.params.id},
+            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'isAnonymous', 'createdAt', 'updatedAt'],
+            where: {
+                'ideaId': req.params.id,
+                'isAnonymous': false
+            },
             include: {
                 model: User, 
                 as: "User",
@@ -165,6 +169,14 @@ exports.get_idea_by_id = async (req, res) => {
                 required: true
             }
         });
+
+        const anoComments = await Comment.findAll({
+            attributes: ['content', 'isAnonymous', 'createdAt', 'updatedAt'],
+            where: {
+                'ideaId': req.params.id,
+                'isAnonymous': true
+            },
+        })
 
         const numComments = await Comment.findAll({
             where: {
@@ -231,6 +243,7 @@ exports.get_idea_by_id = async (req, res) => {
             views: views[0].views,
             viewedBy: viewedBy,
             comments: comments,
+            anoComments: anoComments,
             nComments: numComments[0].quantity,
             react: react
         });
@@ -413,6 +426,9 @@ exports.create_idea = async (req, res) => {
         }
         
         if (!result) {
+            // Delete the file -> from the uploaded files - temporary file
+
+            //
             res.status(406).json({
                 msg:"Your idea is exists"
             })
@@ -446,19 +462,50 @@ exports.create_idea = async (req, res) => {
             {attributes: ["name"]});
 
             // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
-            sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.registration(createdIdea));
+            sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
             
+            const topic = await Topic.findOne({
+                where: {
+                    id: req.params.topicId
+                }
+            });
+            console.log(path.basename(req.file.path));
+            // Move the file from temp folder to the right directory
+            const dir = `./uploaded_files/uploads/${topic.name}`
+            fs.mkdirSync(`${dir}/${createdIdea.name}`, {recursive: true});
+            const dest = `${dir}/${createdIdea.name}/${path.basename(req.file.path)}`;
+            fs.rename(createdIdea.filePath, dest, (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("Move file successfully");
+                }
+            });
+            const moveFileIdea = await Idea.update({
+                "filePath": dest.slice(2)
+            },
+            {
+                where: {
+                    id: createdIdea.id
+                }
+            });
+
+            const idea = await Idea.findOne({
+                where: {
+                    id: createdIdea.id
+                }
+            });
             res.status(200).json({
                 msg: "Successfully create new idea",
-                idea: createdIdea,
-                managerMails: managerMails
+                idea: idea
             });
         }
     }
     catch (err) {
         if (err.name === "SequelizeForeignKeyConstraintError") {
             res.status(401).json({
-                err: "Not acceptable input"
+                err: "Topic not found",
+                err: err
             })
         } else {
             console.log(err);

@@ -13,6 +13,11 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false
       },
+      isAnonymous: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,

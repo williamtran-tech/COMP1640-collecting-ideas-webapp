@@ -14,13 +14,14 @@ exports.create_comment = async (req, res) => {
     try {
         const comment = await Comment.create({
             content: req.body.content,
+            isAnonymous: req.body.isAnonymous,
             userId: req.body.userId,
             ideaId: req.body.ideaId
         });
 
         // Using another instance because the date retrieving is ICT date, instead of the Date in the Comment.create function (UTC)
         const commentLatest = await Comment.findOne({
-            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'createdAt', 'updatedAt'],
+            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],'content', 'isAnonymous','createdAt', 'updatedAt'],
             where: {'id': comment.id },
             include: {
                 model: User, 

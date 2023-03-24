@@ -390,7 +390,7 @@ exports.download_topic_csv = async (req, res) => {
             FROM comments
             GROUP BY ideaId
         ) c ON ideas.id = c.ideaId
-        WHERE topics.id = 3
+        WHERE topics.id = ${id}
         GROUP BY ideas.id;
         `);
 
