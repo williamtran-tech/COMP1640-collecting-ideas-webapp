@@ -18,6 +18,8 @@ import StatisticLayout from './components/AdminComponent/Statistic/StatisticLayo
 import NotFound from './pages/NotFound';
 import VerifyAccount from './pages/VerifyAccount';
 import { useLocation } from 'react-router-dom';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
@@ -29,10 +31,13 @@ function App() {
     if (decodedToken) {
       setUserRole(decodedToken.roleId);
       setIsLoggedIn(true);
-    } else if(!location.pathname.startsWith('/accounts/verify')) {
-      setIsLoggedIn(false);
-      navigate('/login');
-    }
+    } else if(!location.pathname.startsWith('/accounts/verify', '/accounts/forgot-password') 
+           && !location.pathname.startsWith('/accounts/reset-password') 
+           && !location.pathname.startsWith('/accounts/forgot-password')) 
+           {
+          setIsLoggedIn(false);
+          navigate('/login');
+          }
   }, [navigate,isLoggedIn]);
 
   // const userInfo = isLoggedIn ? jwt_decode(localStorage.getItem('token')) : null;
@@ -50,9 +55,10 @@ function App() {
           <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>
           <Route path="/user" element={<User isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></User>}></Route>
           <Route path="/ideas/:id" element={(<IdeaDetailPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeaDetailPage>)}></Route>
-         
           </>)}
-           <Route path="/accounts/verify" element={<VerifyAccount></VerifyAccount>}> </Route>
+          <Route path="/accounts/verify" element={<VerifyAccount></VerifyAccount>}> </Route>
+          <Route path="/accounts/reset-password" element={<ResetPassword></ResetPassword>}> </Route>
+          <Route path="/accounts/forgot-password" element={<ForgotPassword></ForgotPassword>}> </Route>
           <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route>
           <Route path="*" element={<NotFound></NotFound>} />
        </Routes>

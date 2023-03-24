@@ -91,10 +91,7 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
                             size="small"
                             onChange={handleInputChange}
                             />
-                            <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                            />
+                            <Link to={'/accounts/forgot-password'}>Forgot password</Link>
                         </Grid>
                         <Grid container justifyContent="center">
                             {

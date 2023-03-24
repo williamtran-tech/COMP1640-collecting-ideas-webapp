@@ -77,6 +77,9 @@ const QA_dowload_topic = async(id)=>{
 const verifyEmail = async (token) =>{
   return await axios.get(`/accounts/verify?token=${token}`)
 }
+const forgotPassword = async (email)=>{
+  return await axios.post('/accounts/forgot-password', email)
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -100,6 +103,7 @@ const handleApi = {
     update_avatar,
     QA_get_statistic,
     QA_dowload_topic,
-    verifyEmail
+    verifyEmail,
+    forgotPassword
 };
 export default handleApi
