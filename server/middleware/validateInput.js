@@ -38,32 +38,47 @@ exports.checkFilePath = (object) => {
     if (object.filePath) {
 
         const filePath = object.filePath;
-
-        // // Split the folderPath string into an array of directory names
-        const dirNames = filePath.split(path.sep);
-
-        // Remove the first three elements of the array ('uploaded_files', 'uploads', and 'Honor Ceremony')
-        dirNames.splice(0, 3);
-
-        // Join the remaining directory names back into a path string
-        const remainingPath = dirNames.join(path.sep);
-        console.log(remainingPath);
-
-        fs.rmSync(remainingPath, { recursive: true, force: true }, err => {
+        // Split the folderPath string into an array of directory names
+        const dirNames = filePath.split('/');
+    
+        const rootDir = path.dirname(require.main.filename);
+        const topic = dirNames[2]; // Replace with the topic folder name
+        const idea = dirNames[3]; // Replace with the idea folder name
+    
+        // Construct the folder path to be deleted
+        const folderPath = path.join(rootDir, 'uploaded_files/uploads', topic, idea);
+        // Construct the path to the topic folder
+        const topicPath = path.join(rootDir, 'uploaded_files/uploads', topic);
+    
+        // Read the contents of the topic folder
+        fs.readdir(topicPath, (err, files) => {
             if (err) {
-              throw err
-            }
-            console.log(`${remainingPath} is deleted!`)
-          })
-
-        // // Get the root directory of the project
-        // const rootDir = path.dirname(require.main.filename);
-
-        // // Construct the full path to the directory to be deleted
-        // const fullPath = path.join(rootDir, 'uploaded_files', 'uploads', remainingPath);
-
-        // // Remove the directory and its contents recursively
-        // fsx.rmdirSync(fullPath, { recursive: true });
+                console.error(err);
+            } else {
+                // Check if the topic folder contains any subdirectories
+                const subdirectories = files.filter(file => fs.statSync(path.join(topicPath, file)).isDirectory());
+    
+                if (subdirectories.length > 1) {
+                    // Recursively delete the folder and its contents
+                    fs.rmdir(folderPath, { recursive: true }, (err) => {
+                        if (err) {
+                          console.error(err);
+                        } else {
+                          console.log(`Folder Idea ${folderPath} was successfully removed.`);
+                        }
+                      });
+                } else {
+                    // Recursively delete the folder and its contents
+                    fs.rmdir(topicPath, { recursive: true }, (err) => {
+                        if (err) {
+                          console.error(err);
+                        } else {
+                          console.log(`Folder Topic ${topicPath} was successfully removed.`);
+                        }
+                    });
+                }
+            }   
+        });
 
         // fs.unlink(object.filePath, function(err) {
         //     if(err && err.code == 'ENOENT') {
