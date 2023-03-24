@@ -158,7 +158,10 @@ exports.get_idea_by_id = async (req, res) => {
 
         const comments = await Comment.findAll({
             attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'isAnonymous', 'createdAt', 'updatedAt'],
-            where: {'ideaId': req.params.id},
+            where: {
+                'ideaId': req.params.id,
+                'isAnonymous': false
+            },
             include: {
                 model: User, 
                 as: "User",
@@ -166,6 +169,14 @@ exports.get_idea_by_id = async (req, res) => {
                 required: true
             }
         });
+
+        const anoComments = await Comment.findAll({
+            attributes: ['content', 'isAnonymous', 'createdAt', 'updatedAt'],
+            where: {
+                'ideaId': req.params.id,
+                'isAnonymous': true
+            },
+        })
 
         const numComments = await Comment.findAll({
             where: {
@@ -232,6 +243,7 @@ exports.get_idea_by_id = async (req, res) => {
             views: views[0].views,
             viewedBy: viewedBy,
             comments: comments,
+            anoComments: anoComments,
             nComments: numComments[0].quantity,
             react: react
         });
