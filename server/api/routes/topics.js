@@ -10,6 +10,7 @@ router.get('/', checkAuth,topic.list_all_topics);
 router.get('/:topicId', checkAuth, topic.list_all_ideas_by_topic);
 router.post('/:topicId', checkAuth, idea.create_idea);
 router.post('/:topicId/upload', checkAuth, uploadFile, idea.create_idea);
+// router.post('/create-idea/:topicId', checkAuth, uploadFileTest, idea.create_idea_test);
 
 // router.post('/', ideaList.create_an_idea);
 

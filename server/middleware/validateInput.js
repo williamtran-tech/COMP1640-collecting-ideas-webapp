@@ -1,5 +1,7 @@
 // Dependence for remove file
 const fs = require('fs');
+const path = require('path');
+const fsx = require('fs-extra');
 
 exports.checkInput = (req) => {
     for(var prop in req.body) {
@@ -34,17 +36,46 @@ exports.checkTime = (req) => {
 
 exports.checkFilePath = (object) => {
     if (object.filePath) {
-        fs.unlink(object.filePath, function(err) {
-            if(err && err.code == 'ENOENT') {
-                // file doens't exist
-                console.info("File doesn't exist, won't remove it.");
-            } else if (err) {
-                // other errors, e.g. maybe we don't have enough permission
-                console.error("Error occurred while trying to remove file");
-            } else {
-                console.info(`File removed`);
+
+        const filePath = object.filePath;
+
+        // // Split the folderPath string into an array of directory names
+        const dirNames = filePath.split(path.sep);
+
+        // Remove the first three elements of the array ('uploaded_files', 'uploads', and 'Honor Ceremony')
+        dirNames.splice(0, 3);
+
+        // Join the remaining directory names back into a path string
+        const remainingPath = dirNames.join(path.sep);
+        console.log(remainingPath);
+
+        fs.rmSync(remainingPath, { recursive: true, force: true }, err => {
+            if (err) {
+              throw err
             }
-        });
+            console.log(`${remainingPath} is deleted!`)
+          })
+
+        // // Get the root directory of the project
+        // const rootDir = path.dirname(require.main.filename);
+
+        // // Construct the full path to the directory to be deleted
+        // const fullPath = path.join(rootDir, 'uploaded_files', 'uploads', remainingPath);
+
+        // // Remove the directory and its contents recursively
+        // fsx.rmdirSync(fullPath, { recursive: true });
+
+        // fs.unlink(object.filePath, function(err) {
+        //     if(err && err.code == 'ENOENT') {
+        //         // file doens't exist
+        //         console.info("File doesn't exist, won't remove it.");
+        //     } else if (err) {
+        //         // other errors, e.g. maybe we don't have enough permission
+        //         console.error("Error occurred while trying to remove file");
+        //     } else {
+        //         console.info(`File removed`);
+        //     }
+        // });
     } else if (object.profileImage) {
         fs.unlink(object.profileImage, function(err) {
             if(err && err.code == 'ENOENT') {
