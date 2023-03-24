@@ -77,6 +77,12 @@ const QA_dowload_topic = async(id)=>{
 const verifyEmail = async (token) =>{
   return await axios.get(`/accounts/verify?token=${token}`)
 }
+const get_resetEmail = async (token) =>{
+  return await axios.get(`/accounts/reset-password?token=${token}`)
+}
+const post_resetEmail = async (token, data) =>{
+  return await axios.post(`/accounts/reset-password?token=${token}`, data)
+}
 const forgotPassword = async (email)=>{
   return await axios.post('/accounts/forgot-password', email)
 }
@@ -104,6 +110,8 @@ const handleApi = {
     QA_get_statistic,
     QA_dowload_topic,
     verifyEmail,
-    forgotPassword
+    forgotPassword,
+    get_resetEmail,
+    post_resetEmail
 };
 export default handleApi
