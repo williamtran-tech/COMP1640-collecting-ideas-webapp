@@ -16,18 +16,20 @@ import TopicTable from './components/AdminComponent/TopicManagement/TopicTable';
 import UserManagement from './components/AdminComponent/UserMagement/UserManagement';
 import StatisticLayout from './components/AdminComponent/Statistic/StatisticLayout';
 import NotFound from './pages/NotFound';
+import VerifyAccount from './pages/VerifyAccount';
+import { useLocation } from 'react-router-dom';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
   const navigate = useNavigate();
-
+  const location= useLocation()
   useEffect(() => {
     document.title = "Green Idea";
-    const decodedToken = checkToken() ;
+    const decodedToken = checkToken();
     if (decodedToken) {
       setUserRole(decodedToken.roleId);
       setIsLoggedIn(true);
-    } else {
+    } else if(!location.pathname.startsWith('/accounts/verify')) {
       setIsLoggedIn(false);
       navigate('/login');
     }
@@ -47,7 +49,10 @@ function App() {
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
           <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>
           <Route path="/user" element={<User isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></User>}></Route>
-          <Route path="/ideas/:id" element={(<IdeaDetailPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeaDetailPage>)}></Route></>)}
+          <Route path="/ideas/:id" element={(<IdeaDetailPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeaDetailPage>)}></Route>
+         
+          </>)}
+           <Route path="/accounts/verify" element={<VerifyAccount></VerifyAccount>}> </Route>
           <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route>
           <Route path="*" element={<NotFound></NotFound>} />
        </Routes>
