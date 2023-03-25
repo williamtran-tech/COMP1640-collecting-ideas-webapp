@@ -57,8 +57,8 @@ const ListIdeas = () => {
         setSelectedCategory(event.target.value);
     };
     const [selectedFile, setSelectedFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-  
+    const [filePreview, setFilePreview] = useState(null);
+    const [isImage, setIsImage] = useState(false);
     const handleFileChange = (event) => {
         event.preventDefault();
         const reader = new FileReader();
@@ -66,12 +66,23 @@ const ListIdeas = () => {
     
         reader.onloadend = () => {
             setSelectedFile(file);
-            setImagePreview(reader.result);
+            setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
       };
+    useEffect(()=>{
+        if(selectedFile){
+            console.log(selectedFile.name)
+            if(selectedFile.type.startsWith('image/')){
+                setIsImage(true)
+            }
+            else{
+            setIsImage(false)
+        }  
+           }
+    },[selectedFile])
      const  clear_file= ()=>{
-        setImagePreview(null);
+        setFilePreview(null);
      }
     const [inputedIdea, setInputedIdea] = useState("");
     const handleInputChange = (event) => {
@@ -123,7 +134,8 @@ const ListIdeas = () => {
         if(preIdeaData && preIdeaData.ideas){
             setlistideas(filterIdea(preIdeaData.ideas, categoryFilter, sortValue, searchFilter.id))
             console.log(searchFilter.id)
-        }
+            
+            }
     },[preIdeaData, sortValue, categoryFilter, searchFilter])
      const handleCheckTerm = (event) => {
             setCheckedTerm(event.target.checked);
@@ -345,18 +357,18 @@ const ListIdeas = () => {
                                    {/* <IconButton onClick={() => filePicekerRef.current.click()}>
                                         <DriveFolderUploadIcon color="primary"  />
                                    </IconButton> */}
-                                   <button className="btn" onClick={() => filePicekerRef.current.click()}>
-                                        Choose
-                                    </button>
+                                   <Button className="btn" onClick={() => filePicekerRef.current.click()}>
+                                        Upload
+                                    </Button>
                                    <input
                                         ref={filePicekerRef}
-                                        accept="image/*, video/*"
+                                        accept="image/*, video/*, .docx,.pdf"
                                         onChange={handleFileChange}
                                         type="file"
                                         hidden
                                     />
                                     
-                                    {(imagePreview) && (
+                                    {(filePreview) && (
                                         <button className="btn" onClick={clear_file}>
                                             x
                                         </button>
@@ -364,7 +376,15 @@ const ListIdeas = () => {
                                 </div>
 
                                 <div className="preview">
-                                    {imagePreview != null && <img src={imagePreview} alt=""  className='image_preview'/>}
+                                {filePreview != null && (
+                                    <>
+                                    {isImage ? (
+                                        <img src={filePreview} alt="" className="image_preview" />
+                                    ) : (
+                                        <Chip icon={<EmojiObjectsIcon/>} label={selectedFile.name} size="small" color="primary" className='chip' sx={{backgroundColor: "#6D9886", marginTop: 1}}/>
+                                    )}
+                                    </>
+                                )}
                                 </div>
                                 </DialogContent>
                                 <DialogActions className='form-action'>

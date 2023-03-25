@@ -14,7 +14,7 @@ import calculateTimeDiff from '../service/calculateTimeDiff';
 import React from 'react'
 import config from '../service/headerToken';
 // import image from "./images/"
-const IdeaDetail = () => {
+const IdeaDetail = ({token}) => {
     const { id } = useParams();
     const [ideaDetail, setideaDetail] = useState([]);
     const [contentReact, setContentReact] = useState({
@@ -89,7 +89,6 @@ const IdeaDetail = () => {
       const [comment, setcomment] = useState(initialideaState);
       const [commented, setcommented] = useState(false);
       const [reacted, setreacted] = useState(false);
-    const token= localStorage.getItem("token")
 
     useEffect(() =>{
             retrieveideaDetail()
@@ -244,7 +243,7 @@ const IdeaDetail = () => {
                                     <Tooltip title="VO HOANG TAM" arrow>
                                         <Avatar
                                         alt="T"
-                                        src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/324659855_1288226605056706_1068574274762085817_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=cXa-aiUFgAIAX9zlbbV&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfBivjwSzqPY7MF9RJ8MIYtJ1DMRqctsGhSXkJgf8_rSUQ&oe=63EFBF1D"
+                                        src={token&&`http://localhost:5050/${token.imagePath}`}
                                         sx={{ width: 30, height: 30  }}
                                         />
                                     </Tooltip>

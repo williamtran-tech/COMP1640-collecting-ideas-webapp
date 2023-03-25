@@ -10,6 +10,10 @@ const TableIdeas = ({ideas, setUpdated, updated}) => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
     const [id, setId]=useState()
+    const [idea, setIdea] = useState([]);
+    useEffect(()=>(
+      setIdea(ideas)
+    ),[ideas])
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -54,9 +58,9 @@ const TableIdeas = ({ideas, setUpdated, updated}) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {ideas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      {idea && idea.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map(idea => (
-                          <TableRow hover role="checkbox" tabIndex={-1} key={idea.id} 
+                          <TableRow hover role="checkbox" tabIndex={-1} key={idea.ideaId} 
                           onClick={handleRowClick(idea.id)}
                           style={{
                             background: activeRowId === idea.id ? '#EEE' : 'transparent',
@@ -95,7 +99,7 @@ const TableIdeas = ({ideas, setUpdated, updated}) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          <DeleteIdeaModal setOpenDeleteModal={setOpenDeleteModal} openDeleteModal={openDeleteModal} id={id} setUpdated={setUpdated} updated={updated}></DeleteIdeaModal>
+          <DeleteIdeaModal setOpenDeleteModal={setOpenDeleteModal} openDeleteModal={openDeleteModal} id={id} setUpdated={setUpdated} updated={updated}  idea={idea} setIdea={setIdea}></DeleteIdeaModal>
     </>
   )
 }

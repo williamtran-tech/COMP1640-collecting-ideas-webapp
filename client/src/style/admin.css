@@ -148,3 +148,6 @@ flex-direction: column !important;
      display: flex;
      gap: 15px;
  }
+ .lock_icon{
+    margin-left: auto;
+}
