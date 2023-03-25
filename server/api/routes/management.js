@@ -17,6 +17,7 @@ router.post('/topics', isAccessible, topic.create_topic);
 router.put('/topics/:topicId', isAccessible, topic.update_topic);
 router.delete('/topics/:topicId', isAccessible, topic.delete_topic);
 router.delete('/topics/force-delete/:topicId', isAccessible, topic.force_delete);
+router.get('/topics/download-zip/:id', isManager, topic.zip_topic);
 
 // CATEGORIES - ADMIN PANEL
 router.get('/categories', isAccessible, category.list_all_categories);

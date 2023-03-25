@@ -7,6 +7,9 @@ const Topic = models.Topic;
 const Idea = models.Idea;
 const React = models.React;
 const validation = require('./../middleware/validateInput');
+const fs = require('fs');
+const archiver = require('archiver');
+const path = require('path');
 
 const CsvParser = require('json2csv');
 
@@ -569,6 +572,67 @@ exports.most_viewed_ideas = async (req, res) => {
         console.log(err);
         res.status(500).json({
             err: "Server error"
+        })
+    }
+}
+
+// Function for download ZIP file of Topic
+exports.zip_topic = async (req, res) => {
+    try {
+        const topic = await Topic.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+        if (!topic) {
+            res.status(404).json({
+                msg: "Topic not found"
+            })
+        } else {
+            // find the directory that contains the files
+            const folderPath = path.join(process.cwd(), 'uploaded_files', 'uploads', `${topic.name}`);
+            // console.log(folderPath);
+            // Create a new Archiver object
+            const archive = archiver('zip', {
+                zlib: { level: 9 }
+            });
+            const zipFileName = `${topic.name}.zip`;
+            const output = fs.createWriteStream(zipFileName);
+
+            // console.log(path.basename(output.path));
+            // Pipe the output stream to the archive
+            archive.pipe(output);
+
+            // Add the folder and its contents to the archive
+            archive.directory(folderPath, false);
+
+            // Finalize the archive
+            archive.finalize();
+            const file = topic.name.replace(/\s/g, '') + '.zip';
+            // Once the archive is finished, send it to the client as a download
+            output.on('close', () => {
+                try {
+                    res.set('Content-Type', 'application/octet-stream');
+                    res.set('Content-Disposition', `attachment; filename=${file}`);
+                    res.set('Content-Length', archive.pointer());
+                    fs.createReadStream(output.path).pipe(res);
+                    // Delete the temporary zip file after the response has ended
+                    res.on('finish', () => {
+                        if (output.path !== null) {
+                            fs.unlink(output.path, (err) => {
+                                if (err) console.error(err);
+                            });
+                        }
+                    });
+                } catch(err) {
+                    console.log(err);
+                }
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            err: "Server Error"
         })
     }
 }

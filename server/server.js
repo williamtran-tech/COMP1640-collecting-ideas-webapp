@@ -12,7 +12,7 @@ const accountsRoutes = require('./api/routes/accounts');
 const userRoutes = require('./api/routes/user.js');
 const managementRoutes = require('./api/routes/management.js');
 
-const PORT = process.env.PORT || '5000';
+const PORT = process.env.PORT || '5050';
 
 app.use(cors());
 app.use(express.json());
