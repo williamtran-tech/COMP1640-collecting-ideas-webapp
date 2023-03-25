@@ -374,7 +374,6 @@ const ListIdeas = () => {
                                         </button>
                                     )}
                                 </div>
-
                                 <div className="preview">
                                 {filePreview != null && (
                                     <>

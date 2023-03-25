@@ -230,3 +230,18 @@ margin-right: auto;
   border: none !important;
   border: #6D9886 !important;
 }
+.comment_box{
+  display: flex;
+}
+.send_option{
+ background-color: transparent !important;
+ box-shadow: none !important;
+ margin: 0px !important;
+}
+.send_button{
+  color: #6D9886 !important;
+}
+.MuiSpeedDial-root::before,
+.MuiSpeedDial-root::after {
+  background-color: #6D9886 !important; /* Replace with your desired color */
+}
