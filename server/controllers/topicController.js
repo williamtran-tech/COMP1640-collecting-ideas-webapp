@@ -6,6 +6,8 @@ const Category = models.Category;
 const Topic = models.Topic;
 const Idea = models.Idea;
 const React = models.React;
+const Comment = models.Comment;
+const View = models.View;
 const validation = require('./../middleware/validateInput');
 const fs = require('fs');
 const archiver = require('archiver');
@@ -116,30 +118,137 @@ exports.list_all_ideas_by_topic = async (req, res) => {
             GROUP BY ideas.id;
                 `);
 
-            const allCategories = await Category.findAll({
-                attributes: ['id','name']
-            })
+        const allCategories = await Category.findAll({
+            attributes: ['id','name']
+        })
 
-            const categories = await Idea.findAll({
-                where: {
-                    topicId: id
+        const categories = await Idea.findAll({
+            where: {
+                topicId: id
+            },
+            include: {
+                model: Category,
+                as: "Category",
+                attributes: []
+            },
+            attributes:[[db.sequelize.fn('distinct', db.sequelize.col('Category.name')), 'name'], ["categoryId", "id"],],
+            group: ["Category.name"],
+            raw: true
+        });
+
+        const mostViewedIdeas = await Idea.findAll({
+            attributes: ['id', 'name', [db.sequelize.fn('sum', db.sequelize.col('views.views')), 'views'], 'createdAt', 'updatedAt'],
+            where: {topicId: id},
+            include: [
+                {
+                    model: View,
+                    attributes: [],
+                    require: true
                 },
-                include: {
+                {
+                    model: User,
+                    as: "User",
+                    attributes:['id','profileImage', 'fullName', 'email'],
+                    require: true
+                },
+                {
                     model: Category,
                     as: "Category",
-                    attributes: []
+                    attributes:['id', 'name'],
+                    require: true
+                }
+            ],
+            group: ['id'],
+            order: [['views', 'DESC']],
+        });
+
+        // Have the most Like number
+        // Using this [db.Sequelize.literal('(SELECT SUM(`nLike`) FROM `Reacts` WHERE `Reacts`.`IdeaId` = `Idea`.`id`)'), 'nLikes'],
+        // to get the sum of nLike from Reacts table where IdeaId = Idea.id
+        // Or the limit cannot perform - What a annoying Sequelize
+        const mostPopularIdeas = await Idea.findAll({
+            attributes: ['id', 
+                'name', 
+                [db.Sequelize.literal('(SELECT SUM(`nLike`) FROM `Reacts` WHERE `Reacts`.`IdeaId` = `Idea`.`id`)'), 'nLikes'], 
+                'createdAt', 'updatedAt'],
+            where: {topicId: id},
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:['id','profileImage', 'fullName', 'email'],
+                    require: true
                 },
-                attributes:[[db.sequelize.fn('distinct', db.sequelize.col('Category.name')), 'name'], ["categoryId", "id"],],
-                group: ["Category.name"],
-                raw: true
-            });
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes:['id', 'name'],
+                    require: true
+                }
+            ],
+            group: ['Idea.id'],
+            order: [[db.Sequelize.literal('nLikes'), 'DESC']],
+            limit: 5
+        });
+
+        const latestIdeas = await Idea.findAll({
+            attributes: ['id', 'name', 'createdAt', 'updatedAt'],
+            where: {topicId: id},
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:['id','profileImage', 'fullName', 'email'],
+                    require: true
+                },
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes:['id', 'name'],
+                    require: true
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const latestComments = await Comment.findAll({
+            attributes: ['id', 'content', 'createdAt', 'updatedAt'],
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:['id','profileImage', 'fullName', 'email'],
+                    require: true
+                },
+                {
+                    model: Idea,
+                    as: "Idea",
+                    attributes:['id', 'name'],
+                    include: [
+                        {
+                            model: Topic,
+                            as: "Topic",
+                            attributes:['id'],
+                        }
+                    ],
+                    where: {topicId: id},
+                    require: true
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+            limit: 5
+        });
         
         res.status(200).json({
             message: "Get all ideas of topic " + req.params.topicId + " successfully",
             info: topicInfo,
             ideas: ideas[0],
             allCategories: allCategories,
-            categories: categories
+            categories: categories,
+            mostViewedIdeas: mostViewedIdeas,
+            mostPopularIdeas: mostPopularIdeas,
+            latestIdeas: latestIdeas,
+            latestComments: latestComments
         })
     } catch(error){
         console.log(error);
