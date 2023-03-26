@@ -20,6 +20,7 @@ import VerifyAccount from './pages/VerifyAccount';
 import { useLocation } from 'react-router-dom';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import CategoryManagement from './components/AdminComponent/CategoryManagement/CategoryManagement';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
@@ -46,10 +47,12 @@ function App() {
         <Routes>
           {userRole === 2 || userRole === 3 ? (
           <><Route path="/" element={<Layout userRole={userRole}></Layout>}>
-          <Route path="/" element={<TopicTable></TopicTable>} />
-          <Route path="/users" element={<UserManagement></UserManagement>} />
-          <Route path="/statistic" element={<StatisticLayout></StatisticLayout>} /></Route>
-          <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LoginPage>}></Route></>
+            <Route path="/" element={<TopicTable></TopicTable>} />
+            <Route path="/users" element={<UserManagement></UserManagement>} />
+            <Route path="/statistic" element={<StatisticLayout></StatisticLayout>} />
+            <Route path="/category" element={<CategoryManagement></CategoryManagement>} />
+          </Route>
+          </>
           ) : 
           ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
           <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>

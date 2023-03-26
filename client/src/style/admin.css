@@ -151,3 +151,22 @@ flex-direction: column !important;
  .lock_icon{
     margin-left: auto;
 }
+.listcategory_container{
+    padding-right: 10px;
+    padding-top: 10px;
+}
+.category_container{
+    display: flex;
+    justify-content: space-between;
+    /* background-color: #FFA500 !important; */
+    background: linear-gradient(to right, #096BDE, #FFA500) !important;
+    padding: 10px;
+    align-items: center;
+}
+.category_name{
+    align-items: center;
+}
+.createNewCategory{
+    background-color: #EFF2F5;
+    padding: 15px;
+}

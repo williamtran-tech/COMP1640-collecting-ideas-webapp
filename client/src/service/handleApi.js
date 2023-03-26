@@ -86,6 +86,18 @@ const post_resetEmail = async (token, data) =>{
 const forgotPassword = async (email)=>{
   return await axios.post('/accounts/forgot-password', email)
 }
+const admin_get_category = async() =>{
+  return await axios.get('/management/categories', config())
+}
+const admin_post_category = async(data) =>{
+  return await axios.post('/management/categories', data, config())
+}
+const admin_update_category = async(id, data) =>{
+  return await axios.put(`/management/categories/${id}`, data, config())
+}
+const admin_delete_category = async(id) =>{
+  return await axios.delete(`/management/categories/force-delete/${id}`, config())
+}
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -112,6 +124,10 @@ const handleApi = {
     verifyEmail,
     forgotPassword,
     get_resetEmail,
-    post_resetEmail
+    post_resetEmail,
+    admin_get_category,
+    admin_post_category,
+    admin_update_category,
+    admin_delete_category
 };
 export default handleApi
