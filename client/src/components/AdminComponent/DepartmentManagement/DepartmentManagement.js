@@ -2,27 +2,28 @@ import React from 'react'
 import { Paper,Button, Typography, Modal, TextField, Box} from '@material-ui/core'
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
-import CategoryList from './CategoryList';
 import { useState } from 'react';
 import handleApi from '../../../service/handleApi';
-import '../../../style/department.css'
-const CategoryManagement = () => {
-    const [categoryName, setCategoryname] = useState('');
+import DepartmentList from './DepartmentList';
+import DepartmentDetail from './DepartmentDetail';
+const DepartmentManagement = () => {
+    const [departmentName, setDepartmentname] = useState('');
     const[isOpen, setIsOpen]= useState(false)
     const[updated, setUpdated]=useState(false)
+    const [id, setId]= useState(1)
   const handleSubmit = (e) => {
     e.preventDefault();
     const data={
-        name: categoryName
+        name: departmentName
     }
-    handleApi.admin_post_category(data).then(response=>{
+    handleApi.admin_post_department(data).then(response=>{
         console.log(response.data)
         setUpdated(!updated)
     }).catch(error=>{
         console.error(error);
     })
     hanldeClose()
-    setCategoryname('');
+    setDepartmentname('');
   };
   const hanldeClose =()=>{
     setIsOpen(false)
@@ -31,7 +32,7 @@ const CategoryManagement = () => {
     setIsOpen(true)
   }
   const handleInputChange = (e) => {
-    setCategoryname(e.target.value);
+    setDepartmentname(e.target.value);
   };
 
   return (
@@ -39,27 +40,29 @@ const CategoryManagement = () => {
         <Grid container>
             <Grid item xs={12}>
                 <Paper className='header_admin'>
-                <Typography> Category Management</Typography>
+                <Typography> Department Management</Typography>
                     <Button variant="contained" startIcon={<AddIcon/>} className='create_user_btn' onClick={hanldeOpen}>
-                    New Category
+                    New Department
                 </Button>
                 </Paper>
             </Grid>
-            <Grid item xs={12}>
-                <CategoryList updated={updated} setUpdated={setUpdated}> </CategoryList>
+            <Grid item xs={3} className='department_list_container'>
+                <DepartmentList updated={updated} setUpdated={setUpdated} setId={setId}></DepartmentList>
+            </Grid>
+            <Grid item xs={9}className='department_user_container' >
+                <DepartmentDetail id={id}></DepartmentDetail>
             </Grid>
         </Grid>
-
         <Modal open={isOpen} onClose={hanldeClose} aria-labelledby="modal-title"
                 aria-describedby="modal-description" 
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Box className='createNewCategory'>
-                <h2>Create New Category</h2>
+                <h2>Create New Department</h2>
                 <form onSubmit={handleSubmit}>
                 <TextField
                     label="Name"
                     variant="outlined"
-                    value={categoryName}
+                    value={departmentName}
                     onChange={handleInputChange}
                     fullWidth
                 />
@@ -72,5 +75,4 @@ const CategoryManagement = () => {
     </div>
   )
 }
-
-export default CategoryManagement
+export default DepartmentManagement

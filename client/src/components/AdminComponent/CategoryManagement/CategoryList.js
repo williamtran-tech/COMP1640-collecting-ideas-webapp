@@ -49,7 +49,7 @@ const CategoryList = ({updated, setUpdated}) => {
                             <FolderZipIcon fontSize='large'></FolderZipIcon>
                             <Typography> {categoryitem.name}</Typography>
                         </Stack>
-                        <div>
+                        <div className='category_option'>
                         <Badge badgeContent={categoryitem.idea_quantity} color="primary">
                                     <EmojiObjectsIcon style={{ color: '#fefae0'}}/>
                         </Badge>
@@ -57,7 +57,6 @@ const CategoryList = ({updated, setUpdated}) => {
                         <IconButton onClick={(event)=>{handleClick(event, categoryitem.id, categoryitem.name)}}>
                             <MoreVertIcon></MoreVertIcon>
                         </IconButton>
-
                         </div>
                     </Paper>
                 </Grid>

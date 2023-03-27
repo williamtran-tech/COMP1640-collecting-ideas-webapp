@@ -98,6 +98,22 @@ const admin_update_category = async(id, data) =>{
 const admin_delete_category = async(id) =>{
   return await axios.delete(`/management/categories/force-delete/${id}`, config())
 }
+const admin_get_department = async() =>{
+  return await axios.get('/management/departments', config())
+}
+const admin_get_department_detail = async(id) =>{
+  return await axios.get(`/management/departments/${id}`, config())
+}
+const admin_post_department = async(data) =>{
+  return await axios.post('/management/departments', data, config())
+}
+const admin_update_department = async(id, data) =>{
+  return await axios.put(`/management/departments/${id}`, data, config())
+}
+const admin_delete_department = async(id) =>{
+  return await axios.delete(`/management/departments/${id}`, config())
+}
+
 const handleApi = {
     getListTopic,
     getIdeas_by_topic,
@@ -128,6 +144,11 @@ const handleApi = {
     admin_get_category,
     admin_post_category,
     admin_update_category,
-    admin_delete_category
+    admin_delete_category,
+    admin_get_department,
+    admin_post_department,
+    admin_update_department,
+    admin_delete_department,
+    admin_get_department_detail
 };
 export default handleApi

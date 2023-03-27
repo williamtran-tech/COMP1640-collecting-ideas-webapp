@@ -506,7 +506,7 @@ const ListIdeas = () => {
                         </ListSubheader>
                     }
                     >
-                        <ListItemButton onClick={handleOpenCollapse}>
+                        <ListItemButton onClick={handleOpenCollapse} sx={{ backgroundColor: '#6D9886', borderRadius: '10px'}}>
                             <ListItemText primary="Top 5 View Ideas" />
                             {openCollapse ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
@@ -517,7 +517,7 @@ const ListIdeas = () => {
                                 )
                             }
                         </Collapse>
-                        <ListItemButton onClick={handleOpenCollapse1}>
+                        <ListItemButton onClick={handleOpenCollapse1} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
                             <ListItemText primary="Top 5 Popular Ideas" />
                             {openCollapse1 ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
@@ -528,7 +528,7 @@ const ListIdeas = () => {
                                 )
                             }
                         </Collapse>
-                        <ListItemButton onClick={handleOpenCollapse2}>
+                        <ListItemButton onClick={handleOpenCollapse2} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
                             <ListItemText primary="Latest Idea" />
                             {openCollapse2 ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
@@ -539,7 +539,7 @@ const ListIdeas = () => {
                                 )
                             }
                         </Collapse>
-                        <ListItemButton onClick={handleOpenCollapse3}>
+                        <ListItemButton onClick={handleOpenCollapse3} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
                             <ListItemText primary="Last Comment" />
                             {openCollapse3? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>

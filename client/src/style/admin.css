@@ -170,3 +170,8 @@ flex-direction: column !important;
     background-color: #EFF2F5;
     padding: 15px;
 }
+.category_option{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -21,6 +21,7 @@ import { useLocation } from 'react-router-dom';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import CategoryManagement from './components/AdminComponent/CategoryManagement/CategoryManagement';
+import DepartmentManagement from './components/AdminComponent/DepartmentManagement/DepartmentManagement';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState();
@@ -45,12 +46,13 @@ function App() {
 // <AdminPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
   return (
         <Routes>
-          {userRole === 2 || userRole === 3 ? (
+          {userRole === 2 || userRole === 3|| userRole === 4 ? (
           <><Route path="/" element={<Layout userRole={userRole}></Layout>}>
             <Route path="/" element={<TopicTable></TopicTable>} />
             <Route path="/users" element={<UserManagement></UserManagement>} />
             <Route path="/statistic" element={<StatisticLayout></StatisticLayout>} />
             <Route path="/category" element={<CategoryManagement></CategoryManagement>} />
+            <Route path="/department" element={<DepartmentManagement></DepartmentManagement>} />
           </Route>
           </>
           ) : 

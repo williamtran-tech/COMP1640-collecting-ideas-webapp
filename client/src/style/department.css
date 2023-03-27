@@ -1,0 +1,15 @@
+.department_list_container{
+    height: 85vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.department_container{
+    display: flex;
+    justify-content: space-between;
+    /* background-color: #FFA500 !important; */
+    background: linear-gradient(to right, #096BDE, #FFA500) !important;
+    padding: 10px;
+}
+.department_user_container{
+    padding-left: 10px;
+}
