@@ -1,4 +1,4 @@
-import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch} from '@mui/material'
+import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch, List, ListItemButton, ListSubheader, ListItemIcon,ListItemText, Collapse} from '@mui/material'
 import React, { useRef } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -20,6 +20,12 @@ import { Pagination, PaginationItem } from '@mui/material';
 import { InputAdornment } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CategoryIcon from '@mui/icons-material/Category';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import MostViewIdeas from './MostViewIdeas';
+import MostPopularIdeas from './MostPopularIdeas';
+import LastestIdeas from './LastestIdeas';
+import LastestComment from './LastestComment';
 const ListIdeas = () => {
     const { id } = useParams();
     const [listideas, setlistideas] = useState([]);
@@ -38,6 +44,23 @@ const ListIdeas = () => {
     const start = (page - 1) * ideasPerPage;
     const end = start + ideasPerPage;
     const [checkedAnonymous, setCheckedAnonymous] = useState(false);
+    const [openCollapse, setOpenCollapse] =useState(true);
+    const [openCollapse1, setOpenCollapse1] =useState(false);
+    const [openCollapse2, setOpenCollapse2] =useState(false);
+    const [openCollapse3, setOpenCollapse3] =useState(false);
+
+    const handleOpenCollapse = () => {
+        setOpenCollapse(!openCollapse);
+    };
+    const handleOpenCollapse1 = () => {
+        setOpenCollapse1(!openCollapse1);
+    };
+    const handleOpenCollapse2 = () => {
+        setOpenCollapse2(!openCollapse2);
+    };
+    const handleOpenCollapse3 = () => {
+        setOpenCollapse3(!openCollapse3);
+    };
     const handlePageChange = (event, value) => {
       setPage(value);
     };
@@ -472,7 +495,62 @@ const ListIdeas = () => {
                     </Grid>
                 </Grid>
                 
-                <Grid item xs={11} md={3}>
+                <Grid item xs={11} md={3} className='list_overview'>
+                <List
+                    sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
+                    subheader={
+                        <ListSubheader component="div" id="nested-list-subheader">
+                        Overview
+                        </ListSubheader>
+                    }
+                    >
+                        <ListItemButton onClick={handleOpenCollapse}>
+                            <ListItemText primary="Top 5 View Ideas" />
+                            {openCollapse ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse} timeout="auto">
+                            {
+                                preIdeaData&& preIdeaData.mostViewedIdeas&&(
+                                    <MostViewIdeas ideas={preIdeaData.mostViewedIdeas}></MostViewIdeas>
+                                )
+                            }
+                        </Collapse>
+                        <ListItemButton onClick={handleOpenCollapse1}>
+                            <ListItemText primary="Top 5 Popular Ideas" />
+                            {openCollapse1 ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse1} timeout="auto">
+                            {
+                                preIdeaData&& preIdeaData.mostPopularIdeas&&(
+                                    <MostPopularIdeas ideas={preIdeaData.mostPopularIdeas}> </MostPopularIdeas>
+                                )
+                            }
+                        </Collapse>
+                        <ListItemButton onClick={handleOpenCollapse2}>
+                            <ListItemText primary="Latest Idea" />
+                            {openCollapse2 ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse2} timeout="auto">
+                            {
+                                preIdeaData&& preIdeaData.mostPopularIdeas&&(
+                                    <LastestIdeas ideas={preIdeaData.mostPopularIdeas}></LastestIdeas>
+                                )
+                            }
+                        </Collapse>
+                        <ListItemButton onClick={handleOpenCollapse3}>
+                            <ListItemText primary="Last Comment" />
+                            {openCollapse3? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse3} timeout="auto">
+                            {
+                                preIdeaData&& preIdeaData.latestComments&&(
+                                    <LastestComment comment={preIdeaData.latestComments}></LastestComment>
+                                )
+                            }
+                        </Collapse>
+                    </List>
                 </Grid>
             </Grid>
         </Box>

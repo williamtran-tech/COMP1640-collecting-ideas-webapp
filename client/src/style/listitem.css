@@ -245,3 +245,6 @@ margin-right: auto;
 .MuiSpeedDial-root::after {
   background-color: #6D9886 !important; /* Replace with your desired color */
 }
+.list_overview{
+  padding: 10px;
+}
