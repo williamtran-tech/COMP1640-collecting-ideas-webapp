@@ -29,9 +29,21 @@ exports.checkTime = (req) => {
     var diff_date_in_date = d2.getDate() - d1.getDate();
     var diff_date_in_time = d2.getTime() - d1.getTime();
     if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
-        return true;
+        return "Final Closure Date must be greater than Closure Date";
     }
-    return false;
+    // check d1 d2 is greater than current date
+    var d3 = new Date();
+    var diff_date_in_date = d1.getDate() - d3.getDate();
+    var diff_date_in_time = d1.getTime() - d3.getTime();
+    if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
+        return "Closure Date must be greater than current date";
+    }
+    var diff_date_in_date = d2.getDate() - d3.getDate();
+    var diff_date_in_time = d2.getTime() - d3.getTime();
+    if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
+        return "Final Closure Date must be greater than current date";
+    }
+    return '';
 }
 
 exports.checkFilePath = (object) => {

@@ -137,14 +137,12 @@ exports.list_all_ideas_by_topic = async (req, res) => {
         });
 
         const mostViewedIdeas = await Idea.findAll({
-            attributes: ['id', 'name', [db.sequelize.fn('sum', db.sequelize.col('views.views')), 'views'], 'createdAt', 'updatedAt'],
+            attributes: ['id', 'name', 
+            [db.Sequelize.literal('(SELECT SUM(`views`) FROM `Views` WHERE `Views`.`IdeaId` = `Idea`.`id`)'), 'views'],
+            'createdAt', 
+            'updatedAt'],
             where: {topicId: id},
             include: [
-                {
-                    model: View,
-                    attributes: [],
-                    require: true
-                },
                 {
                     model: User,
                     as: "User",
@@ -160,6 +158,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
             ],
             group: ['id'],
             order: [['views', 'DESC']],
+            limit: 5
         });
 
         // Have the most Like number
@@ -209,6 +208,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 }
             ],
             order: [['createdAt', 'DESC']],
+            limit: 5
         });
 
         const latestComments = await Comment.findAll({
@@ -265,7 +265,9 @@ exports.create_topic = async (req, res) => {
         }
         // Final date must be later than Closure date
         else if (validation.checkTime(req)){
-            res.status(401).send("Final closure date must later than Closure date");
+            res.status(401).json({
+                err: validation.checkTime(req)
+            });
         }
         else {
             // Using .replace(/ +/g,' ') for remove all multiple space in string
@@ -553,6 +555,8 @@ exports.insight = async (req, res) => {
                 departments.name as departmentName,
                 users.id,
                 users.fullName,
+                users.email,
+                users.profileImage,
                 count(ideas.id) as contributions
             FROM ideas
             JOIN users ON ideas.userId = users.id
@@ -568,6 +572,8 @@ exports.insight = async (req, res) => {
                 departments.name as departmentName,
                 users.id,
                 users.fullName,
+                users.email,
+                users.profileImage,
                 ideas.id as ideaId,
                 ideas.name as idea,
                 sum(reacts.nLike) as likes
@@ -617,6 +623,67 @@ exports.insight = async (req, res) => {
               order: [['idea_quantity', "DESC"]]
         })
 
+        // Get all ideas without comment
+        const ideaWithoutComment = await Idea.findAll({
+            attributes: [
+                'id',
+                'name',
+                'createdAt',
+                'updatedAt',
+                [db.Sequelize.literal('(SELECT COUNT(`id`) FROM `comments` WHERE `comments`.`IdeaId` = `Idea`.`id`)'), 'comment_quantity'],
+            ],
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes: ['id', 'fullName', 'email', 'profileImage']
+                },
+                {
+                    model: Topic,
+                    as: "Topic",
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes: ['id', 'name']
+                }
+            ],
+            having: db.Sequelize.literal('comment_quantity = 0'),
+            group: ['Idea.id']
+        });
+
+        // Get al anonymous ideas
+        const anonymousIdeas = await Idea.findAll({
+            attributes: [
+                'id',
+                'name',
+                'createdAt',
+                'updatedAt',
+                'isAnonymous',
+            ],
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes: ['id', 'fullName', 'email', 'profileImage']
+                },
+                {
+                    model: Topic,
+                    as: "Topic",
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes: ['id', 'name']
+                }
+            ],
+            where: {
+                'isAnonymous': true
+            }
+        });
+
         res.status(200).json({
             msg: "Successfully get insight",
             department_ideas: department_ideas[0],
@@ -624,8 +691,10 @@ exports.insight = async (req, res) => {
             top_contributors: top_contributors[0],
             top_like_ideas: top_like_ideas[0],
             topics: topics,
-            categories: categories
-        })
+            categories: categories,
+            ideaWithoutComment: ideaWithoutComment,
+            anonymousIdeas: anonymousIdeas,
+        });
     } catch(err) {
         console.log(err);
         res.status(500).json({

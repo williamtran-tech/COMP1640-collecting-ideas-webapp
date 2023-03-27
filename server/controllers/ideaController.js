@@ -8,6 +8,7 @@ const Idea = db.Idea;
 const Comment = db.Comment;
 const React = db.React;
 const View = db.View;
+const Department = db.Department;
 const validate = require('./../middleware/validateInput.js');
 const sendEmail = require('./../middleware/sendMail.js');
 const htmlMail = require('../mail-template/mail-templates.js');
@@ -388,9 +389,6 @@ exports.create_idea = async (req, res) => {
                     "topicId": req.params.id,
                     "userId": req.body.userId,
                     "isAnonymous": req.body.isAnonymous,
-                    "nLike": 0,
-                    "nDislike": 0,
-                    "nView": 0
                 }
             });
 
@@ -414,9 +412,6 @@ exports.create_idea = async (req, res) => {
                     "topicId": req.params.id,
                     "userId": req.body.userId,
                     "isAnonymous": req.body.isAnonymous,
-                    "nLike": 0,
-                    "nDislike": 0,
-                    "nView": 0
                 }
             });
             if (created) {
@@ -424,11 +419,15 @@ exports.create_idea = async (req, res) => {
                 createdIdea = newIdea;
             }
         }
-        
-        if (!result) {
-            // Delete the file -> from the uploaded files - temporary file
 
-            //
+        if (!result) {
+            if (req.file) {
+                fs.unlink(req.file.path, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
             res.status(406).json({
                 msg:"Your idea is exists"
             })
@@ -436,15 +435,24 @@ exports.create_idea = async (req, res) => {
             // The following code used to set init value for comment and views of the new idea
             const setView = await View.create({
                 "ideaId": createdIdea.id,
-            });
+            })
             const setReact = await React.create({
                 "ideaId": createdIdea.id,
+            })
+
+            // Get the department of the owner of idea
+            const userDepartment = await User.findOne({
+                where: {
+                    "id": createdIdea.userId
+                },
+                attributes: ['departmentId']
             });
 
             // Getting all manager-mails to send notify - Role id 2 is manager
             const managers = await User.findAll({
                 where: {
-                    roleId: 2
+                    roleId: 2,
+                    departmentId: userDepartment.departmentId
                 },
                 attributes: ['email']
             })
@@ -469,27 +477,28 @@ exports.create_idea = async (req, res) => {
                     id: req.params.topicId
                 }
             });
-            console.log(path.basename(req.file.path));
-            // Move the file from temp folder to the right directory
-            const dir = `./uploaded_files/uploads/${topic.name}`
-            fs.mkdirSync(`${dir}/${createdIdea.name}`, {recursive: true});
-            const dest = `${dir}/${createdIdea.name}/${path.basename(req.file.path)}`;
-            fs.rename(createdIdea.filePath, dest, (err) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("Move file successfully");
-                }
-            });
-            const moveFileIdea = await Idea.update({
-                "filePath": dest.slice(2)
-            },
-            {
-                where: {
-                    id: createdIdea.id
-                }
-            });
-
+            if (req.file) {
+                console.log(path.basename(req.file.path));
+                // Move the file from temp folder to the right directory
+                const dir = `./uploaded_files/uploads/${topic.name}`
+                fs.mkdirSync(`${dir}/${createdIdea.name}`, {recursive: true});
+                const dest = `${dir}/${createdIdea.name}/${path.basename(req.file.path)}`;
+                fs.rename(createdIdea.filePath, dest, (err) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("Move file successfully");
+                    }
+                });
+                const moveFileIdea = await Idea.update({
+                    "filePath": dest.slice(2)
+                },
+                {
+                    where: {
+                        id: createdIdea.id
+                    }
+                });
+            }
             const idea = await Idea.findOne({
                 where: {
                     id: createdIdea.id

@@ -54,6 +54,36 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       },
+      {
+        fullName: 'IT - QA Coordinator', 
+        roleId: 1,
+        departmentId: 1,
+        email: "ducbalor@gmail.com",
+        isVerified: true,
+        password: "123123",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        fullName: 'BA - QA Coordinator',
+        roleId: 1,
+        departmentId: 2,
+        email: "test7@gmail.com",
+        isVerified: true,
+        password: "123123",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        fullName: 'GD - QA Coordinator',
+        roleId: 1,
+        departmentId: 3,
+        email: "test8@gmail.com",
+        isVerified: true,
+        password: "123123",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
   ], {});
   },
 
