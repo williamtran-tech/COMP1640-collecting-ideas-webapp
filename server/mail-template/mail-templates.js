@@ -6,7 +6,7 @@ exports.ideaSubmit = (idea, creator, topic) => {
             <!-- this ensures Gmail doesn't trim the email -->
             <span style="opacity: 0"></span>
             <img src="https://cdn.discordapp.com/attachments/1084789058305269773/1084789117461737482/black_logo.png" alt="logo" width="100">
-            <h2>Dear QA Manager,</h2>
+            <h2>Dear QA Coordinator,</h2>
             <p>There is a new idea submitted by ${creator.fullName}.</p>
             <p>Idea: ${idea.name}</p>
             <p>Topic: ${topic.name}</p>

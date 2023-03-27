@@ -27,6 +27,11 @@ module.exports = {
         name: 'Administrator',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        name: 'QA Manager',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
   ], {});
   },

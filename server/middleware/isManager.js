@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
             decoded = jwt.verify(token, config.env.JWT_key);
             req.userData = decoded;
-            if (decoded.roleId === 2) {
+            if (decoded.roleId === 4) {
                 next();
             }
             else {
