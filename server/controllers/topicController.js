@@ -137,14 +137,12 @@ exports.list_all_ideas_by_topic = async (req, res) => {
         });
 
         const mostViewedIdeas = await Idea.findAll({
-            attributes: ['id', 'name', [db.sequelize.fn('sum', db.sequelize.col('views.views')), 'views'], 'createdAt', 'updatedAt'],
+            attributes: ['id', 'name', 
+            [db.Sequelize.literal('(SELECT SUM(`views`) FROM `Views` WHERE `Views`.`IdeaId` = `Idea`.`id`)'), 'views'],
+            'createdAt', 
+            'updatedAt'],
             where: {topicId: id},
             include: [
-                {
-                    model: View,
-                    attributes: [],
-                    require: true
-                },
                 {
                     model: User,
                     as: "User",
@@ -160,6 +158,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
             ],
             group: ['id'],
             order: [['views', 'DESC']],
+            limit: 5
         });
 
         // Have the most Like number
@@ -209,6 +208,7 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 }
             ],
             order: [['createdAt', 'DESC']],
+            limit: 5
         });
 
         const latestComments = await Comment.findAll({
