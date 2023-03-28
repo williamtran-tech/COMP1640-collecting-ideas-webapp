@@ -14,6 +14,14 @@ module.exports = {
         unique: true,
         allowNull: false
       },
+      departmentId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Departments',
+          key: 'id'
+        }
+      },
       description: {
         type: Sequelize.TEXT,
         allowNull: false

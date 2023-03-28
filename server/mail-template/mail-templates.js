@@ -1,3 +1,24 @@
+// Mail template for submit Topic
+exports.topicSubmit = (topic) => {
+    const html = `
+    <html>
+        <body style="color: black; margin-left: 20%; margin-right: 30%">
+            <!-- this ensures Gmail doesn't trim the email -->
+            <span style="opacity: 0"></span>
+            <img src="https://cdn.discordapp.com/attachments/1084789058305269773/1084789117461737482/black_logo.png" alt="logo" width="100">
+            <h2>Dear QA Coordinator,</h2>
+            <p>There is a new topic submitted to your department.</p>
+            <p>Topic: ${topic.name}</p>
+            <p>Submitted at: ${topic.createdAt}</p>
+            <p>View detail <a href="http://localhost:3000/topics/${topic.id}" style="text-decoration: none; color:rgb(0, 2, 102)0; font-style: italic;">Topic Detail</a></p>
+            <!-- this ensures Gmail doesn't trim the email -->
+            <span style="opacity: 0"> ${Date.now()} </span>
+        </body>
+    </html>
+    `;
+    return html;
+};
+
 // Mail template for submit contribution
 exports.ideaSubmit = (idea, creator, topic) => {
     const html = `

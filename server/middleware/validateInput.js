@@ -5,9 +5,16 @@ const fsx = require('fs-extra');
 
 exports.checkInput = (req) => {
     for(var prop in req.body) {
-        if (req.body[prop].trim().length === 0) {
-            return true
-        }
+        if (typeof req.body[prop] === "number") {
+            // Handle number input
+            // For example, check if it is greater than zero
+            if (req.body[prop] <= 0) {
+              return true;
+            }
+          } else if (req.body[prop].trim().length === 0) {
+            // Handle non-number input
+            return true;
+          }
     }
     return false
 }

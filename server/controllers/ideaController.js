@@ -440,23 +440,30 @@ exports.create_idea = async (req, res) => {
                 "ideaId": createdIdea.id,
             })
 
-            // Get the department of the owner of idea
-            const userDepartment = await User.findOne({
+            // // Get the department of the owner of idea
+            // const userDepartment = await User.findOne({
+            //     where: {
+            //         "id": createdIdea.userId
+            //     },
+            //     attributes: ['departmentId']
+            // });
+            // Get the department of the topic
+            const topicDepartment = await Topic.findOne({
                 where: {
-                    "id": createdIdea.userId
+                    "id": createdIdea.topicId
                 },
                 attributes: ['departmentId']
             });
 
             // Getting all manager-mails to send notify - Role id 2 is manager
-            const managers = await User.findAll({
+            const coordinators = await User.findAll({
                 where: {
                     roleId: 2,
-                    departmentId: userDepartment.departmentId
+                    departmentId: topicDepartment.departmentId
                 },
                 attributes: ['email']
             })
-            const managerMails = managers.map(manager => manager.email);
+            const coordinatorMails = coordinators.map(coordinator => coordinator.email);
 
             const ideaCreator = await User.findOne({where: {
                 "id": createdIdea.userId
@@ -470,7 +477,7 @@ exports.create_idea = async (req, res) => {
             {attributes: ["name"]});
 
             // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
-            sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+            sendEmail(coordinatorMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
             
             const topic = await Topic.findOne({
                 where: {

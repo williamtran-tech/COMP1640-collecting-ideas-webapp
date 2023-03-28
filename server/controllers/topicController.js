@@ -12,10 +12,13 @@ const validation = require('./../middleware/validateInput');
 const fs = require('fs');
 const archiver = require('archiver');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 const CsvParser = require('json2csv');
 
 const { removeAssociate } = require('./ideaController.js');
+const sendEmail = require('../middleware/sendMail.js');
+const htmlMail = require('../mail-template/mail-templates.js');
 
 exports.list_all_topics = async (req, res) => {
     try {
@@ -275,12 +278,14 @@ exports.create_topic = async (req, res) => {
                 where: {
                     "name": req.body.name.trim().replace(/ +/g,' '),
                     "description": req.body.description.trim().replace(/ +/g,' '),
+                    'departmentId': req.body.departmentId,
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate
                 },
                 defaults: {
                     "name": req.body.name.trim().replace(/ +/g,' '),
                     "description": req.body.description.trim().replace(/ +/g,' '),
+                    'departmentId': req.body.departmentId,
                     "closureDate": req.body.closureDate,
                     "finalClosureDate": req.body.finalClosureDate,
                     "createdAt": new Date(),
@@ -295,22 +300,35 @@ exports.create_topic = async (req, res) => {
                 })
             }
             else {
+                // get the email of QA Coordinator of the Department
+                const coordinators = await User.findAll({
+                    where: {
+                        "departmentId": newTopic.departmentId,
+                        "roleId": 2,
+                    },
+                    attributes: ['email']
+                })
+
+                const coordinatorMails = coordinators.map(coordinator => coordinator.email);
+
+                sendEmail(coordinatorMails, "[GRE IDEAS] NEW TOPIC WAS CREATED", htmlMail.topicSubmit(newTopic));
                 res.status(200).json({
                     msg: "Successfully create new topic",
-                    topic: newTopic
+                    topic: newTopic,
+                    coordinators: coordinatorMails
                 })
             }
         
         }
     } catch (err) {
         // Check input existed
-        if (err.parent.code === "ER_DUP_ENTRY") {
+        if (err.parent?.code === "ER_DUP_ENTRY") {
             res.status(500).json({
                 msg: "Topic exists"
             });
         }
         // Check for wrong type input
-        else if (err.parent.code === "ER_WRONG_VALUE"){
+        else if (err.parent?.code === "ER_WRONG_VALUE"){
             res.status(500).json({
                 msg: "Wrong value type"
             });
