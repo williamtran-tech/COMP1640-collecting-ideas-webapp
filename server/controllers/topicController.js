@@ -140,16 +140,24 @@ exports.list_all_ideas_by_topic = async (req, res) => {
         });
 
         const mostViewedIdeas = await Idea.findAll({
-            attributes: ['id', 'name', 
-            [db.Sequelize.literal('(SELECT SUM(`views`) FROM `Views` WHERE `Views`.`IdeaId` = `Idea`.`id`)'), 'views'],
-            'createdAt', 
-            'updatedAt'],
+            attributes: [
+                'id', 
+                'name', 
+                [db.Sequelize.literal('(SELECT SUM(`views`) FROM `Views` WHERE `Views`.`IdeaId` = `Idea`.`id`)'), 'views'],
+                'createdAt', 
+                'updatedAt'
+            ],
             where: {topicId: id},
             include: [
                 {
                     model: User,
                     as: "User",
-                    attributes:['id','profileImage', 'fullName', 'email'],
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, email)`), 'email']
+                    ],
                     require: true
                 },
                 {
@@ -178,7 +186,12 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 {
                     model: User,
                     as: "User",
-                    attributes:['id','profileImage', 'fullName', 'email'],
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, email)`), 'email']
+                    ],
                     require: true
                 },
                 {
@@ -200,7 +213,12 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 {
                     model: User,
                     as: "User",
-                    attributes:['id','profileImage', 'fullName', 'email'],
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, email)`), 'email']
+                    ],
                     require: true
                 },
                 {
@@ -220,7 +238,12 @@ exports.list_all_ideas_by_topic = async (req, res) => {
                 {
                     model: User,
                     as: "User",
-                    attributes:['id','profileImage', 'fullName', 'email'],
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(Comment.isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(Comment.isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(Comment.isAnonymous = 1, null, email)`), 'email']
+                    ],
                     require: true
                 },
                 {
