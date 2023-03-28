@@ -17,6 +17,9 @@ import TableIdeas from './TableIdeas';
 import DeleteTopicModal from './DeleteTopicModal';
 import DownloadIcon from '@mui/icons-material/Download';
 import FileSaver from 'file-saver';
+import moment from 'moment';
+
+import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [page, setPage] = useState(0);
@@ -32,6 +35,7 @@ const TopicTable = () => {
       closureDate: '',
       finalClosureDate: '',
     });
+    const [valueDate, onChange] = useState([new Date(), new Date()]);
 
     useEffect(() =>{
         setUpdated(false)
@@ -69,12 +73,19 @@ const TopicTable = () => {
         ...prevState,
         [name]: value,
       }));
+      console.log(valueDate)
     };
     const handleSubmit = (event) => {
       event.preventDefault();
       // Handle form submission logic here
-      console.log(formTopic)
-      handleApi.admin_create_idea(formTopic)
+      const data={
+        name: formTopic.name,
+        description: formTopic.description,
+        "departmentId": 3,
+        closureDate:moment(valueDate[0]).format('YYYY-MM-DD HH:mm:ss'),
+        finalClosureDate: moment(valueDate[1]).format('YYYY-MM-DD HH:mm:ss'),
+      }
+      handleApi.admin_create_idea(data)
         .then(response => {
           console.log(response.data);
           setSubmited(true)
@@ -137,6 +148,17 @@ const TopicTable = () => {
               <DialogContent>
               <form onSubmit={handleSubmit}>
                   <Grid container spacing={2}>
+                    <Grid item xs={12} >
+                    <Typography variant="h6" gutterBottom>
+                      ClosureDate _FinalDate
+                    </Typography>
+                    <DateTimeRangePicker
+                      onChange={onChange}
+                      value={valueDate}
+                      minDate={new Date()}
+                      format="yyyy-MM-dd HH:mm"
+                    />
+                    </Grid>
                     <Grid item xs={12}>
                       <TextField
                         required
@@ -146,6 +168,8 @@ const TopicTable = () => {
                         value={formTopic.name}
                         onChange={handleTopicChange}
                       />
+                    </Grid>
+                    <Grid item xs={12}>
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
@@ -161,10 +185,9 @@ const TopicTable = () => {
                         onChange={handleTopicChange}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    {/* <Grid item xs={12} sm={6}>
                       <TextField
                         required
-                        
                         fullWidth
                         name="closureDate"
                         label="Closure Date"
@@ -189,7 +212,7 @@ const TopicTable = () => {
                           shrink: true,
                         }}
                       />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                       <Button type="submit" variant="contained" color="primary">
                         Submit
@@ -198,17 +221,6 @@ const TopicTable = () => {
                   </Grid>
                 </form>
               </DialogContent>
-              <DialogActions className='form-action'>
-                  {/* <Stack className='create-action'>
-                      <FormControlLabel
-                      value="start"
-                      control={<Checkbox checked={checkedTerm} onChange={handleCheckTerm} color="primary"/> }
-                      label="I Agree Terms & Coditions"
-                      fullWidth
-                      />
-                      <Button onClick={handleSubmitIdea} className="form-action-button">Submit</Button>
-                  </Stack> */}
-              </DialogActions>
           </Dialog>
        </Paper>
        <Paper sx={{ width: '100%', overflow: 'hidden' }} className="topics_table_list">

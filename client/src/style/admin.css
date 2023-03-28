@@ -175,3 +175,7 @@ flex-direction: column !important;
     align-items: center;
     justify-content: center;
 }
+.react-datepicker-popper {
+    z-index: 1;
+    transform: translate3d(0, 38px, 0) !important;
+  }
