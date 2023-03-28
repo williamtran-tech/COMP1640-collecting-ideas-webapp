@@ -7,7 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Box, Button, IconButton, Grid, Typography, Dialog, DialogActions, DialogContent,DialogTitle, TextField } from '@material-ui/core';
+import { Box, Button, IconButton, Grid, Typography, Dialog, Popover, DialogContent,DialogTitle, TextField } from '@material-ui/core';
+import { Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useState, useEffect } from 'react';
@@ -22,6 +23,7 @@ import moment from 'moment';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
+    const [topicId, setTopicId]= useState()
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [open, setOpen] = useState(false);
@@ -29,6 +31,7 @@ const TopicTable = () => {
     const [updated, setUpdated] = useState(false);
     const [disable, setDisable]= useState(true)
     const [deleted, setDeleted]= useState(false)
+    const [anchorEl, setAnchorEl] = useState(null);
     const [formTopic, setFormTopic] = useState({
       name: '',
       description: '',
@@ -100,6 +103,7 @@ const TopicTable = () => {
     const  [topicDeatail, setTopicDetail]= useState([])
     const handleRowClick = (id_row) => () => {     
       setActiveRowId(id_row);
+      setTopicId(id_row)
       handleApi.admin_getIdeas_by_topic(id_row).then(
         response=>{
           setTopicDetail(response.data)
@@ -126,7 +130,7 @@ const TopicTable = () => {
       }
     }
     
-    const donwloadTopic = (topicId)=>{
+    const donwloadTopic = ()=>{
         handleApi.QA_dowload_topic(topicId).then(response=>{
           
           const blob = new Blob([response.data], { type: 'text/csv' });
@@ -136,6 +140,24 @@ const TopicTable = () => {
           console.error("Failed to download topic CSV file.", error);
         })
     }
+    const donwloadTopic_zip = ()=>{
+        handleApi.QA_dowload_topic_zip(topicId).then(response=>{
+          
+          const blob = new Blob([response.data], { type: 'text/zip' });
+          FileSaver.saveAs(blob, `Topic ${topicId}.zip`)
+          console.log(response);
+        }).catch(error=>{
+          console.error("Failed to download topic CSV file.", error);
+        })
+    }
+   
+  const handleClickPopover = (event) => {
+    setAnchorEl(event.currentTarget);
+  }; 
+  const handleClosePopover = () => {
+      setAnchorEl(null);
+  };
+  const openPopover = Boolean(anchorEl);
   return (
     <div> 
        <Paper className='header_admin'>
@@ -270,7 +292,7 @@ const TopicTable = () => {
                                 <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
-                                <IconButton size="small" aria-label="delete" onClick={()=>{donwloadTopic(topic.id)}}>
+                                <IconButton size="small" aria-label="delete" onClick={(event)=>{handleClickPopover(event)}}>
                                   <DownloadIcon fontSize="small" className='icon-download'/> 
                                 </IconButton>
                                 <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
@@ -310,6 +332,25 @@ const TopicTable = () => {
                 }
           </Grid>
          </Grid>
+         <Popover
+                open={openPopover}
+                anchorEl={anchorEl}
+                onClose={handleClosePopover}
+                anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+                }}
+                transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+                }}
+            >
+            <Stack direction={"row"} spacing={1}>
+                <Button size='small' variant='out-line' style={{color:"#002B5B"}} onClick={donwloadTopic_zip}> Zip</Button>
+                <Button size='small' variant='out-line' style={{color:"#57C5B6"}} onClick={donwloadTopic}> CSV</Button>
+            </Stack>
+        
+        </Popover>
         </Paper>
     </div>
   )

@@ -2,11 +2,12 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { Modal, Box, Button, TextField } from '@material-ui/core';
 import handleApi from '../../../service/handleApi';
-const DeleteModal = ({onpenDelete,setOpenDelete, categorySelected,updated, setUpdated}) => {
+const DeleteModal = ({onpenDelete,setOpenDelete, categorySelected,updated, setUpdated, handleClosePopover}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     handleApi.admin_delete_category(categorySelected.id).then(response=>{
         console.log(response.data)
+        handleClosePopover()
         setUpdated(!updated)
     }).catch(error=>{
         console.error(error);

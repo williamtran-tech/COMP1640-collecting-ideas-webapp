@@ -74,6 +74,9 @@ const QA_get_statistic = async()=>{
 const QA_dowload_topic = async(id)=>{
   return await axios.get(`/management/csv-topic/download/${id}`, {responseType: 'blob', ...config_download()});
 }
+const QA_dowload_topic_zip = async(id)=>{
+  return await axios.get(`/management/topics/download-zip/${id}`, {responseType: 'blob', ...config_download()});
+}
 const verifyEmail = async (token) =>{
   return await axios.get(`/accounts/verify?token=${token}`)
 }
@@ -149,6 +152,7 @@ const handleApi = {
     admin_post_department,
     admin_update_department,
     admin_delete_department,
-    admin_get_department_detail
+    admin_get_department_detail,
+    QA_dowload_topic_zip
 };
 export default handleApi

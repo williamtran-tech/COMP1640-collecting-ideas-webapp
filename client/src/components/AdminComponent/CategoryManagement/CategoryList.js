@@ -84,7 +84,7 @@ const CategoryList = ({updated, setUpdated}) => {
       </Popover>
       
       <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated}></UpdateModal>
-      <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated}></DeleteModal>
+      <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated} handleClosePopover={handleClose}></DeleteModal>
     </div>
   )
 }

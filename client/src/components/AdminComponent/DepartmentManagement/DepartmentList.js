@@ -28,11 +28,13 @@ const DepartmentList = ({updated, setUpdated, setId}) => {
         setAnchorEl(event.currentTarget);
       };
     const handleClose = () => {
-    setAnchorEl(null);
+        setAnchorEl(null);
     };
-      const open = Boolean(anchorEl);
+    const open = Boolean(anchorEl);
     const hanldeOpenUpdate =()=>{
+    setAnchorEl(null);
     setOpenUpdate(true)
+    
     }
     const hanldeOpenDelete =()=>{
     setOpenDelete(true)
@@ -91,8 +93,8 @@ const DepartmentList = ({updated, setUpdated, setId}) => {
         
         </Popover>
         </Stack>
-        <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated}></UpdateModal>
-        <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated}></DeleteModal>
+        <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated} ></UpdateModal>
+        <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated} handleClosePopover={handleClose}></DeleteModal>
     </div>
   )
 }

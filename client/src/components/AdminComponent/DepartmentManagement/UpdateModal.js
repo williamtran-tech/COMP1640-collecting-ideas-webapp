@@ -12,7 +12,7 @@ const UpdateModal = ({onpenUpdate,setOpenUpdate, departmentSelected,updated, set
     const data={
         name: deparmentName
     }
-    handleApi.admin_update_category(departmentSelected.id, data).then(response=>{
+    handleApi.admin_update_department(departmentSelected.id, data).then(response=>{
         console.log(response.data)
         setUpdated(!updated)
     }).catch(error=>{
