@@ -27,7 +27,7 @@ const VerifyAccount = () => {
       }, [countdown]);
 
   return (
-    <div className="container_notfound">
+    <div className="container_notfound container_auth" >
     <div>
         <div className='notfound'> VerifyAccount Successfully</div>
         <div>
