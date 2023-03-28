@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { TextField,Button, Snackbar } from '@material-ui/core'
-import { Alert, Slide } from '@mui/material';
+import { Alert, Slide, Typography } from '@mui/material';
 import { useState } from 'react'
 import handleApi from '../../../service/handleApi';
+import moment from 'moment';
 const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
     const [values, setValues] = useState({});
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [checkDate, setCheckDate] = useState(false);
     const [open, setOpen]= useState(false)
     useEffect(()=>{
         setValues({
@@ -28,14 +30,20 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
             description: values.description,
             closureDate: values.closureDate,
             finalClosureDate: values.finalClosureDate
-          }
+          } 
+          if(data.closureDate>data.finalClosureDate){
+            setCheckDate(true)
+          }else{
           handleApi.admin_update_topic(inf[0].id,data ).then( reponse=>{
-              console.log(reponse.data)
-              setUpdated(true)
-              setOpen(true)
-              setDisable(true)
-              setButtonDisabled(true)
-          })
+                        console.log(reponse.data)
+                        setUpdated(true)
+                        setOpen(true)
+                        setDisable(true)
+                        setButtonDisabled(true)
+                        setCheckDate(false)
+            })
+          }
+          
       }
       const handleClose = () => {
         setOpen(false)
@@ -84,7 +92,7 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
                 shrink: true,
               }}
             placeholder="Enter closure date"
-            inputProps={{ style: { fontSize: '12px' } }}
+            inputProps={{ style: { fontSize: '12px' }, min: moment().format('YYYY-MM-DDTHH:mm'), }}
             disabled={isDisable}
         />
         <TextField
@@ -95,12 +103,17 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
             InputLabelProps={{
                 shrink: true,
               }}
+              
             fullWidth
             margin="normal"
             type="datetime-local"
-            inputProps={{ style: { fontSize: '12px' } }}
+            inputProps={{ style: { fontSize: '12px' },  min:values.closureDate , }}
             disabled={isDisable}
         />
+        {
+          checkDate&&( <Typography  style={{fontSize: 12, color: "#FC2947"}}>Final date must be greater than closure date. </Typography>)
+        }
+       
         <Button variant="contained" color="primary"  onClick={handleUpdateTopic} disabled={buttonDisabled} style={{ float: 'right', marginTop: 16,  marginBottom: 16 }}>
           Update
         </Button>
