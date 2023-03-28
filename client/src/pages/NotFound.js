@@ -2,7 +2,7 @@ import React from 'react'
 import '../style/navbar.css'
 const NotFound = () => {
   return (
-    <div className="container_notfound">
+    <div className="container_notfound container_auth">
         <div>
             <div className='notfound'> Oops! 404 Not Found</div>
             <div>
@@ -13,5 +13,4 @@ const NotFound = () => {
     </div>
   )
 }
-
 export default NotFound

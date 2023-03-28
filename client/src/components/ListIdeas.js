@@ -1,4 +1,4 @@
-import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch, List, ListItemButton, ListSubheader, ListItemIcon,ListItemText, Collapse} from '@mui/material'
+import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch, List, ListItemButton, ListSubheader, ListItem,ListItemText, Collapse, ListItemAvatar} from '@mui/material'
 import React, { useRef } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -510,18 +510,89 @@ const ListIdeas = () => {
                             <ListItemText primary="Top 5 View Ideas" />
                             {openCollapse ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
-                        <Collapse in={openCollapse} timeout="auto">
+                        <Collapse in={openCollapse} timeout="auto" >
                             {
                                 preIdeaData&& preIdeaData.mostViewedIdeas&&(
-                                    <MostViewIdeas ideas={preIdeaData.mostViewedIdeas}></MostViewIdeas>
+                                    <List component="div" disablePadding>
+                                    {preIdeaData.mostViewedIdeas.map((idea) => (
+                                      <ListItem key={idea.id} component={Link} to={`/ideas/${idea.id}`}>
+                                        <ListItemAvatar>
+                                          <Avatar alt={idea.User.fullName} src={`http://localhost:5050/${idea.User.profileImage}`} />
+                                        </ListItemAvatar>
+                                        <ListItemText primary={idea.name} secondary={idea.createdAt} primaryTypographyProps={{ style: { maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", lineHeight: 1 } }}/>
+                                        <Chip icon={<RemoveRedEye />} label={idea.views} variant="outlined"  size='small'/>
+                                      </ListItem>
+                                    ))}
+                                  </List>
                                 )
                             }
                         </Collapse>
-                        <ListItemButton onClick={handleOpenCollapse1} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
+                        <ListItemButton onClick={handleOpenCollapse1} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: 1}}>
                             <ListItemText primary="Top 5 Popular Ideas" />
                             {openCollapse1 ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
-                        <Collapse in={openCollapse1} timeout="auto">
+                        <Collapse in={openCollapse1} timeout="auto" >
+                            {
+                                preIdeaData&& preIdeaData.mostPopularIdeas&&(
+                                    <List component="div" disablePadding>
+                                    {preIdeaData.mostPopularIdeas.map((idea) => (
+                                       <ListItem key={idea.id} component={Link} to={`/ideas/${idea.id}`}>
+                                       <ListItemAvatar>
+                                         <Avatar alt={idea.User.fullName} src={`http://localhost:5050/${idea.User.profileImage}`} />
+                                       </ListItemAvatar>
+                                       <ListItemText primary={idea.name} secondary={idea.createdAt} primaryTypographyProps={{ style: { maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", lineHeight: 1 } }}/>
+                                       <Chip icon={<ThumbUpIcon />} label={idea.nLikes} variant="outlined"  size='small'/> 
+                                     </ListItem>
+                                    ))}
+                                  </List>
+                                )
+                            }
+                        </Collapse>
+                        <ListItemButton onClick={handleOpenCollapse2} sx={{ backgroundColor: '#6D9886', borderRadius: '10px',  mt: 1}}>
+                            <ListItemText primary="Lastest Ideas" />
+                            {openCollapse2 ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse2} timeout="auto" >
+                            {
+                                preIdeaData&& preIdeaData.latestIdeas&&(
+                                    <List component="div" disablePadding>
+                                    {preIdeaData.latestIdeas.map((idea) => (
+                                        <ListItem key={idea.id} component={Link} to={`/ideas/${idea.id}`}>
+                                        <ListItemAvatar>
+                                          <Avatar alt={idea.User.fullName} src={`http://localhost:5050/${idea.User.profileImage}`} />
+                                        </ListItemAvatar>
+                                        <ListItemText primary={idea.name} secondary={idea.createdAt} primaryTypographyProps={{ style: { maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", lineHeight: 1 } }}/>
+                                      </ListItem>
+                                    ))}
+                                  </List>
+                                )
+                            }
+                        </Collapse>
+                        <ListItemButton onClick={handleOpenCollapse3} sx={{ backgroundColor: '#6D9886', borderRadius: '10px',  mt: 1}}>
+                            <ListItemText primary="Lastest Comment" />
+                            {openCollapse3 ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse3} timeout="auto" >
+                            {
+                                preIdeaData&& preIdeaData.latestComments&&(
+                                    <List component="div" disablePadding>
+                                    { preIdeaData.latestComments.map((comment) => (
+                                        <ListItem key={comment.id} component={Link} to={`/ideas/${comment.Idea.id}`}>
+                                        <ListItemAvatar>
+                                            <Avatar alt={comment.User.fullName} src={`http://localhost:5050/${comment.User.profileImage}`} />
+                                        </ListItemAvatar>
+                                        <ListItemText primary={comment.content} secondary={comment.createdAt} primaryTypographyProps={{ style: { maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", lineHeight: 1 } }}/>
+                                        </ListItem>
+                                    ))}   
+                                  </List>
+                                )
+                            }
+                        </Collapse>
+                        {/* <ListItemButton onClick={handleOpenCollapse1} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
+                            <ListItemText primary="Top 5 Popular Ideas" />
+                            {openCollapse1 ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openCollapse1} timeout="auto" >
                             {
                                 preIdeaData&& preIdeaData.mostPopularIdeas&&(
                                     <MostPopularIdeas ideas={preIdeaData.mostPopularIdeas}> </MostPopularIdeas>
@@ -532,7 +603,7 @@ const ListIdeas = () => {
                             <ListItemText primary="Latest Idea" />
                             {openCollapse2 ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
-                        <Collapse in={openCollapse2} timeout="auto">
+                        <Collapse in={openCollapse2} timeout="auto" >
                             {
                                 preIdeaData&& preIdeaData.mostPopularIdeas&&(
                                     <LastestIdeas ideas={preIdeaData.mostPopularIdeas}></LastestIdeas>
@@ -543,13 +614,13 @@ const ListIdeas = () => {
                             <ListItemText primary="Last Comment" />
                             {openCollapse3? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
-                        <Collapse in={openCollapse3} timeout="auto">
+                        <Collapse in={openCollapse3} timeout="auto"  >
                             {
                                 preIdeaData&& preIdeaData.latestComments&&(
                                     <LastestComment comment={preIdeaData.latestComments}></LastestComment>
                                 )
                             }
-                        </Collapse>
+                        </Collapse> */}
                     </List>
                 </Grid>
             </Grid>
