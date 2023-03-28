@@ -463,21 +463,25 @@ exports.create_idea = async (req, res) => {
                 },
                 attributes: ['email']
             })
-            const coordinatorMails = coordinators.map(coordinator => coordinator.email);
 
-            const ideaCreator = await User.findOne({where: {
-                "id": createdIdea.userId
-                }},
-                {attributes: ['email', 'fullName']
-            });
-
-            const topicInfo = await Topic.findOne({where: {
-                "id": createdIdea.topicId
-            }}, 
-            {attributes: ["name"]});
-
-            // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
-            sendEmail(coordinatorMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+            // Check if coordinators is exist or not
+            if (coordinators.length > 0) {
+                const coordinatorMails = coordinators.map(coordinator => coordinator.email);
+    
+                const ideaCreator = await User.findOne({where: {
+                    "id": createdIdea.userId
+                    }},
+                    {attributes: ['email', 'fullName']
+                });
+    
+                const topicInfo = await Topic.findOne({where: {
+                    "id": createdIdea.topicId
+                }}, 
+                {attributes: ["name"]});
+    
+                // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+                sendEmail(coordinatorMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+            }
             
             const topic = await Topic.findOne({
                 where: {

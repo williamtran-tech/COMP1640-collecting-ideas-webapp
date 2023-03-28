@@ -66,7 +66,7 @@ module.exports = {
       },
       {
         fullName: 'BA - QA Coordinator',
-        roleId: 1,
+        roleId: 2,
         departmentId: 2,
         email: "test7@gmail.com",
         isVerified: true,
@@ -76,7 +76,7 @@ module.exports = {
       },
       {
         fullName: 'GD - QA Coordinator',
-        roleId: 1,
+        roleId: 2,
         departmentId: 3,
         email: "test8@gmail.com",
         isVerified: true,
