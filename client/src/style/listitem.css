@@ -1,6 +1,11 @@
 .list-item{
-  margin-top: 15px;
+
   padding: 0 50px;
+}
+.list-department{
+  margin-top: 15px !important;
+  padding: 0 60px;
+  align-items: center;
 }
 .topic-item{
 padding: 15px 10px;
@@ -17,7 +22,7 @@ padding: 15px 10px;
   background-color: #9f9e9d !important;
   border-radius: 12px !important;
   background-image: url('../components/images/round-expired-stamp-png.png');
-  background-position: center; 
+  background-position: right -30px top;
   background-repeat: no-repeat;
   background-size:contain; 
 }
