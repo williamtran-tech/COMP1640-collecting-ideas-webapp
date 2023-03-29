@@ -19,9 +19,13 @@ import LockIcon from '@mui/icons-material/Lock';
 const AdminNavbar = ({userRole}) => {
   const [value, setValue] = useState(0);
   const [disable, setDisable] = useState(false);
+  const [disableCoordinate, setDisableCoordinate] = useState(false);
   useEffect(()=>{
-    if(userRole&&userRole==3){
+    if(userRole&&userRole==3|| userRole==2){
         setDisable(true)
+      }
+      if(userRole&&userRole==2){
+        setDisableCoordinate(true)
       }
   },[])
   
@@ -41,7 +45,6 @@ const handleChange = (event, newValue) => {
                 <img className ='logo_admin' src={logo} alt="" /> 
             </div>
             <div>
-          
              <Tabs orientation="vertical" 
              value={value}
              onChange={handleChange}
@@ -49,9 +52,9 @@ const handleChange = (event, newValue) => {
               <TabList >
                 <Tab variant={value === 0 ? 'solid' : 'plain'} color={value === 0 ? 'primary' : 'neutral'} className="tab" component={Link} to="/"> <ListItemDecorator className="menu_item"><TopicIcon />Topic Management </ListItemDecorator></Tab>
                 <Tab variant={value === 1 ? 'solid' : 'plain'} color={value === 1 ? 'primary' : 'neutral'}  className="tab" component={Link} to="/users"><ListItemDecorator  className="menu_item"><AccountBoxIcon />User Management</ListItemDecorator></Tab>
-                <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} to="/category"><ListItemDecorator  className="menu_item"><CategoryIcon />Category Management</ListItemDecorator></Tab>
-                <Tab variant={value === 3 ? 'solid' : 'plain'} color={value === 3 ? 'primary' : 'neutral'} className="tab" component={Link} to="/department"  ><ListItemDecorator  className="menu_item"><ClassIcon />Department Management </ListItemDecorator></Tab>
-                <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic" disabled={disable}><ListItemDecorator  className="menu_item"><BarChartIcon />Statistic {userRole ==3&&( <LockIcon className="lock_icon" fontSize="small"></LockIcon>)} </ListItemDecorator></Tab>
+                <Tab variant={value === 2 ? 'solid' : 'plain'} color={value === 2 ? 'primary' : 'neutral'} className="tab" component={Link} to="/category" disabled={disableCoordinate}><ListItemDecorator  className="menu_item"><CategoryIcon />Category Management { userRole ==2&&( <LockIcon className="lock_icon" fontSize="small"></LockIcon>)} </ListItemDecorator></Tab>
+                <Tab variant={value === 3 ? 'solid' : 'plain'} color={value === 3 ? 'primary' : 'neutral'} className="tab" component={Link} to="/department" disabled={disableCoordinate} ><ListItemDecorator  className="menu_item"><ClassIcon />Department Management{userRole ==2&&( <LockIcon className="lock_icon" fontSize="small"></LockIcon>)}  </ListItemDecorator></Tab>
+                <Tab variant={value === 4 ? 'solid' : 'plain'} color={value === 4 ? 'primary' : 'neutral'} className="tab" component={Link} to="/statistic" disabled={disable}><ListItemDecorator  className="menu_item"><BarChartIcon />Statistic {(userRole == 3 || userRole == 2) && <LockIcon className="lock_icon" fontSize="small" />} </ListItemDecorator></Tab>
                </TabList>
              </Tabs>
            </div>

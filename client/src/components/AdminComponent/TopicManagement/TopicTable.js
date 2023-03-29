@@ -21,6 +21,7 @@ import FileSaver from 'file-saver';
 import moment from 'moment';
 
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
+import checkToken from '../../../service/checkToken';
 const TopicTable = () => {
     const [listTopic, setListTopic]= useState()
     const [topicId, setTopicId]= useState()
@@ -39,7 +40,7 @@ const TopicTable = () => {
       finalClosureDate: '',
     });
     const [valueDate, onChange] = useState([new Date(), new Date()]);
-
+    const token = checkToken()
     useEffect(() =>{
         setUpdated(false)
         const retrievelisttopics = () => {
@@ -53,6 +54,7 @@ const TopicTable = () => {
           });
       };
         retrievelisttopics()
+        console.log(token)
         // eslint-disable-next-line 
       },[submited, updated, deleted])
     const handleChangePage = (event, newPage) => {
@@ -142,7 +144,6 @@ const TopicTable = () => {
     }
     const donwloadTopic_zip = ()=>{
         handleApi.QA_dowload_topic_zip(topicId).then(response=>{
-          
           const blob = new Blob([response.data], { type: 'text/zip' });
           FileSaver.saveAs(blob, `Topic ${topicId}.zip`)
           console.log(response);
@@ -247,7 +248,7 @@ const TopicTable = () => {
        </Paper>
        <Paper sx={{ width: '100%', overflow: 'hidden' }} className="topics_table_list">
          <Grid container>
-              <Grid item xs={6} >
+              <Grid item xs={7} >
                 <TableContainer sx={{ maxHeight: '100vh'}} className='table_topic'>
                   <Table stickyHeader  size="small" aria-label="a dense table">
                     <TableHead >
@@ -262,7 +263,8 @@ const TopicTable = () => {
                         }}
                         >
                         {/* <TableCell>ID</TableCell> */}
-                        <TableCell align='right'> Title</TableCell>
+                        <TableCell align='left'> Title</TableCell>
+                        <TableCell align='left'> Department</TableCell>
                         <TableCell align='center'>Idea quantity</TableCell>
                         <TableCell align='center'>Closure Date</TableCell>
                         <TableCell align='center'>Final Date</TableCell>
@@ -282,19 +284,19 @@ const TopicTable = () => {
                           className="table-row"
                          >
                             {/* <TableCell>{topic.id}</TableCell> */}
-                            <TableCell align='right'>{topic.name}</TableCell>
+                            <TableCell align='left'>{topic.name}</TableCell>
+                            <TableCell align='left'>{topic.Department.name}</TableCell>
                             <TableCell align='center'>{topic.idea_quantity}</TableCell>
                             <TableCell align='center'>{topic.closureDate}</TableCell>
                             <TableCell align='center'>{topic.finalClosureDate}</TableCell> 
                             <TableCell align='center'>
                               <Box sx={{ display: 'flex', gap: 1 }}>
-                                
                                 <Button size ='small' className='icon-edit' onClick={disableEditClick}>
                                   Edit
                                 </Button>
-                                <IconButton size="small" aria-label="delete" onClick={(event)=>{handleClickPopover(event)}}>
+                                {token.roleId==4&&(<IconButton size="small" aria-label="delete" onClick={(event)=>{handleClickPopover(event)}}>
                                   <DownloadIcon fontSize="small" className='icon-download'/> 
-                                </IconButton>
+                                </IconButton>)}
                                 <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
@@ -319,7 +321,7 @@ const TopicTable = () => {
           />
           )}
               </Grid>
-              <Grid item xs={6} className='topic_preview' >
+              <Grid item xs={5} className='topic_preview' >
                 { topicDeatail && topicDeatail.info&& (
                    <TopicInfo inf={topicDeatail.info} isDisable={disable} setDisable={setDisable} setUpdated={setUpdated}></TopicInfo>
                 )

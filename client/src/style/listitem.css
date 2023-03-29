@@ -16,6 +16,10 @@ padding: 15px 10px;
 .topic_status_3{
   background-color: #9f9e9d !important;
   border-radius: 12px !important;
+  background-image: url('../components/images/round-expired-stamp-png.png');
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-size:contain; 
 }
 .date{
 display: flex;
