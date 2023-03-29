@@ -42,10 +42,19 @@ const ListTopics = ({isLoggedIn}) => {
             </Grid>
         <Grid container className='list-item'>
             {
-                listtopics.topics?.map((topic) =>(
-                <Grid item xs={12} md={4} className="topic-item">
+                listtopics.topics?.map((topic) =>
+                {console.log('closureDate:', Date(topic.closureDate));
+                console.log('finalClosureDate:', Date(topic.finalClosureDate));
+                console.log('now:', Date());
+                return(
+                <Grid item xs={12} md={4} className={"topic-item"}>
                     <Link to = {`/topics/${topic.id}`} style={{ textDecoration: 'none'}}>
-                    <Card className='topic'>
+                    <Card className={
+                       new Date(topic.finalClosureDate) < new Date() ? "topic_status_3":
+                       new Date(topic.closureDate) < new Date() ? "topic_status_2"
+                      :
+                      "topic_status_1"
+                    }>
                     <CardHeader title={topic.name}  action={
                         <IconButton>
                             <Badge badgeContent={topic.idea_quantity} sx={{"& .MuiBadge-badge": {color: "#fefae0",backgroundColor: "#181D31"}}}>
@@ -57,15 +66,15 @@ const ListTopics = ({isLoggedIn}) => {
                     <Divider />
                     <CardActions>
                         <Grid xs={12} className="date">
-                        <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closure_date).format('YYYY/MM/DD')} sx={{backgroundColor: "#fefae0"}} />
-                        <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.final_closure_date).format('YYYY/MM/DD')} sx={{backgroundColor: "#fefae0"}} />
+                        <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closureDate).format('YYYY/MM/DD')} sx={{backgroundColor: "#fefae0"}} />
+                        <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.finalClosureDate).format('YYYY/MM/DD')} sx={{backgroundColor: "#fefae0"}} />
                         </Grid>
                     </CardActions>
                 </Card>
               </Link>
                 
             </Grid> 
-                ))
+                )})
             }
         </Grid>
       

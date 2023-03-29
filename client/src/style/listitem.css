@@ -4,12 +4,18 @@
 }
 .topic-item{
 padding: 15px 10px;
-
 }
-.topic{
-background-color: #6D9886 !important;
-border-radius: 12px !important;
-
+.topic_status_1{
+  background-color: #6D9886 !important;
+  border-radius: 12px !important;
+}
+.topic_status_2{
+  background-color: #f4d436 !important;
+  border-radius: 12px !important;
+}
+.topic_status_3{
+  background-color: #9f9e9d !important;
+  border-radius: 12px !important;
 }
 .date{
 display: flex;
