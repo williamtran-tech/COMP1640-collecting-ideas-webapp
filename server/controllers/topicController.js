@@ -8,11 +8,13 @@ const Idea = models.Idea;
 const React = models.React;
 const Comment = models.Comment;
 const View = models.View;
+const Department = models.Department;
 const validation = require('./../middleware/validateInput');
 const fs = require('fs');
 const archiver = require('archiver');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const config = require('./../config/default.json');
 
 const CsvParser = require('json2csv');
 
@@ -36,11 +38,19 @@ exports.list_all_topics = async (req, res) => {
                 model: Idea,
                 attributes:[],
                 require: true
+              },
+              {
+                model: Department,
+                as: 'Department',
+                attributes: ['id','name']
               }
             ],
             group: ['id']
           });
 
+        const departments = await Department.findAll({
+            attributes: ['id', 'name']
+        });
 
         // THE CODE BELOW USING RAW QUERY
 
@@ -50,9 +60,279 @@ exports.list_all_topics = async (req, res) => {
         // GROUP BY topics.id`,{ type: QueryTypes.SELECT });
         res.status(200).json({
                 message: "Successfully get all topics",
-                topics: topics
+                topics: topics,
+                departments: departments
               });
     } catch(error) {
+        console.log(error);
+        res.status(500).send("Server Error");
+    }
+}
+
+exports.list_all_topics_by_department = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+
+        decoded = jwt.verify(token, config.env.JWT_key);
+        const topics = await Topic.findAll({
+            attributes: [
+                'id',
+                'name',
+                'closureDate',
+                'finalClosureDate',
+                [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']
+            ],
+            where: {departmentId: decoded.departmentId},
+            include: [
+                {
+                    model: Idea,
+                    attributes:[],
+                    require: true
+                },
+                {
+                    model: Department,
+                    as: 'Department',
+                    attributes: ['id','name'],
+                    require: true
+                }
+            ],
+            group: 'id'
+        });
+
+        res.status(200).json({
+            msg: "Successfully get all topics",
+            topics: topics
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            err: "Server Error"
+        });
+    }
+}
+
+exports.list_ideas_topic_by_department = async (req, res) => {
+    try {
+        const id = req.params.topicId;
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, config.env.JWT_key);
+
+        const topicInfo = await Topic.findAll({
+            attributes: ['id', 'name', 'description', 'closureDate', 'finalClosureDate', [db.sequelize.fn('count', db.sequelize.col('Ideas.id')), 'idea_quantity']],
+            where: {
+                Id: id,
+                departmentId: decoded.departmentId
+            },
+            include: {
+                model: Idea,
+                as: Idea,
+                attributes: [],
+                require: true
+            },
+            group: ['id']
+        });
+
+        const ideas = await db.sequelize.query(
+                `SELECT  
+                ideas.name AS idea, 
+                users.fullName AS ownerName, 
+                users.email AS email,
+                users.profileImage AS imagePath,
+                ideas.isAnonymous,
+                COALESCE(reacts.likes, 0) AS likes, 
+                COALESCE(reacts.dislikes, 0) AS dislikes,
+                SUM(views.views) AS views,
+                COALESCE(c.comments, 0) as comments,
+                categories.name AS category,
+                ideas.createdAt, 
+                ideas.updatedAt,
+                ideas.id as ideaId,
+                users.id as userId,
+                categories.id as categoryId
+            FROM ideas
+            JOIN categories ON ideas.categoryId = categories.id
+            JOIN topics ON ideas.topicId = topics.id
+            JOIN users ON ideas.userId = users.id
+            JOIN views ON ideas.id = views.ideaId
+            LEFT JOIN (
+                SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
+                FROM reacts
+                GROUP BY ideaId
+            ) reacts ON ideas.id = reacts.ideaId
+            LEFT JOIN (
+                SELECT ideaId, COUNT(id) as comments
+                FROM comments
+                GROUP BY ideaId
+            ) c ON ideas.id = c.ideaId
+            WHERE topics.id = ${id} AND topics.departmentId = ${decoded.departmentId}
+            GROUP BY ideas.id;
+        `);
+
+        const mostViewedIdeas = await Idea.findAll({
+            attributes: [
+                'id', 
+                'name', 
+                [db.Sequelize.literal('(SELECT SUM(`views`) FROM `Views` WHERE `Views`.`IdeaId` = `Idea`.`id`)'), 'views'],
+                'createdAt', 
+                'updatedAt'
+            ],
+            where: {
+                '$Topic.departmentId$': decoded.departmentId,
+                topicId: id,
+            },
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, email)`), 'email']
+                    ],
+                    require: true
+                },
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes:['id', 'name'],
+                    require: true
+                },
+                {
+                    model: Topic,
+                    as: "Topic",
+                    attributes:['departmentId'],
+                    require: true
+                }
+            ],
+            group: ['id'],
+            order: [['views', 'DESC']],
+            limit: 5
+        });
+
+        const mostPopularIdeas = await Idea.findAll({
+            attributes: ['id', 
+                'name', 
+                [db.Sequelize.literal('(SELECT SUM(`nLike`) FROM `Reacts` WHERE `Reacts`.`IdeaId` = `Idea`.`id`)'), 'nLikes'], 
+                'createdAt', 'updatedAt'],
+            where: {
+                '$Topic.departmentId$': decoded.departmentId,
+                topicId: id,
+            },
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, email)`), 'email']
+                    ],
+                    require: true
+                },
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes:['id', 'name'],
+                    require: true
+                },
+                {
+                    model: Topic,
+                    as: "Topic",
+                    attributes:['departmentId'],
+                    require: true
+                }
+            ],
+            group: ['Idea.id'],
+            order: [[db.Sequelize.literal('nLikes'), 'DESC']],
+            limit: 5
+        });
+
+        const latestIdeas = await Idea.findAll({
+            attributes: ['id', 'name', 'createdAt', 'updatedAt'],
+            where: {
+                '$Topic.departmentId$': decoded.departmentId,
+                topicId: id,
+            },
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(isAnonymous = 1, null, email)`), 'email']
+                    ],
+                    require: true
+                },
+                {
+                    model: Category,
+                    as: "Category",
+                    attributes:['id', 'name'],
+                    require: true
+                },
+                {
+                    model: Topic,
+                    as: "Topic",
+                    attributes:['departmentId'],
+                    require: true
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+            limit: 5
+        });
+
+        const latestComments = await Comment.findAll({
+            attributes: ['id', 'content', 'createdAt', 'updatedAt'],
+            include: [
+                {
+                    model: User,
+                    as: "User",
+                    attributes:[
+                        'id',
+                        [db.Sequelize.literal(`IF(Comment.isAnonymous = 1, null, profileImage)`), 'profileImage'], 
+                        [db.Sequelize.literal(`IF(Comment.isAnonymous = 1, null, fullName)`), 'fullName'], 
+                        [db.Sequelize.literal(`IF(Comment.isAnonymous = 1, null, email)`), 'email']
+                    ],
+                    require: true
+                },
+                {
+                    model: Idea,
+                    as: "Idea",
+                    attributes:['id', 'name'],
+                    include: [
+                        {
+                            model: Topic,
+                            as: "Topic",
+                            attributes:['id', 'departmentId'],
+                            where: {
+                                'departmentId': decoded.departmentId,
+                            }
+                        }
+                    ],
+                    where: {
+                        topicId: id,
+                    },
+                    require: true
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+            limit: 5
+        });
+        
+        res.status(200).json({
+            message: "Get all ideas of topic " + req.params.topicId + " successfully",
+            info: topicInfo,
+            ideas: ideas[0],
+            mostViewedIdeas: mostViewedIdeas,
+            mostPopularIdeas: mostPopularIdeas,
+            latestIdeas: latestIdeas,
+            latestComments: latestComments
+        })
+    } catch(error){
         console.log(error);
         res.status(500).send("Server Error");
     }

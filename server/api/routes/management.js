@@ -7,6 +7,7 @@ const department = require('../../controllers/departmentController.js');
 const user = require('../../controllers/userController.js');
 const isAccessible = require('../../middleware/isAccessible.js');
 const isManager = require('./../../middleware/isManager.js');
+const isCoordinator = require('./../../middleware/isCoordinator.js');
 const uploadFile = require('../../middleware/uploadFile.js');
 const uploadCsv = require('./../../middleware/uploadCsv.js');
 
@@ -18,6 +19,12 @@ router.put('/topics/:topicId', isAccessible, topic.update_topic);
 router.delete('/topics/:topicId', isAccessible, topic.delete_topic);
 router.delete('/topics/force-delete/:topicId', isAccessible, topic.force_delete);
 router.get('/topics/download-zip/:id', isManager, topic.zip_topic);
+// TOPICS - QA Coordinator
+router.get('/department/topics', isCoordinator, topic.list_all_topics_by_department);
+router.post('/topics', isCoordinator, topic.create_topic);
+router.get('/department/topics/:topicId', isCoordinator, topic.list_ideas_topic_by_department);
+router.get('/department/users', isCoordinator, user.list_all_users_by_department);
+
 
 // CATEGORIES - ADMIN PANEL
 router.get('/categories', isAccessible, category.list_all_categories);

@@ -109,7 +109,8 @@ exports.login_user = async (req, res) => {
               name: user.fullName,
               userId: user.id,
               roleId: user.roleId,
-              imagePath: user.profileImage
+              imagePath: user.profileImage,
+              departmentId: user.departmentId
             }, config.env.JWT_key, 
             {
               expiresIn: "1h"
@@ -645,6 +646,38 @@ exports.list_all_users = async (req, res) =>{
     } catch (error) {
       console.error(error);
       res.status(500).send('Server Error');
+    }
+}
+
+// This function for QA Coordinators
+exports.list_all_users_by_department = async (req, res) =>{
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      decoded = jwt.verify(token, config.env.JWT_key);
+
+      const users = await User.findAll({
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
+        },
+        include: [{
+          model: Role, as: "Role",
+          attributes: {exclude: ["createdAt", "updatedAt"]}
+        }],
+        where: {
+          "departmentId": decoded.departmentId,
+          "roleId": 2 || 1
+        }
+      });
+      
+      res.status(200).json({
+        message: "Successfully get all users of departments",
+        users: users
+      })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+          err: "Server Error"
+        });
     }
 }
 
