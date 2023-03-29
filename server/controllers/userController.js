@@ -336,7 +336,11 @@ exports.personal_info = async (req, res) => {
             {
               model: User,
               as: 'User',
-              attributes: ['fullName', 'email', 'id']
+              attributes: [
+                'id',
+                [db.Sequelize.literal(`IF(Idea.isAnonymous = 1, 'Anonymous', fullName)`), 'fullName'], 
+                [db.Sequelize.literal(`IF(Idea.isAnonymous = 1, 'Anonymous', email)`), 'email']
+              ]
             },
             {
               model: Category,
@@ -366,7 +370,11 @@ exports.personal_info = async (req, res) => {
             {
               model: User,
               as: 'User',
-              attributes: ['fullName', 'email', 'id']
+              attributes: [
+                'id',
+                [db.Sequelize.literal(`IF(Idea.isAnonymous = 1, 'Anonymous', fullName)`), 'fullName'], 
+                [db.Sequelize.literal(`IF(Idea.isAnonymous = 1, 'Anonymous', email)`), 'email']
+              ]
             },
             {
               model: Category,
@@ -433,7 +441,7 @@ exports.personal_info = async (req, res) => {
             GROUP BY ideaId
         ) c ON ideas.id = c.ideaId
         WHERE ideas.userId = ${req.params.id}
-        GROUP BY ideas.userId;
+        GROUP BY ideas.id;
         `);
       res.status(200).json({
         info: info,
