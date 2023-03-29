@@ -373,153 +373,160 @@ exports.create_idea = async (req, res) => {
     try {
         let result = false;
         var createdIdea = {};
-        if (req.file) {
-            const [newIdea, created] = await Idea.findOrCreate({
-                where: {
-                    "name": req.body.name,
-                    "categoryId": req.body.categoryId,
-                    "topicId": req.params.topicId,
-                    "userId": req.body.userId,
-                    "isAnonymous": req.body.isAnonymous
-                },
-                defaults: {
-                    "name": req.body.name,
-                    "filePath": req.file.path,
-                    "categoryId": req.body.categoryId,
-                    "topicId": req.params.id,
-                    "userId": req.body.userId,
-                    "isAnonymous": req.body.isAnonymous,
-                }
-            });
 
-            if (created) {
-                result = true;
-                createdIdea = newIdea;
-            }
+        const topic = await Topic.findOne({
+            where: {
+                id: req.params.topicId
+            },
+            attributes: ['closureDate']
+        });
+
+        if (validate.checkClosureDate(topic.closureDate)) {
+            res.status(400).json({
+                message: "Topic is closed"
+            });
         } else {
-            const [newIdea, created] = await Idea.findOrCreate({
-                where: {
-                    "name": req.body.name,
-                    "categoryId": req.body.categoryId,
-                    "topicId": req.params.topicId,
-                    "userId": req.body.userId,
-                    "isAnonymous": req.body.isAnonymous
-                },
-                defaults: {
-                    "name": req.body.name,
-                    "filePath": null,
-                    "categoryId": req.body.categoryId,
-                    "topicId": req.params.id,
-                    "userId": req.body.userId,
-                    "isAnonymous": req.body.isAnonymous,
-                }
-            });
-            if (created) {
-                result = true;
-                createdIdea = newIdea;
-            }
-        }
-
-        if (!result) {
             if (req.file) {
-                fs.unlink(req.file.path, (err) => {
-                    if (err) {
-                        console.log(err);
+                const [newIdea, created] = await Idea.findOrCreate({
+                    where: {
+                        "name": req.body.name,
+                        "categoryId": req.body.categoryId,
+                        "topicId": req.params.topicId,
+                        "userId": req.body.userId,
+                        "isAnonymous": req.body.isAnonymous
+                    },
+                    defaults: {
+                        "name": req.body.name,
+                        "filePath": req.file.path,
+                        "categoryId": req.body.categoryId,
+                        "topicId": req.params.id,
+                        "userId": req.body.userId,
+                        "isAnonymous": req.body.isAnonymous,
                     }
                 });
-            }
-            res.status(406).json({
-                msg:"Your idea is exists"
-            })
-        } else {
-            // The following code used to set init value for comment and views of the new idea
-            const setView = await View.create({
-                "ideaId": createdIdea.id,
-            })
-            const setReact = await React.create({
-                "ideaId": createdIdea.id,
-            })
-
-            // // Get the department of the owner of idea
-            // const userDepartment = await User.findOne({
-            //     where: {
-            //         "id": createdIdea.userId
-            //     },
-            //     attributes: ['departmentId']
-            // });
-            // Get the department of the topic
-            const topicDepartment = await Topic.findOne({
-                where: {
-                    "id": createdIdea.topicId
-                },
-                attributes: ['departmentId']
-            });
-
-            // Getting all manager-mails to send notify - Role id 2 is manager
-            const coordinators = await User.findAll({
-                where: {
-                    roleId: 2,
-                    departmentId: topicDepartment.departmentId
-                },
-                attributes: ['email']
-            })
-
-            // Check if coordinators is exist or not
-            if (coordinators.length > 0) {
-                const coordinatorMails = coordinators.map(coordinator => coordinator.email);
     
-                const ideaCreator = await User.findOne({where: {
-                    "id": createdIdea.userId
-                    }},
-                    {attributes: ['email', 'fullName']
-                });
-    
-                const topicInfo = await Topic.findOne({where: {
-                    "id": createdIdea.topicId
-                }}, 
-                {attributes: ["name"]});
-    
-                // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
-                sendEmail(coordinatorMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
-            }
-            
-            const topic = await Topic.findOne({
-                where: {
-                    id: req.params.topicId
+                if (created) {
+                    result = true;
+                    createdIdea = newIdea;
                 }
-            });
-            if (req.file) {
-                console.log(path.basename(req.file.path));
-                // Move the file from temp folder to the right directory
-                const dir = `./uploaded_files/uploads/${topic.name}`
-                fs.mkdirSync(`${dir}/${createdIdea.name}`, {recursive: true});
-                const dest = `${dir}/${createdIdea.name}/${path.basename(req.file.path)}`;
-                fs.rename(createdIdea.filePath, dest, (err) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("Move file successfully");
+            } else {
+                const [newIdea, created] = await Idea.findOrCreate({
+                    where: {
+                        "name": req.body.name,
+                        "categoryId": req.body.categoryId,
+                        "topicId": req.params.topicId,
+                        "userId": req.body.userId,
+                        "isAnonymous": req.body.isAnonymous
+                    },
+                    defaults: {
+                        "name": req.body.name,
+                        "filePath": null,
+                        "categoryId": req.body.categoryId,
+                        "topicId": req.params.id,
+                        "userId": req.body.userId,
+                        "isAnonymous": req.body.isAnonymous,
                     }
                 });
-                const moveFileIdea = await Idea.update({
-                    "filePath": dest.slice(2)
-                },
-                {
+                if (created) {
+                    result = true;
+                    createdIdea = newIdea;
+                }
+            }
+    
+            if (!result) {
+                if (req.file) {
+                    fs.unlink(req.file.path, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+                res.status(406).json({
+                    msg:"Your idea is exists"
+                })
+            } else {
+                // The following code used to set init value for comment and views of the new idea
+                const setView = await View.create({
+                    "ideaId": createdIdea.id,
+                })
+                const setReact = await React.create({
+                    "ideaId": createdIdea.id,
+                })
+    
+                const topicDepartment = await Topic.findOne({
+                    where: {
+                        "id": createdIdea.topicId
+                    },
+                    attributes: ['departmentId']
+                });
+    
+                // Getting all manager-mails to send notify - Role id 2 is manager
+                const coordinators = await User.findAll({
+                    where: {
+                        roleId: 2,
+                        departmentId: topicDepartment.departmentId
+                    },
+                    attributes: ['email']
+                })
+    
+                // Check if coordinators is exist or not
+                if (coordinators.length > 0) {
+                    const coordinatorMails = coordinators.map(coordinator => coordinator.email);
+        
+                    const ideaCreator = await User.findOne({where: {
+                        "id": createdIdea.userId
+                        }},
+                        {attributes: ['email', 'fullName']
+                    });
+        
+                    const topicInfo = await Topic.findOne({where: {
+                        "id": createdIdea.topicId
+                    }}, 
+                    {attributes: ["name"]});
+        
+                    // sendEmail(managerMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+                    sendEmail(coordinatorMails, "[GRE IDEAS] NEW IDEA WAS SUBMITTED", htmlMail.ideaSubmit(createdIdea, ideaCreator, topicInfo));
+                }
+                
+                const topic = await Topic.findOne({
+                    where: {
+                        id: req.params.topicId
+                    }
+                });
+                if (req.file) {
+                    console.log(path.basename(req.file.path));
+                    // Move the file from temp folder to the right directory
+                    const dir = `./uploaded_files/uploads/${topic.name}`
+                    fs.mkdirSync(`${dir}/${createdIdea.name}`, {recursive: true});
+                    const dest = `${dir}/${createdIdea.name}/${path.basename(req.file.path)}`;
+                    fs.rename(createdIdea.filePath, dest, (err) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log("Move file successfully");
+                        }
+                    });
+                    const moveFileIdea = await Idea.update({
+                        "filePath": dest.slice(2)
+                    },
+                    {
+                        where: {
+                            id: createdIdea.id
+                        }
+                    });
+                }
+                const idea = await Idea.findOne({
                     where: {
                         id: createdIdea.id
                     }
                 });
+                res.status(200).json({
+                    msg: "Successfully create new idea",
+                    idea: idea
+                });
             }
-            const idea = await Idea.findOne({
-                where: {
-                    id: createdIdea.id
-                }
-            });
-            res.status(200).json({
-                msg: "Successfully create new idea",
-                idea: idea
-            });
         }
+        
     }
     catch (err) {
         if (err.name === "SequelizeForeignKeyConstraintError") {

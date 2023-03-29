@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const fsx = require('fs-extra');
+const e = require('express');
 
 exports.checkInput = (req) => {
     for(var prop in req.body) {
@@ -131,4 +132,28 @@ exports.checkPassword = (req) => {
     } else {
         return true
     }
+}
+
+exports.checkClosureDate = (closureDate) => {
+    // Get the date from current date
+    // Check Current date with closure date and final closure date
+    var current = new Date();
+    var closure = new Date(closureDate);
+    var diff_date_in_date = closure.getDate() - current.getDate();
+    var diff_date_in_time = closure.getTime() - current.getTime();
+    if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
+        return true;
+    }
+    return false;
+}
+
+exports.checkFinalClosureDate = (finalClosureDate) => {
+    var current = new Date();
+    var finalClosure = new Date(finalClosureDate);
+    var diff_date_in_date = finalClosure.getDate() - current.getDate();
+    var diff_date_in_time = finalClosure.getTime() - current.getTime();
+    if (diff_date_in_date <= 0 && diff_date_in_time <= 0) {
+        return true;
+    }
+    return false;
 }
