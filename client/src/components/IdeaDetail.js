@@ -35,26 +35,6 @@ const IdeaDetail = ({token}) => {
       };
     const [react, setReact]= useState(initialideaReact)
     const handleLike =()=>{
-        // if(react.isDislike || !react.isLike){
-        //     setReact({
-        //         user_Id: "",
-        //         idea_Id: localStorage.getItem("userid"),
-        //         isLike:true,
-        //         likeStatus: "#F7F7F7",
-        //         isDislike:false,
-        //         dislikeStatus: "",
-        //     })
-        // }
-        // else if(react.isLike){
-        //     setReact({
-        //         user_Id: "",
-        //         idea_Id: localStorage.getItem("userid"),
-        //         isLike:false,
-        //         likeStatus: "",
-        //         isDislike:false,
-        //         dislikeStatus: "",
-        //     })
-        // }
         setreacted(true)
         contentReact.isLike= 1
         post_comment(id, contentReact)
@@ -89,7 +69,7 @@ const IdeaDetail = ({token}) => {
           });
       };
       if(ideaDetail&&ideaDetail.dislikedBy){
-          if(ideaDetail.dislikedBy.some(user=>user.User.id === 10)){
+          if(ideaDetail.dislikedBy.some(user=>user.User.id === token.userId)){
             react.dislikeStatus="#F7F7F7" 
             console.log("ok")
           }else{
@@ -97,7 +77,7 @@ const IdeaDetail = ({token}) => {
           }
       }
       if(ideaDetail&&ideaDetail.likedBy){
-        if(ideaDetail.likedBy.some(user=>user.User.id === 10)){
+        if(ideaDetail.likedBy.some(user=>user.User.id === token.userId)){
          react.likeStatus="#F7F7F7"
         console.log("ok")
         }else{
