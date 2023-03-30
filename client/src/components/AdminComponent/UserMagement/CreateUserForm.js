@@ -4,11 +4,17 @@ import AddIcon from '@mui/icons-material/Add';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
-import { MenuItem, Stack } from '@mui/material';
+import { useState, useRef, useEffect } from 'react';
+import { MenuItem, Stack, Tabs, Tab } from '@mui/material';
 import handleApi from '../../../service/handleApi';
-import { Typography } from '@material-ui/core';
+import { Typography, Chip } from '@material-ui/core';
+import FolderIcon from '@mui/icons-material/Folder';
+import FileSaver from 'file-saver';
 const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited, submited}) => {
+    const [tabValue, setTabValue] = useState(0);
+    const filePicekerRef = useRef(null)
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [filePreview, setFilePreview] = useState(null);
     const initialFormState = {
         fullName: '',
         email: '',
@@ -39,6 +45,40 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
         setOpenModal(false);
         setUser(initialFormState);
       };
+      const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+      };
+      const handleFileChange = (event) => {
+        event.preventDefault();
+        const reader = new FileReader();
+        const file = event.target.files[0];
+    
+        reader.onloadend = () => {
+            setSelectedFile(file);
+            setFilePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      };
+      const  clear_file= ()=>{
+        setFilePreview(null);
+     }
+
+     const donwloadTemplate = ()=>{
+      handleApi.QA_dowload_template().then(response=>{
+        const blob = new Blob([response.data], { type: 'text/csv' });
+        FileSaver.saveAs(blob, `Template insert bulk of user.csv`)
+        console.log(response);
+      }).catch(error=>{
+        console.error("Failed to download topic CSV file.", error);
+      })
+  }
+  const upload_bulk_users=()=>{
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    handleApi.QA_upload_bulk_user(formData).then(response=>{
+      console.log(response.data)
+    })
+  }
   return (
     <>
     <Modal
@@ -57,7 +97,11 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
         bgcolor: 'background.paper',
         boxShadow: 24,
         p: 4,}}>
-          <div className='titleform'>
+          <Tabs value={tabValue} onChange={handleTabChange} indicatorColor="none" centered> 
+              <Tab label="Single account" />
+              <Tab label="Multiple account" />
+          </Tabs>
+          {tabValue===0&&(<><div className='titleform'>
             <Typography variant="h5" fontWeight="light">
               Create new user
             </Typography>
@@ -88,7 +132,7 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
                   required
                 />
                 <Stack direction={'row'}>
- <TextField
+                <TextField
                   label="Department"
                   variant="outlined"
                   select
@@ -132,7 +176,53 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
                 </Button>
                </div>
                 
-          </form>
+          </form></>)}
+          {
+            tabValue===1&&(
+              <>
+              <div className='titleform'>
+                <Typography variant="h5" fontWeight="light">
+                  Import list of account
+                </Typography>
+              </div>
+              <div className='titleform'>
+                <Button onClick={donwloadTemplate}> Download template</Button>
+              </div>
+              <form className='form_create_user'>
+              <div>
+                                   {/* <IconButton onClick={() => filePicekerRef.current.click()}>
+                                        <DriveFolderUploadIcon color="primary"  />
+                                   </IconButton> */}
+                                   <Button className="btn" onClick={() => filePicekerRef.current.click()}>
+                                        Upload
+                                    </Button>
+                                   <input
+                                        ref={filePicekerRef}
+                                        accept=".csv, .txt, .pdf"
+                                        onChange={handleFileChange}
+                                        type="file"
+                                        hidden
+                                    />
+                                    {(filePreview) && (
+                                      <>
+                                       <button className="btn" onClick={clear_file}>
+                                            x
+                                        </button>
+                                        <Button onClick={upload_bulk_users}>Create</Button>
+                                      </>
+                                       
+                                    )}
+                                </div>
+                                <div className="preview">
+                                {filePreview != null && (
+                                        <Chip icon={<FolderIcon/>} label={selectedFile.name} size="small" color="primary" className='chip' sx={{backgroundColor: "#6D9886", marginTop: 1}}/>
+                                )}
+                                </div>
+              </form>
+              </>
+              
+            )
+          }
       </Box>
     </Modal>
   </>

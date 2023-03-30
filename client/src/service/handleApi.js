@@ -107,6 +107,12 @@ const QA_dowload_topic = async(id)=>{
 const QA_dowload_topic_zip = async(id)=>{
   return await axios.get(`/management/topics/download-zip/${id}`, {responseType: 'blob', ...config_download()});
 }
+const QA_dowload_template = async()=>{
+  return await axios.get(`/management/users/template-insert/download`, {responseType: 'blob', ...config_download()});
+}
+const QA_upload_bulk_user = async(data)=>{
+  return await axios.post(`/management/users/bulks-insert`, data , config_form());
+}
 const verifyEmail = async (token) =>{
   return await axios.get(`/accounts/verify?token=${token}`)
 }
@@ -183,6 +189,8 @@ const handleApi = {
     admin_update_department,
     admin_delete_department,
     admin_get_department_detail,
-    QA_dowload_topic_zip
+    QA_dowload_topic_zip,
+    QA_dowload_template,
+    QA_upload_bulk_user
 };
 export default handleApi

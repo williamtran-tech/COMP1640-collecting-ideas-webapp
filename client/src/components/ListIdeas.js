@@ -390,7 +390,6 @@ const ListIdeas = () => {
                                         type="file"
                                         hidden
                                     />
-                                    
                                     {(filePreview) && (
                                         <button className="btn" onClick={clear_file}>
                                             x
