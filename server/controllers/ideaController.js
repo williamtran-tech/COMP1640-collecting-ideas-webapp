@@ -236,9 +236,17 @@ exports.get_idea_by_id = async (req, res) => {
             }
         }
 
+        const topic = await Topic.findOne({
+            where: {
+                id: idea[0].Topic.id
+            },
+            attributes: ['id', 'name', 'closureDate', 'finalClosureDate']
+        })
+
         res.status(200).json({
             message: "Successfully get all comments by idea id " + idea[0].id,
             idea: idea,
+            topicInfo: topic,
             likedBy: likedBy,
             dislikedBy: dislikedBy,
             views: views[0].views,
