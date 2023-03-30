@@ -29,62 +29,39 @@ const IdeaDetail = ({token}) => {
             isLike: null
     })
     const initialideaReact = {
-        user_Id: localStorage.getItem("userid"),
         idea_Id: id,
-        isLike:false,
         likeStatus: "",
-        isDislike:false,
         dislikeStatus: "",
       };
     const [react, setReact]= useState(initialideaReact)
     const handleLike =()=>{
-        if(react.isDislike || !react.isLike){
-            setReact({
-                user_Id: "",
-                idea_Id: localStorage.getItem("userid"),
-                isLike:true,
-                likeStatus: "#F7F7F7",
-                isDislike:false,
-                dislikeStatus: "",
-            })
-        }
-        else if(react.isLike){
-            setReact({
-                user_Id: "",
-                idea_Id: localStorage.getItem("userid"),
-                isLike:false,
-                likeStatus: "",
-                isDislike:false,
-                dislikeStatus: "",
-            })
-        }
+        // if(react.isDislike || !react.isLike){
+        //     setReact({
+        //         user_Id: "",
+        //         idea_Id: localStorage.getItem("userid"),
+        //         isLike:true,
+        //         likeStatus: "#F7F7F7",
+        //         isDislike:false,
+        //         dislikeStatus: "",
+        //     })
+        // }
+        // else if(react.isLike){
+        //     setReact({
+        //         user_Id: "",
+        //         idea_Id: localStorage.getItem("userid"),
+        //         isLike:false,
+        //         likeStatus: "",
+        //         isDislike:false,
+        //         dislikeStatus: "",
+        //     })
+        // }
         setreacted(true)
-        contentReact.isLike= 0
+        contentReact.isLike= 1
         post_comment(id, contentReact)
     }
     const handleDislike =()=>{
-        if(!react.isDislike || react.isLike){
-            setReact({
-                user_Id: "",
-                idea_Id: localStorage.getItem("userid"),
-                isLike:false,
-                likeStatus: "",
-                isDislike:true,
-                dislikeStatus: "#F7F7F7",
-            })
-        }
-        else if(react.isDislike){
-            setReact({
-                user_Id: "",
-                idea_Id: localStorage.getItem("userid"),
-                isLike:false,
-                likeStatus: "",
-                isDislike:false,
-                dislikeStatus: "",
-            })
-        }
         setreacted(true)
-        contentReact.isLike= 1
+        contentReact.isLike= 0
         post_comment(id, contentReact)
     }
 
@@ -111,6 +88,22 @@ const IdeaDetail = ({token}) => {
             console.log(e);
           });
       };
+      if(ideaDetail&&ideaDetail.dislikedBy){
+          if(ideaDetail.dislikedBy.some(user=>user.User.id === 10)){
+            react.dislikeStatus="#F7F7F7" 
+            console.log("ok")
+          }else{
+             react.dislikeStatus=""
+          }
+      }
+      if(ideaDetail&&ideaDetail.likedBy){
+        if(ideaDetail.likedBy.some(user=>user.User.id === 10)){
+         react.likeStatus="#F7F7F7"
+        console.log("ok")
+        }else{
+           react.likeStatus=""
+        }
+    }
       const post_comment = (id, data) => {
           console.log(data)
         handleApi.react(id, data)
@@ -213,8 +206,8 @@ const IdeaDetail = ({token}) => {
                                 </Stack>
                             </Stack>
                             <Stack direction="row" spacing={1}>
-                            <Chip icon={<ThumbDown style={{color: `${react.likeStatus}`}}/>} label={ideaDetail.react[0].Dislikes} variant="outlined" size="small"  onClick={handleLike}/>
-                            <Chip icon={<ThumbUpIcon style={{color: `${react.dislikeStatus}`}}/>} label={ideaDetail.react[0].Likes} variant="outlined" size="small"  onClick={handleDislike}/>
+                            <Chip icon={<ThumbUpIcon style={{color: `${react.likeStatus}`}}/>} label={ideaDetail.react[0].Likes} variant="outlined" size="small"  onClick={handleLike}/>
+                            <Chip icon={<ThumbDown style={{color: `${react.dislikeStatus}`}}/>} label={ideaDetail.react[0].Dislikes} variant="outlined" size="small"  onClick={handleDislike}/>
                             <Chip icon={<ChatBubbleIcon/>} label={ideaDetail.nComments} variant="outlined"size="small" sx={{backgroundColor: "#F7F7F7"}} />
                             </Stack>
                         </Grid>

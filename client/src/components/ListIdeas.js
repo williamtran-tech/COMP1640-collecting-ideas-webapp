@@ -325,12 +325,12 @@ const ListIdeas = () => {
                             </Grid>
                         </Grid>
                         <Grid xs={12} className="date">
-                            <Chip icon={<AccessTimeIcon/>} label={Moment(preIdeaData.closureDate).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
+                            <Chip icon={<AccessTimeIcon/>} label={Moment(topic.closureDate).format('YYYY/MM/DD')} size="small" color="warning" variant='outlined' />
                             <Chip icon={<AccessTimeFilledIcon/>} label={Moment(topic.finalClosureDate).format('YYYY/MM/DD')} size="small" color="error" variant='outlined'/>
                         </Grid>
                         <Grid item xs={12} className="create-topic">
                             <Chip icon={<EmojiObjectsIcon/>} label={topic.idea_quantity} size="small" color="primary" className='chip'/>
-                            <Chip icon={<EmojiObjectsIcon/>} label="Have idea? Submit here" size="small" color="primary" onClick={handleClickOpen}/>
+                            <Chip icon={<EmojiObjectsIcon/>} label="Have idea? Submit here" size="small" color="primary" onClick={handleClickOpen} disabled={new Date(topic.closureDate)<new Date()? true:false}/>
                             <Dialog open={open} onClose={handleClose} className="create_idea_form">
                                 <DialogTitle className="title_idea_form" >{preIdeaData.info[0].name}</DialogTitle>
                                 <DialogContent>
@@ -461,8 +461,8 @@ const ListIdeas = () => {
                                                 </Stack>
                                             </Stack>
                                             <Stack direction="row" spacing={1}>
-                                                <Chip icon={<ThumbDown />} label={idea.dislikes} variant="outlined" size="small" color="default" />
                                                 <Chip icon={<ThumbUpIcon />} label={idea.likes} variant="outlined" size="small" color="default"/>
+                                                <Chip icon={<ThumbDown />} label={idea.dislikes} variant="outlined" size="small" color="default" />
                                                 <Chip icon={<ChatBubbleIcon/>} label={idea.comments} variant="outlined"size="small" color="default" />
                                             </Stack>
                                         </Grid>
@@ -588,39 +588,6 @@ const ListIdeas = () => {
                                 )
                             }
                         </Collapse>
-                        {/* <ListItemButton onClick={handleOpenCollapse1} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
-                            <ListItemText primary="Top 5 Popular Ideas" />
-                            {openCollapse1 ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={openCollapse1} timeout="auto" >
-                            {
-                                preIdeaData&& preIdeaData.mostPopularIdeas&&(
-                                    <MostPopularIdeas ideas={preIdeaData.mostPopularIdeas}> </MostPopularIdeas>
-                                )
-                            }
-                        </Collapse>
-                        <ListItemButton onClick={handleOpenCollapse2} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
-                            <ListItemText primary="Latest Idea" />
-                            {openCollapse2 ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={openCollapse2} timeout="auto" >
-                            {
-                                preIdeaData&& preIdeaData.mostPopularIdeas&&(
-                                    <LastestIdeas ideas={preIdeaData.mostPopularIdeas}></LastestIdeas>
-                                )
-                            }
-                        </Collapse>
-                        <ListItemButton onClick={handleOpenCollapse3} sx={{ backgroundColor: '#6D9886', borderRadius: '10px', mt: "10px"}}>
-                            <ListItemText primary="Last Comment" />
-                            {openCollapse3? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={openCollapse3} timeout="auto"  >
-                            {
-                                preIdeaData&& preIdeaData.latestComments&&(
-                                    <LastestComment comment={preIdeaData.latestComments}></LastestComment>
-                                )
-                            }
-                        </Collapse> */}
                     </List>
                 </Grid>
             </Grid>

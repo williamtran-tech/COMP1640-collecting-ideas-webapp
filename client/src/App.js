@@ -24,6 +24,7 @@ import CategoryManagement from './components/AdminComponent/CategoryManagement/C
 import DepartmentManagement from './components/AdminComponent/DepartmentManagement/DepartmentManagement';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [deadline, setDeadline] = useState(new Date());
   const [userRole, setUserRole] = useState();
   const navigate = useNavigate();
   const location= useLocation()
