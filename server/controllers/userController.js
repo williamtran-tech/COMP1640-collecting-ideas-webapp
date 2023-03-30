@@ -665,7 +665,7 @@ exports.list_all_users_by_department = async (req, res) =>{
         }],
         where: {
           "departmentId": decoded.departmentId,
-          "roleId": 2 || 1
+          "roleId": [2, 1]
         }
       });
       
@@ -771,7 +771,7 @@ exports.download_template = async (req, res) => {
 
     // Create an array of objects with the fields for the CSV file
     const data = [
-      {email: 'sample@gmail.com', fullName: 'Sample name', role: 'Administrator', department: 'IT'}
+      {email: 'sample@gmail.com', fullName: 'Sample name', role: 'Staff', department: 'IT'}
     ];
 
 
@@ -806,13 +806,14 @@ exports.bulk_insert = async (req, res) => {
         .on('end', async () => {
           console.log('CSV file Successfully processed');
 
-          const [emailExist, email, notValidMail] = await checkEmail(userData);
-          const [roleId, departmentId] = checkRoleDepartment(userData);
+          const [emailExist, email, notValidMail, existMailRow, duplicate, duplicateMail, duplicateRow] = await checkEmail(userData);
+          const [roleId, departmentId] = await checkRoleDepartment(userData);
 
           if (emailExist) {
             res.status(406).json({
               'err': "Not acceptable input",
-              'existedEmail': email
+              'existedEmail': email,
+              "At row": existMailRow
             });
           } else if (validate.checkInputCSV(userData)){
             res.status(406).json({
@@ -830,16 +831,34 @@ exports.bulk_insert = async (req, res) => {
             res.status(406).json({
               err: "Department value is not accepted"
             })
+          } else if (duplicate) {
+            res.status(406).json({
+              err: "Duplicate entry",
+              "Duplicate email": duplicateMail,
+              "At row": duplicateRow
+            })
           } else {
             // The following code will bulk insert user account -> users table
+
+            const departments = await Department.findAll({
+              attributes: ['id', 'name']
+            });
+          
+            const roles = await Role.findAll({
+              attributes: ['id', 'name']
+            });
+
             for (const user in userData) {
+              const userRoleId = roles.find(role => role.name === userData[user].role).id;
+              const userDepartmentId = departments.find(department => department.name === userData[user].department).id;
+
               const password = generatePassword();
               const hash = await bcrypt.hash(password, 10);
               
               const creUser = {
                 fullName: userData[user].fullName,
-                roleId: roleId,
-                departmentId: departmentId,
+                roleId: userRoleId,
+                departmentId: userDepartmentId,
                 email: userData[user].email,
                 password: hash,
                 createdAt: new Date(),
@@ -878,37 +897,59 @@ exports.bulk_insert = async (req, res) => {
   }
 }
 
-function checkRoleDepartment(userData) {
+async function checkRoleDepartment(userData) {
   let roleId = 0;
   let departmentId = 0;
+
+  const departments = await Department.findAll({
+    attributes: ['id', 'name']
+  });
+
+  const roles = await Role.findAll({
+    attributes: ['id', 'name']
+  });
   for (const user in userData) {
-    switch(userData[user].role) {
-      case "Administrator": 
-        roleId = 3;
-        break;
-      case "QA Manager":
-        roleId = 2;
-        break;
-      case "Staff":
-        roleId = 1;
-        break;
-      default: 
-        roleId = 0;
+    for (const role in roles) {
+      if (userData[user].role == roles[role].name) {
+        roleId = roles[role].id;
+      }
     }
 
-    switch(userData[user].department) {
-      case "IT": 
-        departmentId = 1;
-        break;
-      case "BA":
-        departmentId = 2;
-        break;
-      case "GD":
-        departmentId = 3;
-        break;
-      default: 
-        departmentId = 0;
+    for (const department in departments) {
+      if (userData[user].department == departments[department].name) {
+        departmentId = departments[department].id;
+      }
     }
+    // for (const user in userData) {
+    //   switch(userData[user].role) {
+    //     case "QA Manager":
+    //       roleId = 4;
+    //       break;
+    //     case "Administrator": 
+    //       roleId = 3;
+    //       break;
+    //     case "QA Coordinator":
+    //       roleId = 2;
+    //       break;
+    //     case "Staff":
+    //       roleId = 1;
+    //       break;
+    //     default: 
+    //       roleId = 0;
+    //   }
+    // switch(userData[user].department) {
+    //   case "IT": 
+    //     departmentId = 1;
+    //     break;
+    //   case "BA":
+    //     departmentId = 2;
+    //     break;
+    //   case "GD":
+    //     departmentId = 3;
+    //     break;
+    //   default: 
+    //     departmentId = 0;
+    // }
   }
  
   return [roleId, departmentId];
@@ -916,8 +957,23 @@ function checkRoleDepartment(userData) {
 
 async function checkEmail(users) {
   let emailExist = false;
+  let duplicate = false;
+  let duplicateRow = [];
+  let duplicateMail = [];
   let email = [];
   let notValidMail = [];
+  let existMailRow = [];
+  // Check duplicate entry
+  for (const user in users) {
+    let rowNum = parseInt(user) + 2;
+    for (let i = 0; i < users.length; i++) {
+      if (users[user].email == users[i].email && user != i) {
+        duplicateMail.push(users[user].email);
+        duplicateRow.push(rowNum);
+        duplicate = true;
+      }
+    }
+  }
   for (let i = 0; i < users.length; i++) {
     let rowNum = i + 2;
     const checkUserMail = await User.findOne({
@@ -927,6 +983,7 @@ async function checkEmail(users) {
     });
     if (checkUserMail) {
       email.push(users[i].email);
+      row.push(rowNum);
       emailExist = true;
     }
     if (!validator.isEmail(users[i].email)) {
@@ -934,5 +991,5 @@ async function checkEmail(users) {
     }
   }
   
-  return [emailExist, email, notValidMail]
+  return [emailExist, email, notValidMail, existMailRow, duplicate, duplicateMail, duplicateRow]
 }

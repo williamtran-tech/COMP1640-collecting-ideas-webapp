@@ -21,8 +21,11 @@ router.delete('/topics/force-delete/:topicId', isAccessible, topic.force_delete)
 router.get('/topics/download-zip/:id', isManager, topic.zip_topic);
 // TOPICS - QA Coordinator
 router.get('/department/topics', isCoordinator, topic.list_all_topics_by_department);
-router.post('/topics', isCoordinator, topic.create_topic);
 router.get('/department/topics/:topicId', isCoordinator, topic.list_ideas_topic_by_department);
+router.post('/department/topics', isCoordinator, topic.create_topic);
+router.put('/department/topics/:topicId', isCoordinator, topic.update_topic);
+router.delete('/department/topics/:topicId', isCoordinator, topic.delete_topic);
+router.delete('/department/topics/force-delete/:topicId', isCoordinator, topic.force_delete);
 router.get('/department/users', isCoordinator, user.list_all_users_by_department);
 
 

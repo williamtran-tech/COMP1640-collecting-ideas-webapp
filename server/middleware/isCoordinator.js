@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
             else {
                 console.log(decoded.roleId);
                 res.status(401).json({
-                    error: "You not have permission to access"
+                    error: "You not have permission to access this section"
                 });
             }
         }
