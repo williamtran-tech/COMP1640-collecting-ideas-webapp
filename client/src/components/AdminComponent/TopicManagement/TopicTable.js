@@ -44,7 +44,7 @@ const TopicTable = () => {
     useEffect(() =>{
         setUpdated(false)
         const retrievelisttopics = () => {
-        handleApi.admin_getListTopic()
+        handleApi.admin_getListTopic(token&&token.roleId)
           .then(response => {
             setListTopic(response.data);
             console.log(response.data);
@@ -54,7 +54,6 @@ const TopicTable = () => {
           });
       };
         retrievelisttopics()
-        console.log(token)
         // eslint-disable-next-line 
       },[submited, updated, deleted])
     const handleChangePage = (event, newPage) => {
@@ -90,7 +89,7 @@ const TopicTable = () => {
         closureDate:moment(valueDate[0]).format('YYYY-MM-DD HH:mm:ss'),
         finalClosureDate: moment(valueDate[1]).format('YYYY-MM-DD HH:mm:ss'),
       }
-      handleApi.admin_create_idea(data)
+      handleApi.admin_create_idea(data, token.roleId)
         .then(response => {
           console.log(response.data);
           setSubmited(true)
@@ -106,7 +105,7 @@ const TopicTable = () => {
     const handleRowClick = (id_row) => () => {     
       setActiveRowId(id_row);
       setTopicId(id_row)
-      handleApi.admin_getIdeas_by_topic(id_row).then(
+      handleApi.admin_getIdeas_by_topic(id_row, token.roleId).then(
         response=>{
           setTopicDetail(response.data)
           console.log(response.data)
@@ -125,7 +124,7 @@ const TopicTable = () => {
       if(quantity>0){
         setConfirm(true)
       }else{
-        handleApi.admin_force_delete_topic(id).then(response =>{
+        handleApi.admin_force_delete_topic(id, token.roleId).then(response =>{
           console.log(response.data)
           setDeleted(!deleted)
         })
@@ -300,11 +299,10 @@ const TopicTable = () => {
                                 <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
-                                <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm}></DeleteTopicModal>
+                                <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm} token={token}></DeleteTopicModal>
                               </Box>
                             </TableCell> 
                           </TableRow>
-                          
                         ))}
                     </TableBody>
                   </Table>
@@ -323,7 +321,7 @@ const TopicTable = () => {
               </Grid>
               <Grid item xs={5} className='topic_preview' >
                 { topicDeatail && topicDeatail.info&& (
-                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setDisable={setDisable} setUpdated={setUpdated}></TopicInfo>
+                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setDisable={setDisable} setUpdated={setUpdated} token={token}></TopicInfo>
                 )
                 }
               </Grid>

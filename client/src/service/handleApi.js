@@ -33,30 +33,60 @@ const get_user_inf= async (id) =>{
 const update_avatar= async (id, data) =>{
   return axios.put(`/users/update-avatar/${id}`,data, config_form());
 };
-const admin_getListTopic = async () => {
-    return await axios.get("/management/topics",config());
+const admin_getListTopic = async (roleId) => {
+    if(roleId==2){
+      return await axios.get("/management/department/topics",config());
+    }else{
+      return await axios.get("/management/topics",config());
+    }
+   
   };
-const admin_create_idea= async (data) =>{
-    return axios.post(`/management/topics`, data, config());
+const admin_create_idea= async (data, roleId) =>{
+  if(roleId==2){
+    return axios.post(`/management/department/topics`, data, config());
+  }else{
+     return axios.post(`/management/topics`, data, config());
+  }
+   
 };
 
-const admin_getIdeas_by_topic= async id => {
-  return await axios.get(`/management/topics/${id}`, config());
+const admin_getIdeas_by_topic= async (id, roleId) => {
+  if(roleId==2){
+    return await axios.get(`/management/department/topics/${id}`, config());
+  }else{
+     return await axios.get(`/management/topics/${id}`, config());
+  }
+ 
 }
-const admin_update_topic= async (id,data) => {
-  return await axios.put(`/management/topics/${id}`,data, config());
+const admin_update_topic= async (id,data, roleId) => {
+  if(roleId==2){
+    return await axios.put(`/management/department/topics/${id}`,data, config());
+  }else{
+     return await axios.put(`/management/topics/${id}`,data, config());
+  }
+ 
 }
-const admin_delete_topic= async(id)=>{
+const admin_delete_topic= async(id, roleId)=>{
+
   return await axios.delete(`/management/topics/${id}`, config());
 }
-const admin_force_delete_topic= async(id)=>{
-  return await axios.delete(`/management/topics/force-delete/${id}`, config());
+const admin_force_delete_topic= async(id, roleId)=>{
+  if(roleId==2){
+    return await axios.delete(`/management/department/topics/force-delete/${id}`, config());
+  }else{
+     return await axios.delete(`/management/topics/force-delete/${id}`, config());
+  }
+ 
 }
 const admin_force_delete_ideas= async(id)=>{
   return await axios.delete(`management/ideas/${id}`, config());
 }
-const admin_get_uset_inf = async()=>{
-  return await axios.get(`/management/users`, config());
+const admin_get_uset_inf = async(roleId)=>{
+  if(roleId==2){
+    return await axios.get(`/management/department/users`, config());
+  }else{
+    return await axios.get(`/management/users`, config());
+  }
 }
 const admin_create_user = async(data)=>{
   return await axios.post(`/management/users`, data, config());

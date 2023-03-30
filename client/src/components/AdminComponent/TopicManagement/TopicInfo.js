@@ -4,7 +4,7 @@ import { Alert, Slide, Typography } from '@mui/material';
 import { useState } from 'react'
 import handleApi from '../../../service/handleApi';
 import moment from 'moment';
-const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
+const TopicInfo = ({inf, isDisable,setDisable, setUpdated, token}) => {
     const [values, setValues] = useState({});
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [checkDate, setCheckDate] = useState(false);
@@ -34,7 +34,7 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated}) => {
           if(data.closureDate>data.finalClosureDate){
             setCheckDate(true)
           }else{
-          handleApi.admin_update_topic(inf[0].id,data ).then( reponse=>{
+          handleApi.admin_update_topic(inf[0].id,data, token.roleId ).then( reponse=>{
                         console.log(reponse.data)
                         setUpdated(true)
                         setOpen(true)

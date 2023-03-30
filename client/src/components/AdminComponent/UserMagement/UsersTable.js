@@ -6,6 +6,7 @@ import UserProfile from './UserProfile';
 import CreateUserForm from './CreateUserForm';
 import DeleteUserModal from './DeleteUserModal';
 import '../../../style/userManagement.css'
+import checkToken from '../../../service/checkToken';
 const UsersTable = ({openModal,setOpenModal}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -18,12 +19,13 @@ const UsersTable = ({openModal,setOpenModal}) => {
 
   },[submited, statusFilter]) 
   
-  
+  const token= checkToken()
+  console.log(token)
   const handleStatusFilterChange = (event, newFilter) => {
     setStatusFilter(newFilter);
   };
   const get_user_table=()=>{
-          handleApi.admin_get_uset_inf().then(
+          handleApi.admin_get_uset_inf(token&&token.roleId).then(
           response =>{
               console.log(response.data)
               setListUsers(response.data)
@@ -106,10 +108,10 @@ useEffect(() => {
           <TableRow className='ideas_list'>
             <TableCell>ID</TableCell>
             <TableCell>User profile</TableCell>
-            <TableCell>Department</TableCell>
+           {(token&&token.roleId===3 || token.roleId===4) &&( <TableCell>Department</TableCell>)}
             <TableCell>Role</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell align='center'>Action</TableCell>
+            {(token&&token.roleId===3 || token.roleId===4) &&(  <TableCell align='center'>Action</TableCell>)}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -124,18 +126,18 @@ useEffect(() => {
                             <div className='user_email'>{user.email}</div>
                         </div>
                   </div>
-                
               </TableCell>
-              <TableCell>{user.Department.name}</TableCell>
+              {(token&&token.roleId===3 || token.roleId===4) &&(  <TableCell>{user.Department.name}</TableCell>)}
               <TableCell>{user.Role.name}</TableCell> 
               <TableCell className={user.isVerified  ? 'active' : 'inactive'}>
               {user.isVerified ? 'Active' : 'Inactive'}
               </TableCell>
+              {(token&&token.roleId===3 || token.roleId===4) &&(  
               <TableCell align='center'>
                 <Button size ='small'  onClick={()=>{handleOpenDrawer(user.id)}}>Edit</Button>
                 <Button size ='small'  >Ban</Button>
                 <Button size ='small'  onClick={()=>{handleOpenModal(user.id)}}>Delete</Button>
-              </TableCell>
+              </TableCell>)}
             </TableRow>
           ))}
         </TableBody>

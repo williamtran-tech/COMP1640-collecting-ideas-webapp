@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import handleApi from '../../../service/handleApi';
+import checkToken from '../../../service/checkToken';
 const DeleteTopicModal = ({setConfirm ,confirm, setDeleted, deleted, idTopic}) => {
+    const token= checkToken()
     const handleCloseModal = () => {
       setConfirm(false);
       };
     const deleteTopic = () => {
         setConfirm(false)
-        handleApi.admin_force_delete_topic(idTopic).then(response=>{
+        handleApi.admin_force_delete_topic(idTopic,token.roleId).then(response=>{
             console.log(response.data)
             setDeleted(!deleted)
         })
