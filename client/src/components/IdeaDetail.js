@@ -291,8 +291,8 @@ const IdeaDetail = ({token}) => {
                                         />
                                     </Tooltip>
                                         <Box flexGrow={1}>
-                                            <Input placeholder="Comment..." className='comment-input' sx={{borderBottomColor: "#6D9886"}} id='comment-input' name='content' value={comment.content} onChange={handleInputChange}/>
-
+                                            <Input placeholder="Comment..." className='comment-input' sx={{borderBottomColor: "#6D9886"}} id='comment-input' name='content' 
+                                            value={comment.content} onChange={handleInputChange} disabled={ideaDetail&& ideaDetail.topicInfo&& new Date(ideaDetail.topicInfo.finalClosureDate)< new Date()?true:false}/>
                                         </Box>
                                         <SpeedDial
                                             ariaLabel="SpeedDial basic example"
@@ -309,6 +309,10 @@ const IdeaDetail = ({token}) => {
                                             className="send_button"
                                         >
                                             <SpeedDialAction
+                                            disableHoverListener
+                                            disableFocusListener
+                                            disableInteractive
+                                            disableTouchListener
                                             className='send_option'
                                                 icon={
                                                     <>
