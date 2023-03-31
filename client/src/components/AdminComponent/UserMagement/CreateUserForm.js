@@ -77,6 +77,8 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
     formData.append("file", selectedFile);
     handleApi.QA_upload_bulk_user(formData).then(response=>{
       console.log(response.data)
+      setSubmited(!submited)
+      setOpenModal(false);
     })
   }
   return (
