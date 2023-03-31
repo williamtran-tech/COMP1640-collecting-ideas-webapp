@@ -7,16 +7,17 @@ const ForgotPassword = () => {
         email: ''
     });
     const [send, setSend] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
     handleApi.forgotPassword(email).then(response=>{
         console.log(response)
         setSend(true)
-        setError(false)
+        setError('')
     }).catch(error=>{
-        setSend(false)
-        setError(true)
+      console.log(error)
+      setSend(false)
+        setError(error.response.data.err)
     })
   };
   const emailOnchange=(event)=>{
@@ -55,10 +56,10 @@ const ForgotPassword = () => {
               )
           }
           {
-            error && (
+            error.length>0 && (
                 <Grid item xs={12}>
                 <Typography>
-                  Wrong email
+                 {error}
                 </Typography>
               </Grid>
             )   
