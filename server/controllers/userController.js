@@ -53,7 +53,6 @@ function generatePassword() {
 exports.verify = async (req, res) => {
   try {
     const token = req.query.token;
-    console.log(token);
     const decoded = jwt.verify(token, config.env.JWT_key);
 
     const user = await User.findOne({
@@ -63,18 +62,21 @@ exports.verify = async (req, res) => {
     });
     
     if (!user) {
-      throw new Error("User not found");
-    }
-    if (!user.isVerified) {
-      user.update({isVerified: true});
-      res.status(200).json({
-        msg: "Verify successfully"
-      })
+      res.status(404).json({
+        err: "User not found"
+      });
     } else {
-      res.status(401).json({
-        msg: "Verify already"
-      })
-    }    
+      if (!user.isVerified) {
+        user.update({isVerified: true});
+        res.status(200).json({
+          msg: "Verify successfully"
+        })
+      } else {
+        res.status(401).json({
+          msg: "Verify already"
+        })
+      }    
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -983,7 +985,7 @@ async function checkEmail(users) {
     });
     if (checkUserMail) {
       email.push(users[i].email);
-      row.push(rowNum);
+      existMailRow.push(rowNum);
       emailExist = true;
     }
     if (!validator.isEmail(users[i].email)) {
