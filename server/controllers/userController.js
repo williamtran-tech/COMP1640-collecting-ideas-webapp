@@ -773,7 +773,7 @@ exports.download_template = async (req, res) => {
 
     // Create an array of objects with the fields for the CSV file
     const data = [
-      {email: 'sample@gmail.com', fullName: 'Sample name', role: 'Staff', department: 'IT'}
+      {email: 'sample@gmail.com', fullName: 'Sample name', role: 'Staff', department: 'IT Department'}
     ];
 
 
@@ -809,7 +809,7 @@ exports.bulk_insert = async (req, res) => {
           console.log('CSV file Successfully processed');
 
           const [emailExist, email, notValidMail, existMailRow, duplicate, duplicateMail, duplicateRow] = await checkEmail(userData);
-          const [roleId, departmentId] = await checkRoleDepartment(userData);
+          const [invalidDepartment, invalidRole, departmentRow, roleRow] = await checkRoleDepartment(userData);
 
           if (emailExist) {
             res.status(406).json({
@@ -825,13 +825,15 @@ exports.bulk_insert = async (req, res) => {
             res.status(406).json({
               err: "Wrong type email from CSV file - Row " + notValidMail
             })
-          } else if (roleId == 0) {
+          } else if (invalidRole) {
             res.status(406).json({
-              err: "Role value is not accepted"
+              err: "Role value is not accepted",
+              "At row": roleRow
             })
-          } else if (departmentId == 0) {
+          } else if (invalidDepartment) {
             res.status(406).json({
-              err: "Department value is not accepted"
+              err: "Department value is not accepted",
+              "At row": departmentRow
             })
           } else if (duplicate) {
             res.status(406).json({
@@ -900,8 +902,12 @@ exports.bulk_insert = async (req, res) => {
 }
 
 async function checkRoleDepartment(userData) {
-  let roleId = 0;
   let departmentId = 0;
+  let roleId = 0;
+  let roleRow = [];
+  let departmentRow = [];
+  let invalidRole = false;
+  let invalidDepartment = false;
 
   const departments = await Department.findAll({
     attributes: ['id', 'name']
@@ -911,16 +917,25 @@ async function checkRoleDepartment(userData) {
     attributes: ['id', 'name']
   });
   for (const user in userData) {
+    let rowNum = parseInt(user) + 2;
     for (const role in roles) {
       if (userData[user].role == roles[role].name) {
         roleId = roles[role].id;
       }
+    }
+    if (roleId == 0) {
+      invalidRole = true;
+      roleRow.push(rowNum);
     }
 
     for (const department in departments) {
       if (userData[user].department == departments[department].name) {
         departmentId = departments[department].id;
       }
+    }
+    if (departmentId == 0) {
+      invalidDepartment = true;
+      departmentRow.push(rowNum);
     }
     // for (const user in userData) {
     //   switch(userData[user].role) {
@@ -954,7 +969,7 @@ async function checkRoleDepartment(userData) {
     // }
   }
  
-  return [roleId, departmentId];
+  return [invalidDepartment, invalidRole, departmentRow, roleRow];
 }
 
 async function checkEmail(users) {
