@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import handleApi from '../../../service/handleApi';
 import checkToken from '../../../service/checkToken';
-const DeleteTopicModal = ({setConfirm ,confirm, setDeleted, deleted, idTopic}) => {
+const DeleteTopicModal = ({setConfirm ,confirm, setDeleted, deleted, idTopic, setOpenSnackBar}) => {
     const token= checkToken()
     const handleCloseModal = () => {
       setConfirm(false);
@@ -12,6 +12,10 @@ const DeleteTopicModal = ({setConfirm ,confirm, setDeleted, deleted, idTopic}) =
         handleApi.admin_force_delete_topic(idTopic,token.roleId).then(response=>{
             console.log(response.data)
             setDeleted(!deleted)
+            setOpenSnackBar({
+              status:true,
+              message:"Deleted successfully"
+            })
         })
     }
   return (

@@ -5,10 +5,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import handleApi from '../../../service/handleApi';
 
-const DeleteUserModal = ({openDelete, setOpenDelete,id, setSubmited, submited}) => {
+const DeleteUserModal = ({openDelete, setOpenDelete,id, setSubmited, submited, setOpenSnackBar}) => {
     const handleDelete = ()=>{
         handleApi.admin_delete_user(id).then(response=>{
             console.log(response.data)
+             setOpenSnackBar({
+              status: true,
+              message:"Delete user successfully"
+            })
             setSubmited(!submited)
         })
         setOpenDelete(false);

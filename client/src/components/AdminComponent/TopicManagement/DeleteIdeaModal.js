@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import handleApi from '../../../service/handleApi';
-const DeleteIdeaModal = ({id, openDeleteModal, setOpenDeleteModal, setUpdated, updated, idea, setIdea}) => {
+const DeleteIdeaModal = ({id, openDeleteModal, setOpenDeleteModal, setUpdated, updated, idea, setIdea, setOpenSnackBar}) => {
     const handleClose = () => {
         setOpenDeleteModal(false);
       };
@@ -14,6 +14,10 @@ const DeleteIdeaModal = ({id, openDeleteModal, setOpenDeleteModal, setUpdated, u
             console.log(response.data)
             setOpenDeleteModal(false);
             setUpdated(!updated)
+            setOpenSnackBar({
+              status:true,
+              message:"Deleted successfully"
+            })
             
         })
       setIdea(idea.filter(idea => idea.ideaId !== id));

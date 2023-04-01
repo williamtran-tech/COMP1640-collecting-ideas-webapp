@@ -7,7 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Box, Button, IconButton, Grid, Typography, Dialog, Popover, DialogContent,DialogTitle, TextField } from '@material-ui/core';
+import { Box, Button, IconButton, Grid, Typography, Dialog, Popover, DialogContent,DialogTitle, TextField, Snackbar, Slide } from '@material-ui/core';
+import { Alert } from '@mui/material';
 import { Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -33,6 +34,10 @@ const TopicTable = () => {
     const [disable, setDisable]= useState(true)
     const [deleted, setDeleted]= useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
+    const [openSnackBar, setOpenSnackBar]= useState({
+      status: false,
+      message:""
+    })
     const [formTopic, setFormTopic] = useState({
       name: '',
       description: '',
@@ -93,6 +98,10 @@ const TopicTable = () => {
         .then(response => {
           console.log(response.data);
           setSubmited(true)
+          setOpenSnackBar({
+            status:true,
+            message:"Create new topic successfully"
+          })
         })
         .catch(e => {
           console.log(e);
@@ -130,7 +139,6 @@ const TopicTable = () => {
         })
       }
     }
-    
     const donwloadTopic = ()=>{
         handleApi.QA_dowload_topic(topicId).then(response=>{
           
@@ -158,6 +166,12 @@ const TopicTable = () => {
       setAnchorEl(null);
   };
   const openPopover = Boolean(anchorEl);
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar({
+      status: false,
+      message:""
+    })
+  };
   return (
     <div> 
        <Paper className='header_admin'>
@@ -299,7 +313,7 @@ const TopicTable = () => {
                                 <IconButton size="small" aria-label="delete" onClick={()=>{confirmDelete(topic.id, topic.idea_quantity)}}>
                                   <DeleteIcon fontSize="small" className='icon-delete'/> 
                                 </IconButton>
-                                <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm} token={token}></DeleteTopicModal>
+                                <DeleteTopicModal setConfirm={setConfirm} setDeleted={setDeleted} deleted = {deleted} idTopic={topic.id} confirm={confirm} token={token}  setOpenSnackBar={setOpenSnackBar}></DeleteTopicModal>
                               </Box>
                             </TableCell> 
                           </TableRow>
@@ -321,13 +335,13 @@ const TopicTable = () => {
               </Grid>
               <Grid item xs={5} className='topic_preview' >
                 { topicDeatail && topicDeatail.info&& (
-                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setDisable={setDisable} setUpdated={setUpdated} token={token}></TopicInfo>
+                   <TopicInfo inf={topicDeatail.info} isDisable={disable} setDisable={setDisable} setUpdated={setUpdated} token={token} setOpenSnackBar={setOpenSnackBar}></TopicInfo>
                 )
                 }
               </Grid>
               <Grid item xs={12} >
               { topicDeatail && topicDeatail.ideas&& (
-                  <TableIdeas ideas={topicDeatail.ideas}  setUpdated={setUpdated} updated={updated}></TableIdeas>
+                  <TableIdeas ideas={topicDeatail.ideas}  setUpdated={setUpdated} updated={updated} setOpenSnackBar={setOpenSnackBar}></TableIdeas>
                 )
                 }
           </Grid>
@@ -352,6 +366,18 @@ const TopicTable = () => {
         
         </Popover>
         </Paper>
+        <Snackbar
+         open={openSnackBar.status}
+         onClose={handleCloseSnackBar}
+         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+         autoHideDuration={2000}
+         TransitionComponent={Slide}
+         TransitionProps={{ direction: 'left' }}
+         >
+            <Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>
+                {openSnackBar.message}
+            </Alert>
+        </Snackbar>
     </div>
   )
 }

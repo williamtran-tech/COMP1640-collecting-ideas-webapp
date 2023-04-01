@@ -4,11 +4,10 @@ import { Alert, Slide, Typography } from '@mui/material';
 import { useState } from 'react'
 import handleApi from '../../../service/handleApi';
 import moment from 'moment';
-const TopicInfo = ({inf, isDisable,setDisable, setUpdated, token}) => {
+const TopicInfo = ({inf, isDisable,setDisable, setUpdated, token,setOpenSnackBar}) => {
     const [values, setValues] = useState({});
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [checkDate, setCheckDate] = useState(false);
-    const [open, setOpen]= useState(false)
     useEffect(()=>{
         setValues({
             name: inf[0].name,
@@ -37,17 +36,17 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated, token}) => {
           handleApi.admin_update_topic(inf[0].id,data, token.roleId ).then( reponse=>{
                         console.log(reponse.data)
                         setUpdated(true)
-                        setOpen(true)
                         setDisable(true)
                         setButtonDisabled(true)
                         setCheckDate(false)
+                        setOpenSnackBar({
+                          status: true,
+                          message:"Updated successfully"
+                        })
             })
           }
           
       }
-      const handleClose = () => {
-        setOpen(false)
-      };
   return (
     <div>
        <form className='form_update'>
@@ -118,18 +117,6 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated, token}) => {
           Update
         </Button>
         </form>
-        <Snackbar
-         open={open}
-         onClose={handleClose}
-         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-         autoHideDuration={2000}
-         TransitionComponent={Slide}
-        TransitionProps={{ direction: 'left' }}
-         >
-            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                This is a success message!
-            </Alert>
-        </Snackbar>
     </div>
   )
 }

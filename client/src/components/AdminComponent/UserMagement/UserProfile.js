@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Avatar, TextField, Typography , Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import handleApi from '../../../service/handleApi';
-const UserProfile = ({userInf, department, role, setOpenDrawer, setSubmited, submited}) => {
+const UserProfile = ({userInf, department, role, setOpenDrawer, setSubmited, submited, setOpenSnackBar}) => {
     console.log(userInf)
     const [user, setUser]= useState({
         fulleName: userInf.fullName,
@@ -31,6 +31,10 @@ const UserProfile = ({userInf, department, role, setOpenDrawer, setSubmited, sub
         console.log(response.data)
         setOpenDrawer(false)
         setSubmited(!submited)
+        setOpenSnackBar({
+          status:true,
+          message:"Update user successfully"
+        })
       })
   }
   return (

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import {Drawer, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button, Tabs, Tab } from '@mui/material';
+import {Drawer, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button, Tabs, Tab, Alert } from '@mui/material';
+import { Snackbar, Slide } from '@material-ui/core';
 import { useState } from 'react';
 import handleApi from '../../../service/handleApi';
 import UserProfile from './UserProfile';
@@ -14,6 +15,16 @@ const UsersTable = ({openModal,setOpenModal}) => {
   const [listUsers, setListUsers]=useState([])
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [openSnackBar, setOpenSnackBar]= useState({
+    status: false,
+    message:""
+  })
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar({
+      status: false,
+      message:""
+    })
+  };
   useEffect(()=>{
       get_user_table()
 
@@ -75,8 +86,6 @@ useEffect(() => {
     setIdDelete(id)
     setOpenDelete(true)
   }
-
-
   // const users = listUsers && listUsers.users;
   // const filteredUsers = users && users.filter((user) => {
   //   if (statusFilter === 'active') {
@@ -87,8 +96,6 @@ useEffect(() => {
   //     return true;
   //   }
   // });
-
-
   return (
     <>
     <Tabs
@@ -153,10 +160,22 @@ useEffect(() => {
     />
     </TableContainer>
     <Drawer anchor='right' open={openDrawer} onClose={handleCloseDrawer} >
-        <UserProfile userInf={userInf} department={listUsers.departments} role={listUsers.roles} setOpenDrawer={setOpenDrawer} setSubmited={setSubmited} submited={submited}></UserProfile>
+        <UserProfile userInf={userInf} department={listUsers.departments} role={listUsers.roles} setOpenDrawer={setOpenDrawer} setSubmited={setSubmited} submited={submited} setOpenSnackBar={setOpenSnackBar}></UserProfile>
     </Drawer> 
-    <CreateUserForm openModal={openModal} setOpenModal={setOpenModal} department={listUsers.departments} role={listUsers.roles} setSubmited={setSubmited} submited={submited}></CreateUserForm>
-    <DeleteUserModal openDelete={openDelete} setOpenDelete={setOpenDelete} id={idDelete} setSubmited={setSubmited} submited={submited}> </DeleteUserModal>
+    <CreateUserForm openModal={openModal} setOpenModal={setOpenModal} department={listUsers.departments} role={listUsers.roles} setSubmited={setSubmited} submited={submited} setOpenSnackBar={setOpenSnackBar}></CreateUserForm>
+    <DeleteUserModal openDelete={openDelete} setOpenDelete={setOpenDelete} id={idDelete} setSubmited={setSubmited} submited={submited} setOpenSnackBar={setOpenSnackBar}> </DeleteUserModal>
+    <Snackbar
+         open={openSnackBar.status}
+         onClose={handleCloseSnackBar}
+         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+         autoHideDuration={2000}
+         TransitionComponent={Slide}
+         TransitionProps={{ direction: 'left' }}
+         >
+            <Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>
+                {openSnackBar.message}
+            </Alert>
+    </Snackbar>
     </>
   )
 }

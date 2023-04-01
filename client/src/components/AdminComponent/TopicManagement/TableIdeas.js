@@ -5,7 +5,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useState } from 'react';
 import { handle } from 'express/lib/router';
 import DeleteIdeaModal from './DeleteIdeaModal';
-const TableIdeas = ({ideas, setUpdated, updated}) => {
+const TableIdeas = ({ideas, setUpdated, updated, setOpenSnackBar}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
@@ -99,7 +99,7 @@ const TableIdeas = ({ideas, setUpdated, updated}) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          <DeleteIdeaModal setOpenDeleteModal={setOpenDeleteModal} openDeleteModal={openDeleteModal} id={id} setUpdated={setUpdated} updated={updated}  idea={idea} setIdea={setIdea}></DeleteIdeaModal>
+          <DeleteIdeaModal setOpenDeleteModal={setOpenDeleteModal} openDeleteModal={openDeleteModal} id={id} setUpdated={setUpdated} updated={updated}  idea={idea} setIdea={setIdea} setOpenSnackBar={setOpenSnackBar}></DeleteIdeaModal>
     </>
   )
 }
