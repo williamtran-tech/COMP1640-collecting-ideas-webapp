@@ -7,6 +7,7 @@ import UserRanking from './UserRanking'
 import IdeaRanking from './IdeaRanking'
 import CategoryIdea from './CategoryIdea'
 import TopicIdea from './TopicIdea'
+import AnonymousIdeas from './AnonymousIdeas'
 const StatisticLayout = () => {
     const [data, setData]= useState([])
     useEffect(()=>{
@@ -38,17 +39,22 @@ const StatisticLayout = () => {
                         )
                     }
                     </Paper>
-                </Grid>
-                <Grid item xs={6} className="chart_container2">
-                    <Paper className="chart_item">
+                    <Paper className="chart_item" style={{marginTop: 10}}>
                         {
                         data && data.top_like_ideas&&(
                            <IdeaRanking ranking={data.top_like_ideas}></IdeaRanking>
                         )
                     }
                     </Paper>
+                    <Paper className="chart_item" style={{marginTop: 10}}>
+                        {
+                        data && data.anonymousIdeas&&(
+                           <AnonymousIdeas anonymousIdeas={data.anonymousIdeas}></AnonymousIdeas>
+                        )
+                    }
+                    </Paper>
                 </Grid>
-                <Grid item xs={7} className="chart_container1">
+                <Grid item xs={6} className="chart_container1">
                     <Paper className="chart_item">
                         {
                         data && data.topics&&(
@@ -56,9 +62,7 @@ const StatisticLayout = () => {
                         )
                     }
                     </Paper>
-                </Grid>
-                <Grid item xs={5} className="chart_container2">
-                    <Paper className="chart_item">
+                    <Paper className="chart_item" style={{marginTop: 10}}>
                         {
                         data && data.categories&&(
                            <CategoryIdea categories_idea={data.categories}></CategoryIdea>
@@ -66,6 +70,15 @@ const StatisticLayout = () => {
                     }
                     </Paper>
                 </Grid>
+                {/* <Grid item xs={5} className="chart_container2">
+                    <Paper className="chart_item">
+                        {
+                        data && data.categories&&(
+                           <CategoryIdea categories_idea={data.categories}></CategoryIdea>
+                        )
+                    }
+                    </Paper>
+                </Grid> */}
             </Grid>
         
     </div>
