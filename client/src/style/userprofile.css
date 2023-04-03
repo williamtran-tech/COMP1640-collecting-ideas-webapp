@@ -25,3 +25,8 @@ margin-bottom: -50px;
 .user_table{
     padding: 0px 20px;
 }
+.reset_password{
+    width: 40%;
+    background-color: #fff ;
+    padding: 10px;
+}

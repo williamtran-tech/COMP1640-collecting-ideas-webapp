@@ -1,5 +1,5 @@
-import { Box, Grid, Avatar, Typography, Tabs, Tab, Button, Badge, IconButton } from '@material-ui/core'
-import { Stack } from '@mui/material'
+import { Box, Grid, Avatar, Typography, Tabs, Tab, Button, Badge, IconButton, Modal, Snackbar, Slide } from '@material-ui/core'
+import { Stack, Alert } from '@mui/material'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import '../style/userprofile.css'
@@ -14,8 +14,10 @@ import UploadProfilePic from './UploadProfilePic'
 const UserProfile = () => {
   const [tabValue, setTabValue] = useState(0);
   const [openModal, setOpenModal] = useState(false)
+  const [openModalForgot, setOpenModalForgot] = useState(false)
   const [profile, setProfile] = useState([])
   const [uploaded, setUploaded] = useState(false)
+  const [openSnackBar, setOpenSnackBar]= useState(false)
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -32,6 +34,22 @@ const UserProfile = () => {
   }, [uploaded])
   const handleOpen = () =>{
     setOpenModal(true)
+  }
+  const handleOpenForgot = () =>{
+    setOpenModalForgot(true)
+  }
+  const changePassword=(email)=>{
+    handleApi.forgotPassword({email:email}).then(response=>{
+      console.log(response.data)
+      setOpenModalForgot(false);
+      setOpenSnackBar(true)
+    })
+  }
+  const handleCloseForgot = () => {
+    setOpenModalForgot(false);
+  };
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar(false)
   }
   return (
     <div> 
@@ -67,13 +85,10 @@ const UserProfile = () => {
                 </Typography> 
                </Stack>
                 <div>
-                    <Stack direction={'row'} spacing={1}> 
-                    <Typography variant="subtitle1" gutterBottom>
-                    </Typography>
-                    <Button variant="contained" size="small">
+
+                    <Button variant="contained" size="small" style={{backgroundColor:'#6D9886'}} onClick={handleOpenForgot}>
                       Change Password
                     </Button>
-                    </Stack>
                     <Typography variant="body1" gutterBottom>
                       Department: {profile.info.Department.name}
                     </Typography>
@@ -106,6 +121,35 @@ const UserProfile = () => {
         {
         profile&& profile.info && (<UploadProfilePic openModal={openModal} setOpenModal={setOpenModal} id={decodedToken.userId} uploaded={uploaded} setUploaded={setUploaded} avatar={profile.info.profileImage}></UploadProfilePic>)
         }
+        <Modal
+            open={openModalForgot}
+            onClose={handleCloseForgot}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+            <Box className='reset_password' >
+                <Stack spacing={2}>
+                  <Typography>If you want to reset password, we will send you an email with a link to confirm new password</Typography>
+                  <Stack direction={"row"} spacing={1}>
+                      <Button style={{backgroundColor:'#6D9886'}} onClick={()=>{changePassword(profile && profile.info &&profile.info.email)}}>Ok</Button>
+                      <Button onClick={handleCloseForgot}>Cancel</Button>
+                  </Stack>
+                </Stack>
+            </Box>
+        </Modal>
+        <Snackbar
+         open={openSnackBar}
+         onClose={handleCloseSnackBar}
+         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+         autoHideDuration={2000}
+         TransitionComponent={Slide}
+         TransitionProps={{ direction: 'left' }}
+         >
+            <Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>
+                Email sent
+            </Alert>
+        </Snackbar>
       </Box>
     </div>
   )

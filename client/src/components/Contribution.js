@@ -27,9 +27,10 @@ const Contribution = ({contribution}) => {
                         }}
                         >
                         {/* <TableCell>ID</TableCell> */}
+                        <TableCell>Topic</TableCell>
                         <TableCell>Idea Name</TableCell>
                         <TableCell>Category</TableCell>
-                        <TableCell>Topic</TableCell>
+                        <TableCell>Views</TableCell>
                         <TableCell>Comment</TableCell>
                         <TableCell>Like</TableCell>
                         <TableCell>Dislike</TableCell>
@@ -42,18 +43,17 @@ const Contribution = ({contribution}) => {
                         .map(contribution => (
                           <TableRow hover role="checkbox" tabIndex={-1}
                           className="table-row"
-                         >
+                         >  
+                            <Link to={`/topics/${contribution.topicId}`} style={{ textDecoration: 'none' }}>
+                            {contribution.topic}
+                            </Link>
                             <TableCell>
                             <Link to={`/ideas/${contribution.ideaId}` } style={{ textDecoration: 'none' }}>
                             {contribution.idea}
                             </Link>
                             </TableCell>
                             <TableCell>{contribution.category}</TableCell>
-                            <TableCell>
-                            <Link to={`/topics/${contribution.topicId}`} style={{ textDecoration: 'none' }}>
-                            {contribution.topic}
-                            </Link>
-                            </TableCell> 
+                            <TableCell>{contribution.views}</TableCell>
                             <TableCell>{contribution.comments}</TableCell>
                             <TableCell>{contribution.likes}</TableCell>
                             <TableCell>{contribution.dislikes}</TableCell>

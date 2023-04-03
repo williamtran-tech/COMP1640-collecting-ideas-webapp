@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography, Stack, Chip, Avatar, Tooltip, Divider,Input, IconButton, AvatarGroup } from '@mui/material'
+import { Box, Grid, Paper, Typography, Stack, Chip, Avatar, Tooltip, Divider,Input, IconButton, AvatarGroup,Breadcrumbs } from '@mui/material'
 import Moment from "moment"
 import CreateIcon from '@mui/icons-material/Create';
 import ThumbDown from '@mui/icons-material/ThumbDown';
@@ -152,11 +152,31 @@ const IdeaDetail = ({token}) => {
             setcomment(initialideaState)
             }
       };
-    
   return (
     <Box>
         <Grid container justifyContent="center">
             <Grid item xs={11} md={6}>
+            <Breadcrumbs sx={{color:"black"}} separator="›" className='breadcrumbs' >
+                                    <Link underline="hover" key="1"  to="/" style={{color: "black"}}>
+                                        All topic
+                                    </Link>
+                                    <Link
+                                    underline="hover"
+                                    key="2"
+                                    style={{color: "black"}}
+                                    to={`/topics/${ideaDetail.topicInfo.id}`}
+                                    >
+                                        {ideaDetail.topicInfo.name}
+                                    </Link>
+                                    <Link
+                                    underline="hover"
+                                    key="2"
+                                    style={{color: "black"}}
+                                    to={`/ideas/${ideaDetail.idea[0].id}`}
+                                    >
+                                        {ideaDetail.idea[0].name}
+                                    </Link>
+                                </Breadcrumbs>
             <Paper elevation={4} className="idea" key={ideaDetail.idea[0].id}>
                     <Grid container>
                         <Grid item className='header-idea' xs={12}>

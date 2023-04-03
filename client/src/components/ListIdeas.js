@@ -1,4 +1,4 @@
-import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch, List, ListItemButton, ListSubheader, ListItem,ListItemText, Collapse, ListItemAvatar} from '@mui/material'
+import { Box, Grid, Avatar,Typography, Divider,FormControlLabel, FormControl, Checkbox,InputLabel, Select, MenuItem, Autocomplete, TextField, Paper,Stack, Chip ,Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Switch, List, ListItemButton, ListSubheader, ListItem,ListItemText, Collapse, ListItemAvatar, Breadcrumbs} from '@mui/material'
 import React, { useRef } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -216,9 +216,24 @@ const ListIdeas = () => {
              {preIdeaData.info?.map(topic=>(
             <Grid container  className='header' key={topic.id}>
                 <Grid item xs={12}  className='header-item'>
-                            <Typography variant='h3' fontWeight="fontWeightBold" color="white" >
-                                {topic.name}
-                            </Typography>
+                           <Stack sx={{ alignItems: "center"}}>
+                                <Typography variant='h3' fontWeight="fontWeightBold" color="white" >
+                                    {topic.name}
+                                </Typography>
+                                <Breadcrumbs sx={{color:"white"}} separator="›" >
+                                    <Link underline="hover" key="1"  to="/" style={{color: "white"}}>
+                                        All topic
+                                    </Link>
+                                    <Link
+                                    underline="hover"
+                                    key="2"
+                                    style={{color: "white"}}
+                                    >
+                                        {topic.name}
+                                    </Link>
+                                </Breadcrumbs>
+                           </Stack>
+                            
                 </Grid>
             </Grid>
              ))}
