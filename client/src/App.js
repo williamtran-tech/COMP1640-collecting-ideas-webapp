@@ -48,16 +48,22 @@ function App() {
   return (
         <Routes>
           {userRole === 2 || userRole === 3|| userRole === 4 ? (
-          <><Route path="/" element={<Layout userRole={userRole}></Layout>}>
-            <Route path="/" element={<TopicTable></TopicTable>} />
+          <>
+          <Route path="/"  element={<Layout userRole={userRole}></Layout>}>
+            <Route path="/" index element={<TopicTable></TopicTable>} />
             <Route path="/users" element={<UserManagement></UserManagement>} />
             <Route path="/statistic" element={<StatisticLayout></StatisticLayout>} />
             <Route path="/category" element={<CategoryManagement></CategoryManagement>} />
             <Route path="/department" element={<DepartmentManagement></DepartmentManagement>} />
+            
           </Route>
+            <Route path="/topics" element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
+            <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>
+            <Route path="/ideas/:id" element={(<IdeaDetailPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeaDetailPage>)}></Route>
           </>
           ) : 
-          ( <><Route path="/" index element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
+          ( <>
+          <Route path="/topics"  element={<LandingPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></LandingPage>}></Route>
           <Route path="/topics/:id" element={<IdeasPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeasPage>}></Route>
           <Route path="/user" element={<User isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></User>}></Route>
           <Route path="/ideas/:id" element={(<IdeaDetailPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></IdeaDetailPage>)}></Route>

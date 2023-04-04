@@ -157,7 +157,7 @@ const IdeaDetail = ({token}) => {
         <Grid container justifyContent="center">
             <Grid item xs={11} md={6}>
             <Breadcrumbs sx={{color:"black"}} separator="›" className='breadcrumbs' >
-                                    <Link underline="hover" key="1"  to="/" style={{color: "black"}}>
+                                    <Link underline="hover" key="1"  to="/topics" style={{color: "black"}}>
                                         All topic
                                     </Link>
                                     <Link

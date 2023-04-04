@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Box, Button, IconButton, Grid, Typography, Dialog, Popover, DialogContent,DialogTitle, TextField, Snackbar, Slide } from '@material-ui/core';
+import { Box, Button, IconButton, Grid, Typography, Dialog, Popover, DialogContent,DialogTitle, TextField, Snackbar, Slide, Select, MenuItem } from '@material-ui/core';
 import { Alert } from '@mui/material';
 import { Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -38,14 +38,16 @@ const TopicTable = () => {
       status: false,
       message:""
     })
+    const token = checkToken()
     const [formTopic, setFormTopic] = useState({
       name: '',
       description: '',
+      departmentId: token.departmentId,
       closureDate: '',
       finalClosureDate: '',
     });
     const [valueDate, onChange] = useState([new Date(), new Date()]);
-    const token = checkToken()
+   
     useEffect(() =>{
         setUpdated(false)
         const retrievelisttopics = () => {
@@ -90,7 +92,7 @@ const TopicTable = () => {
       const data={
         name: formTopic.name,
         description: formTopic.description,
-        "departmentId": 3,
+        departmentId: formTopic.departmentId,
         closureDate:moment(valueDate[0]).format('YYYY-MM-DD HH:mm:ss'),
         finalClosureDate: moment(valueDate[1]).format('YYYY-MM-DD HH:mm:ss'),
       }
@@ -105,6 +107,10 @@ const TopicTable = () => {
         })
         .catch(e => {
           console.log(e);
+          setOpenSnackBar({
+            status:true,
+            message: e.response.data.err
+          })
         });
         setSubmited(false)
         setOpen(false);
@@ -195,6 +201,30 @@ const TopicTable = () => {
                       format="yyyy-MM-dd HH:mm"
                     />
                     </Grid>
+                    {
+                      token&&token.roleId!=2&&(
+                        <Grid item xs={12}>
+                          <TextField
+                              variant="standard"
+                              fullWidth
+                              size='small'
+                              select
+                              label="Department"
+                              name="departmentId"
+                              value={formTopic.departmentId}
+                              onChange={handleTopicChange}
+                              required
+                              >
+                              {
+                                  listTopic && listTopic.departments.map(department=>(
+                                  <MenuItem value={department.id} >{department.name}</MenuItem>
+                                  ))
+                              }
+                            </TextField>
+                        </Grid>
+                      )
+                    }
+                    
                     <Grid item xs={12}>
                       <TextField
                         required

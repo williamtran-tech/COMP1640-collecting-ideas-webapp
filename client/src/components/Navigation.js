@@ -9,34 +9,52 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../style/navbar.css'
 import { IconButton } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ChangeCircleSharpIcon from '@mui/icons-material/ChangeCircleSharp';
+import checkToken from '../service/checkToken';
 
 const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
     const navigate= useNavigate()
+    const decodedToken = checkToken()
     const logout= () => {
         navigate("/login")
         localStorage.clear()
         setIsLoggedIn(false)
     }
+    const viewAs= () => {
+        navigate("/")
+    }
     return (
             <Grid container spacing={2} className="nav-container">
                 <Grid className='navbar-item' item xs={6} md={3} >
-                    <Link to="/">
+                    <Link to="/topics">
                             <img className ='logo' src={logo} alt="" />
                     </Link>
                 </Grid>
                 <Grid className='navbar-item' item xs={6} md={9}>           
                     <div className='item-right'>
-                            <IconButton onClick={logout}>
+                           
+                    {
+                        decodedToken&&decodedToken.roleId ===1&&(
+                            <Link to='/user'>
+                                <IconButton>
+                                    <AccountCircleIcon className='icon'/>
+                                </IconButton>
+                            </Link>
+                        )
+                    }
+                    {
+                        decodedToken&&decodedToken.roleId !=1&&(
+                            <IconButton onClick={viewAs}>
                                 {/* <Badge badgeContent={4} color="error">
                                     <MailIcon className='icon'/>
                                 </Badge> */}
-                                <LogoutIcon className='icon'></LogoutIcon>
+                                <ChangeCircleSharpIcon className='icon'></ChangeCircleSharpIcon>
                             </IconButton>
-                    <Link to='/user'>
-                        <IconButton>
-                            <AccountCircleIcon className='icon'/>
-                        </IconButton>
-                    </Link>
+                        )
+                    } 
+                    <IconButton onClick={logout}>
+                                <LogoutIcon className='icon'></LogoutIcon>
+                    </IconButton>
                     </div>
                 </Grid>
             </Grid>

@@ -119,7 +119,7 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
         </Grid>
   )
 }else{
-    return <Navigate to="/"></Navigate>
+    return <Navigate to="/topics"></Navigate>
 }
 }
 export default LoginPage

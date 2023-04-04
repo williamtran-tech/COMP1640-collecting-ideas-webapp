@@ -16,6 +16,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import { useNavigate } from "react-router-dom";
 import '../../style/admin.css'
 import LockIcon from '@mui/icons-material/Lock';
+import ChangeCircleSharpIcon from '@mui/icons-material/ChangeCircleSharp';
 const AdminNavbar = ({userRole}) => {
   const [value, setValue] = useState(0);
   const [disable, setDisable] = useState(false);
@@ -31,9 +32,12 @@ const AdminNavbar = ({userRole}) => {
   
 const navigate = useNavigate();
   
-  const logout= () => {
+const logout= () => {
     navigate("/login")
     localStorage.clear()
+}
+const viewAs= () => {
+    navigate("/topics")
 }
 const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -66,6 +70,9 @@ const handleChange = (event, newValue) => {
                 <MailIcon className='icon'/>
             </Badge> */}
             <LogoutIcon className='icon'></LogoutIcon>
+        </IconButton>
+        <IconButton onClick={viewAs}>
+            <ChangeCircleSharpIcon className='icon'></ChangeCircleSharpIcon>
         </IconButton>
       </Grid>
     </Box>

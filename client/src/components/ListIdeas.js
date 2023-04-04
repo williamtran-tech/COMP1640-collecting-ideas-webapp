@@ -221,7 +221,7 @@ const ListIdeas = () => {
                                     {topic.name}
                                 </Typography>
                                 <Breadcrumbs sx={{color:"white"}} separator="›" >
-                                    <Link underline="hover" key="1"  to="/" style={{color: "white"}}>
+                                    <Link underline="hover" key="1"  to="/topics" style={{color: "white"}}>
                                         All topic
                                     </Link>
                                     <Link
