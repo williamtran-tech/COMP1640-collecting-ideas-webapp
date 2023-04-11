@@ -175,7 +175,7 @@ const ListIdeas = () => {
         });
     };
     
-   
+   console.log(decodedToken)
     const handleSubmitIdea=(event) =>{
         event.preventDefault()
         const formData = new FormData();
@@ -355,7 +355,7 @@ const ListIdeas = () => {
                                 <Stack direction="row" className='user-inf-form'  spacing={1}>
                                     <Avatar
                                     alt="T"
-                                    src="https://b.fssta.com/uploads/application/soccer/headshots/885.vresize.350.350.medium.14.png"
+                                    src={`http://localhost:5050/${decodedToken.imagePath}`}
                                     sx={{ width: 30, height: 30 }}
                                     />
                                     <Typography variant="body2">{decodedToken.name}</Typography>

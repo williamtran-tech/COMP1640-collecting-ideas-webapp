@@ -8,6 +8,7 @@ import IdeaRanking from './IdeaRanking'
 import CategoryIdea from './CategoryIdea'
 import TopicIdea from './TopicIdea'
 import AnonymousIdeas from './AnonymousIdeas'
+import IdeaNoComment from './IdeaNoComment'
 const StatisticLayout = () => {
     const [data, setData]= useState([])
     useEffect(()=>{
@@ -55,13 +56,21 @@ const StatisticLayout = () => {
                     </Paper>
                 </Grid>
                 <Grid item xs={6} className="chart_container1">
-                    <Paper className="chart_item">
+                    <Paper className="chart_item" >
                         {
                         data && data.topics&&(
                             <TopicIdea topics_idea={data.topics}></TopicIdea>
                         )
                     }
                     </Paper>
+                    <Paper className="chart_item" style={{marginTop: 10}}>
+                        {
+                        data && data.ideaWithoutComment&&(
+                            <IdeaNoComment ideaWithoutComment={data.ideaWithoutComment}></IdeaNoComment>
+                        )
+                    }
+                    </Paper>
+
                     <Paper className="chart_item" style={{marginTop: 10}}>
                         {
                         data && data.categories&&(
