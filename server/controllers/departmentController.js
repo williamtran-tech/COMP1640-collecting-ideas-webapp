@@ -4,7 +4,9 @@ const models = require('./../db/models');
 const User = models.User;
 const Department = models.Department;
 const Role = models.Role;
+const Idea = models.Idea;
 const validation = require('./../middleware/validateInput');
+const { removeAssociate } = require('./ideaController.js');
 
 exports.list_all_departments = async (req, res) => {
     try {
@@ -218,6 +220,64 @@ exports.delete_department = async (req, res) => {
     }
 }
 
+exports.force_delete = async (req, res) => {
+    try {
+        const department = await Department.findOne({
+            where: {
+                "id": req.params.id
+            }
+        })
+        if (!department){
+            res.status(404).json({
+                msg: "Not Found Department"
+            })
+        }
+        else {
+            // getting all user of department
+            const users = await User.findAll({
+                where: {
+                    "departmentId": req.params.id
+                }
+            })
+            console.log("asdasd", users);
+            // delete all user of department
+            for (let i = 0; i < users.length; i++){
+                // find all idea of user
+                const ideas = await Idea.findAll({
+                    where: {
+                        "userId": users[i].id
+                    }
+                })
+                // delete all associated of idea of user
+                if (ideas.length > 0) {
+                    for (let j = 0; j < ideas.length; j++){
+                        await removeAssociate(ideas[j]);
+                    }    
+                }
+                // Wait for 100 milliseconds before deleting the next idea
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // delete user
+                await User.destroy({
+                    where: {
+                        "id": users[i].id
+                    }
+                })
+            }
+            // delete department
+            await Department.destroy({
+                where: {
+                    "id": req.params.id
+                }
+            })
+            res.status(200).json({
+                msg: "Successful delete Department " + req.params.id
+            });
+        }
+    } catch (err) {
+            console.log(err);
+            res.status(500).send("Server Error");
+    }
+}
 // Insight for QA Manager
 exports.insight = async (req, res) => {
     try {

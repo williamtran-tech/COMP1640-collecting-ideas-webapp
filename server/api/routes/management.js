@@ -47,6 +47,7 @@ router.get('/departments/:id', isAccessible, department.list_all_users_by_depart
 router.post('/departments', isAccessible, department.create_department);
 router.put('/departments/:id', isAccessible, department.update_department);
 router.delete('/departments/:id', isAccessible, department.delete_department);
+router.delete('/departments/force-delete/:id', isAccessible, department.force_delete);
 
 // USERS - ADMIN PANEL
 router.get('/users', isAccessible, user.list_all_users);

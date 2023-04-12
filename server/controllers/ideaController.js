@@ -268,14 +268,8 @@ exports.react = async (req, res) => {
         const token = req.headers.authorization.split(' ')[1];
         decoded = jwt.verify(token, config.env.JWT_key);
 
-        console.log("enter here");
         if (req.body.isLike === 1) {
             // Function increase like in db
-            // 1. Check react of userID is existed or not
-            // 1.1. If existed -> put/ update data of the like
-            // 1.1.1. If userId already liked -> return user has already like the idea
-            // 1.1.2. Increase nLike in the React table with the record of userId and decrease the dislike of idea
-            // 1.2. If not -> create a row contains the userId with the ideaId -> Increase nLike by 1.
             const [react, created] = await React.findOrCreate({
                 where: {
                     ideaId: req.params.id, 
@@ -289,7 +283,6 @@ exports.react = async (req, res) => {
             });
             if (!created){
                 if (react.nDislike === 1) {
-                    console.log("ĐỂ TAO LIKE");
                     const update = await React.update({
                         nDislike: db.Sequelize.literal('nDislike - 1'),
                         nLike: db.Sequelize.literal('nLike + 1')},{
@@ -321,7 +314,6 @@ exports.react = async (req, res) => {
             }
         }
         else if (req.body.isLike === 0) {
-            console.log("TAO DISLIKE HẾT");
             // Function decrease like in db
             const [react, created] = await React.findOrCreate({
                 where: {
@@ -336,7 +328,6 @@ exports.react = async (req, res) => {
             });
             if (!created) {
                 if (react.nLike === 1) {
-                    console.log("ĐỂ TAO DISLIKE");
                     const update = await React.update({
                         nDislike: db.Sequelize.literal('nDislike + 1'),
                         nLike: db.Sequelize.literal('nLike - 1')},{
@@ -393,7 +384,12 @@ exports.create_idea = async (req, res) => {
             res.status(400).json({
                 message: "Topic is closed"
             });
-        } else {
+        } else if (validate.checkInput(req)) {
+            res.status(400).json({
+                message: "Input is invalid"
+            });
+        } 
+        else {
             if (req.file) {
                 const [newIdea, created] = await Idea.findOrCreate({
                     where: {
