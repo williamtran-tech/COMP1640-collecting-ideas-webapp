@@ -300,7 +300,8 @@ const IdeaDetail = ({token}) => {
                         ))
                     }
                 </Stack>
-                <Grid> 
+                {ideaDetail&& ideaDetail.topicInfo&& new Date(ideaDetail.topicInfo.finalClosureDate)> new Date()&&(
+                    <Grid> 
                     <form onSubmit={handleComment}>
                         <Stack direction="row" spacing={1} className="comment-item">
                                     <Tooltip title="VO HOANG TAM" arrow>
@@ -312,7 +313,7 @@ const IdeaDetail = ({token}) => {
                                     </Tooltip>
                                         <Box flexGrow={1}>
                                             <Input placeholder="Comment..." className='comment-input' sx={{borderBottomColor: "#6D9886"}} id='comment-input' name='content' 
-                                            value={comment.content} onChange={handleInputChange} disabled={ideaDetail&& ideaDetail.topicInfo&& new Date(ideaDetail.topicInfo.finalClosureDate)< new Date()?true:false}/>
+                                            value={comment.content} onChange={handleInputChange} />
                                         </Box>
                                         <SpeedDial
                                             ariaLabel="SpeedDial basic example"
@@ -350,6 +351,8 @@ const IdeaDetail = ({token}) => {
                         </Stack>
                         </form>
                     </Grid>
+                )}
+                
             </Grid>
         </Grid>
     </Box>

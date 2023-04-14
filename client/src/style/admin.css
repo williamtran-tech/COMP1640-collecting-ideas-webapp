@@ -6,15 +6,14 @@
     background-color: #EFF2F5;
 }
 .dashboard_navigation_container{
-    
+    width: 100%;
     height: 100vh;
 }
 .dashboard_navigation{
     height: 96vh;
     background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(0,0,0,1) 48%, rgba(54,54,54,1) 100%);
     border-radius: 10px;
-    margin: 2vh;
-    padding:0 6px;
+    margin: 2vh 1vh;
     display: flex;
     align-items: center;
     flex-direction: column;
