@@ -8,21 +8,20 @@ import { Typography } from '@material-ui/core';
 // ChartJS.register(ArcElement, Tooltip,Title, Legend);
 const DeparmentIdea = ({department_ideas, department_contributors}) => {
     console.log(department_ideas)
+    const labels = department_ideas.map(department => department.name)
+    const Colors = labels.map(() => {
+      const red = Math.floor(Math.random() * 256);
+      const green = Math.floor(Math.random() * 256);
+      const blue = Math.floor(Math.random() * 256);
+      return `rgb(${red}, ${green}, ${blue})`;
+    });
     const data = {
-        labels: department_ideas.map(department => department.name),
+        labels: labels,
         datasets: [
           {
             data: department_ideas.map(department => department.idea_quantity),
-            backgroundColor: [
-              '#FF6384',
-              '#fad643',
-              '#52b788'
-            ],
-            hoverBackgroundColor: [
-              '#FF6384',
-              '#edc531',
-              '#40916c'
-            ]
+            backgroundColor: Colors,
+            hoverBackgroundColor: Colors
           }
         ],
         options : {

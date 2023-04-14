@@ -35,6 +35,8 @@ const ListIdeas = () => {
     const [page, setPage] = useState(1);
     const [sortValue, setSortValue]= useState(0)
     const [categoryFilter, setCategoryFilter]= useState(0)
+    const [categoryError, setCategoryError] = useState(false);
+    const [ideaError, setIdeaError] = useState(false);
     const searchIdeaInitailize={
         id: null,
         idea:''
@@ -144,9 +146,9 @@ const ListIdeas = () => {
           });
         
           // Sort the filtered ideas based on the sort order
-          if (sortBy == 1) {
+          if (sortBy == 2) {
             filteredIdeas.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          } else if (sortBy == 2) {
+          } else if (sortBy == 1) {
             filteredIdeas.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
           }
           
@@ -185,16 +187,19 @@ const ListIdeas = () => {
         formData.append("isAnonymous",checkedAnonymous);
         formData.append("file", selectedFile);
       
-        if (checkedTerm) {
+        if (checkedTerm&& inputedIdea.length>0) {
           handleApi.create_idea(id,formData)
             .then((response) => {
               console.log(response.data);
               setCheckedTerm(false)
+              setIdeaError(false)
             })
             .catch((error) => {
               console.error(error);
             });
             setOpen(false);
+        }else{
+            setIdeaError(true)
         }
     }
     
@@ -390,6 +395,7 @@ const ListIdeas = () => {
                                     fontSize={12}
                                     value={inputedIdea}
                                     onChange={handleInputChange}
+                                    helperText={ideaError && <div style={{color:"red"}}>Please input idea content</div>}
                                 />
                                 <div>
                                    {/* <IconButton onClick={() => filePicekerRef.current.click()}>

@@ -7,7 +7,7 @@ import { Stack } from '@mui/material';
 import handleApi from '../../../service/handleApi';
 import UpdateModal from './UpdateModal';
 import DeleteModal from './DeleteModal';
-const DepartmentList = ({updated, setUpdated, setId}) => {
+const DepartmentList = ({updated, setUpdated, setId,setOpenSnackBar}) => {
     const [departments, setDepartment]= useState([])
     const [departmentSelected, setDepartmentSelected]=useState({})
     const [onpenUpdate, setOpenUpdate] = useState(false)
@@ -32,7 +32,6 @@ const DepartmentList = ({updated, setUpdated, setId}) => {
     };
     const open = Boolean(anchorEl);
     const hanldeOpenUpdate =()=>{
-    setAnchorEl(null);
     setOpenUpdate(true)
     
     }
@@ -93,8 +92,8 @@ const DepartmentList = ({updated, setUpdated, setId}) => {
         
         </Popover>
         </Stack>
-        <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated} ></UpdateModal>
-        <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated} handleClosePopover={handleClose}></DeleteModal>
+        <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated} setOpenSnackBar={setOpenSnackBar}></UpdateModal>
+        <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} departmentSelected={departmentSelected}  updated={updated} setUpdated={setUpdated} handleClosePopover={handleClose} setOpenSnackBar={setOpenSnackBar}></DeleteModal>
     </div>
   )
 }

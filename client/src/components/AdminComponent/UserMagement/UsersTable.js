@@ -172,7 +172,7 @@ useEffect(() => {
          TransitionComponent={Slide}
          TransitionProps={{ direction: 'left' }}
          >
-            <Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>
+            <Alert onClose={handleCloseSnackBar} severity={openSnackBar.color} sx={{ width: '100%' }}>
                 {openSnackBar.message}
             </Alert>
     </Snackbar>

@@ -102,14 +102,16 @@ const TopicTable = () => {
           setSubmited(true)
           setOpenSnackBar({
             status:true,
-            message:"Create new topic successfully"
+            message:"Create new topic successfully",
+            color:"success"
           })
         })
         .catch(e => {
           console.log(e);
           setOpenSnackBar({
             status:true,
-            message: e.response.data.err
+            message: e.response.data.msg,
+            color:"error"
           })
         });
         setSubmited(false)
@@ -404,7 +406,7 @@ const TopicTable = () => {
          TransitionComponent={Slide}
          TransitionProps={{ direction: 'left' }}
          >
-            <Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>
+            <Alert onClose={handleCloseSnackBar} severity={openSnackBar.color} sx={{ width: '100%' }}>
                 {openSnackBar.message}
             </Alert>
         </Snackbar>

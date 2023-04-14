@@ -1,4 +1,4 @@
-import { TextField, Grid, Typography, FormControlLabel, Checkbox, Button } from '@mui/material';
+import { TextField, Grid, Typography, FormControlLabel, Checkbox, Button, Stack } from '@mui/material';
 import { Link, Navigate } from 'react-router-dom';
 import {  useState } from 'react';
 import handleApi from '../service/handleApi';
@@ -94,13 +94,14 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
                             <Link to={'/accounts/forgot-password'}>Forgot password</Link>
                         </Grid>
                         <Grid container justifyContent="center">
-                            {
+                            <Stack alignItems={"center"}>
+                                {
                                 !LoginStatus &&(
                                 <Typography style={{ color: "red" }}>
                                     Wrong email or password! Please try again!
                                 </Typography>)
                             }
-                            <Grid xs={4}>
+                            <Grid >
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -111,6 +112,8 @@ const LoginPage = ({isLoggedIn, setIsLoggedIn}) => {
                                 </Button>
                             
                             </Grid>
+                            </Stack>
+                            
                             
                         </Grid>
                     </Grid>

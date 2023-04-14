@@ -41,11 +41,18 @@ const TopicInfo = ({inf, isDisable,setDisable, setUpdated, token,setOpenSnackBar
                         setCheckDate(false)
                         setOpenSnackBar({
                           status: true,
-                          message:"Updated successfully"
+                          message:"Updated successfully",
+                          color:"success"
                         })
-            })
+            }).catch(e => {
+              console.log(e);
+              setOpenSnackBar({
+                status:true,
+                message: e.response.data,
+                color:"error"
+              })
+            });
           }
-          
       }
   return (
     <div>

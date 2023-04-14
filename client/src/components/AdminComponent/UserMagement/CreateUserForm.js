@@ -42,10 +42,18 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
                 setSubmited(!submited)
                 setOpenSnackBar({
                   status: true,
-                  message:"Delete user successfully"
+                  message:"Create user successfully",
+                  color:"success"
                 })
             }
-        )
+        ).catch(e => {
+          console.log(e);
+          setOpenSnackBar({
+            status:true,
+            message: e.response.data.message,
+            color:"error"
+          })
+        });
         setOpenModal(false);
         setUser(initialFormState);
       };

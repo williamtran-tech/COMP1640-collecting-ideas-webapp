@@ -11,7 +11,8 @@ const DeleteUserModal = ({openDelete, setOpenDelete,id, setSubmited, submited, s
             console.log(response.data)
              setOpenSnackBar({
               status: true,
-              message:"Delete user successfully"
+              message:"Delete user successfully",
+              color:"success"
             })
             setSubmited(!submited)
         })

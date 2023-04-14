@@ -2,15 +2,25 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { Modal, Box, Button, TextField } from '@material-ui/core';
 import handleApi from '../../../service/handleApi';
-const DeleteModal = ({onpenDelete,setOpenDelete, departmentSelected,updated, setUpdated, handleClosePopover}) => {
+const DeleteModal = ({onpenDelete,setOpenDelete, departmentSelected,updated, setUpdated, handleClosePopover, setOpenSnackBar}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     handleApi.admin_delete_department(departmentSelected.id).then(response=>{
         console.log(response.data)
         handleClosePopover()
         setUpdated(!updated)
+        setOpenSnackBar({
+          status:true,
+          message: "Delete department successfully",
+          color:"success"
+        })
     }).catch(error=>{
         console.error(error);
+        setOpenSnackBar({
+          status:true,
+          message: error.response.data.msg,
+          color:"error"
+        })
     })
     hanldeClose()
   };

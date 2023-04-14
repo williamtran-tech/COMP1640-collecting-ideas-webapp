@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { Modal, Box, Button, TextField } from '@material-ui/core';
 import handleApi from '../../../service/handleApi';
-const UpdateModal = ({onpenUpdate,setOpenUpdate, departmentSelected,updated, setUpdated}) => {
+const UpdateModal = ({onpenUpdate,setOpenUpdate, departmentSelected,updated, setUpdated, setOpenSnackBar}) => {
     const[deparmentName, setDepartmentname]= useState(departmentSelected.name)
     useEffect(()=>{
         setDepartmentname(departmentSelected.name)
@@ -15,8 +15,18 @@ const UpdateModal = ({onpenUpdate,setOpenUpdate, departmentSelected,updated, set
     handleApi.admin_update_department(departmentSelected.id, data).then(response=>{
         console.log(response.data)
         setUpdated(!updated)
+        setOpenSnackBar({
+          status:true,
+          message: "Update department successfully",
+          color:"success"
+        })
     }).catch(error=>{
-        console.error(error);
+      console.log(error)
+      setOpenSnackBar({
+        status:true,
+        message: error.response.data,
+        color:"error"
+      })
     })
     hanldeClose()
     // setDepartmentname('');
