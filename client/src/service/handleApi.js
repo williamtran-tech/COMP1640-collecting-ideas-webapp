@@ -18,6 +18,12 @@ const getIdeaDetail_by_idea = async id => {
 const post_comment = data => {
     return axios.post("/comments", data, config());
   };
+  const delete_comment = data => {
+    return axios.delete("/comments", data, config());
+  };
+  const update_comment = (id,data) => {
+    return axios.put(`/comments/${id}`, data, config());
+  };
 const react = async (id, data) => {
   return await axios.put(`/ideas/${id}`,data, config());
 };
@@ -100,7 +106,6 @@ const admin_update_user = async(id, data)=>{
 const QA_get_statistic = async()=>{
   return await axios.get(`/management/statistic`, config());
 }
-
 const QA_dowload_topic = async(id)=>{
   return await axios.get(`/management/csv-topic/download/${id}`, {responseType: 'blob', ...config_download()});
 }
@@ -162,6 +167,7 @@ const handleApi = {
     login, 
     create_idea,
     get_user_inf,
+    update_comment,
     admin_getListTopic,
     admin_create_idea,
     admin_getIdeas_by_topic,

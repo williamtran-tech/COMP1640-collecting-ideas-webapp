@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography, Stack, Chip, Avatar, Tooltip, Divider,Input, IconButton, AvatarGroup,Breadcrumbs } from '@mui/material'
+import { Box, Grid, Paper, Typography, Stack, Chip, Avatar, Tooltip, Divider,Input, IconButton, AvatarGroup,Breadcrumbs, Popover, Button,Modal, TextField } from '@mui/material'
 import Moment from "moment"
 import CreateIcon from '@mui/icons-material/Create';
 import ThumbDown from '@mui/icons-material/ThumbDown';
@@ -20,10 +20,16 @@ import config from '../service/headerToken';
 import { Link } from 'react-router-dom';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import image from "./images/"
 const IdeaDetail = ({token}) => {
     const { id } = useParams();
     const [ideaDetail, setideaDetail] = useState([]);
+    const [commentSelected, setCommentSelected]= useState({
+        id:'',
+        content:''
+    })
+    const [onpenUpdate, setOpenUpdate]= useState(false)
     const [contentReact, setContentReact] = useState({
             ideaId : id,
             isLike: null
@@ -33,6 +39,30 @@ const IdeaDetail = ({token}) => {
         likeStatus: "",
         dislikeStatus: "",
       };
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleClose = () => {
+        setAnchorEl(null);
+        };
+        const open = Boolean(anchorEl);
+        const handleOpenUpdate =()=>{
+            setOpenUpdate(true)
+        }
+    const handleClick = (event,id, content) => {
+        setCommentSelected({
+            id: id,
+            content:content, 
+        })
+        setAnchorEl(event.currentTarget);
+          };
+    const handleCloseUpdate =()=>{
+    setOpenUpdate(false)
+    }
+    const handleUpdateCommentChange = (e) => {
+        setCommentSelected({
+            ...commentSelected,
+            content: e.target.value
+          });
+    };
     const [react, setReact]= useState(initialideaReact)
     const handleLike =()=>{
         setreacted(true)
@@ -152,6 +182,21 @@ const IdeaDetail = ({token}) => {
             setcomment(initialideaState)
             }
       };
+      const handleUpdateComment = (e) => {
+        e.preventDefault();
+        const data={
+            id: commentSelected.id,
+            content: commentSelected.content
+        }
+        handleApi.update_comment(data).then(response=>{
+            console.log(response.data)
+
+        }).catch(error=>{
+            console.error(error);
+        })
+        handleCloseUpdate()
+        // setCategoryname('');
+      };
   return (
     <Box>
         <Grid container justifyContent="center">
@@ -191,14 +236,18 @@ const IdeaDetail = ({token}) => {
                                             />
                                             <Typography variant="subtitle2" className='name-user'>Anonymous</Typography>
                                         </Stack>
-                                    ): (<Stack >
+                                    ): (
+                                    <Link to={`/user/${ideaDetail.idea[0].User.id}`} style={{textDecoration:"none", color:"#000"}}>
+                                    <Stack >
                                         <Avatar
                                         src={`http://localhost:5050/${ideaDetail.idea[0].User.profileImage}`}
                                         sx={{ width: 30, height: 30, justifySelf: "center" }}
                                         className='avatar'
                                         />
                                         <Typography variant="subtitle2" className='name-user'>{ideaDetail.idea[0].User.fullName}</Typography>
-                                    </Stack>)
+                                    </Stack>
+                                     </Link>
+                                    )
                                 }
                                 
                                 <Stack direction="row" spacing={1}>
@@ -267,13 +316,19 @@ const IdeaDetail = ({token}) => {
                                         sx={{ width: 30, height: 30  }}
                                         />
                                     </Tooltip>
-                                    <Stack className='comment-text'>
-                                        <Stack direction="row" spacing={1}> 
+                                    <Stack direction="row" className='comment-text'>
+                                        <Stack>
+                                            <Stack direction="row" spacing={1}> 
                                              <Typography variant="body2" className='name-user'>{comment.owner}</Typography>
                                              <Typography variant="body2" className='time-comment'> {calculateTimeDiff(comment.updatedAt)}</Typography>
+                                            </Stack>
+                                            <Typography variant="subtitle2">{comment.content}</Typography>
                                         </Stack>
-                                        <Typography variant="subtitle2">{comment.content}</Typography>
-                                    </Stack>
+                                        
+                                       <IconButton onClick={(event)=>{handleClick(event, comment.id, comment.content)}}>
+                                            <MoreVertIcon></MoreVertIcon>
+                                        </IconButton>
+                                    </Stack> 
                         </Stack>
                     </Grid>
                         ))
@@ -288,13 +343,18 @@ const IdeaDetail = ({token}) => {
                                         sx={{ width: 30, height: 30  }}
                                         />
                                     </Tooltip>
-                                    <Stack className='comment-text'>
-                                        <Stack direction="row" spacing={1}> 
+                                    <Stack direction="row" className='comment-text'>
+                                        <Stack>
+                                            <Stack direction="row" spacing={1}> 
                                              <Typography variant="body2" className='name-user'>Anonymous</Typography>
                                              <Typography variant="body2" className='time-comment'> {calculateTimeDiff(comment.updatedAt)}</Typography>
+                                            </Stack>
+                                            <Typography variant="subtitle2">{comment.content}</Typography>
                                         </Stack>
-                                        <Typography variant="subtitle2">{comment.content}</Typography>
-                                    </Stack>
+                                       <IconButton onClick={(event)=>{handleClick(event, comment.id, comment.content)}}>
+                                            <MoreVertIcon></MoreVertIcon>
+                                    </IconButton>
+                                    </Stack> 
                         </Stack>
                     </Grid>
                         ))
@@ -352,9 +412,48 @@ const IdeaDetail = ({token}) => {
                         </form>
                     </Grid>
                 )}
-                
+                <Popover
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                    }}
+                >
+                    <Stack spacing={1}>
+                        <Button size='small' onClick={handleOpenUpdate}> Edit</Button>
+                        <Button size='small' onClick={1}> Delete</Button>
+                    </Stack>
+                    
+                </Popover>
             </Grid>
         </Grid>
+        <div>
+        <Modal open={onpenUpdate} onClose={handleCloseUpdate} aria-labelledby="modal-title"
+            aria-describedby="modal-description" 
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box className='createNewCategory'>
+                    <h2>Update comment</h2>
+                    <form onSubmit={handleUpdateComment}>
+                    <TextField
+                        label="Comment"
+                        variant="outlined"
+                        value={commentSelected.content}
+                        onChange={handleUpdateCommentChange}
+                        fullWidth
+                    />
+                    <Button type="submit" variant="contained" className='create_user_btn'>
+                        Update
+                    </Button>
+                    </form>
+                </Box>
+                </Modal>
+    </div>
     </Box>
   )
 }

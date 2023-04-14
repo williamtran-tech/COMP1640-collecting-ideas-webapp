@@ -1,6 +1,7 @@
 import { Box, Grid, Avatar, Typography, Tabs, Tab, Button, Badge, IconButton, Modal, Snackbar, Slide } from '@material-ui/core'
 import { Stack, Alert } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import React from 'react'
 import '../style/userprofile.css'
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
@@ -12,6 +13,7 @@ import Contribution from './Contribution'
 import UploadProfilePic from './UploadProfilePic'
 
 const UserProfile = () => {
+  const { id } = useParams();
   const [tabValue, setTabValue] = useState(0);
   const [openModal, setOpenModal] = useState(false)
   const [openModalForgot, setOpenModalForgot] = useState(false)
@@ -25,12 +27,10 @@ const UserProfile = () => {
   const decodedToken = jwt_decode(token);
   console.log(decodedToken)
   useEffect(()=>{
-    if(decodedToken){
-       handleApi.get_user_inf(decodedToken.userId).then(response=>{
+       handleApi.get_user_inf(id).then(response=>{
       console.log(response.data)
       setProfile(response.data)
     })
-    }
   }, [uploaded])
   const handleOpen = () =>{
     setOpenModal(true)
@@ -70,7 +70,7 @@ const UserProfile = () => {
                   </IconButton>
                 }>
                 <Avatar                                     
-                        src={profile.info.profileImage}
+                        src={`http://localhost:5050/${profile.info.profileImage}`}
                         style={{ width: 150, height: 150 }}
                         />
                 </Badge>
@@ -118,9 +118,9 @@ const UserProfile = () => {
       )}
         </Grid>
         </Grid>
-        {
+        {/* {
         profile&& profile.info && (<UploadProfilePic openModal={openModal} setOpenModal={setOpenModal} id={decodedToken.userId} uploaded={uploaded} setUploaded={setUploaded} avatar={profile.info.profileImage}></UploadProfilePic>)
-        }
+        } */}
         <Modal
             open={openModalForgot}
             onClose={handleCloseForgot}
