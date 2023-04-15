@@ -84,28 +84,108 @@ exports.create_comment = async (req, res) => {
 
 exports.update_comment = async (req, res) => {
     try {
-        const updatedComment = await Comment.update({ 
-            content: "Updated comm a asdent"
-        },
-        {
-            where: { id: req.body.id }
-        }        
-        );
-
-        const updatedCommentInfo = await Comment.findOne({
-            where: { id: req.body.id },
-            attributes: ['id', 'content', 'updatedAt', 'createdAt'],
+        const comment = await Comment.findOne({
+            where: {
+                "id": req.params.id
+            }
         });
 
-        res.status(200).json({
-            msg: "Updated comment",
-            numRowsUpdated: updatedComment,
-            updatedRows: updatedCommentInfo
-        });
+        if (comment) {
+            const ownedComment = await this.check_ownership_and_exist(req);
+            if (ownedComment.code === 401) {
+                res.status(401).json({
+                    msg: "You are not authorized to update this comment"
+                })
+            } else if (validate.checkInput(req) || req.body.content == null){
+                res.status(401).json({
+                    msg: "Please enter a valid comment"
+                })
+            } else {
+                await Comment.update({ 
+                    content: req.body.content
+                },
+                {
+                    where: { id: req.params.id }
+                }        
+                );
+        
+                const updatedCommentInfo = await Comment.findOne({
+                    where: { id: req.params.id },
+                    attributes: ['id', 'content', 'updatedAt', 'createdAt'],
+                });
+        
+                res.status(200).json({
+                    msg: "Successfully updated comment",
+                    updatedComment: updatedCommentInfo
+                });
+            }
+        } else {
+            res.status(404).json({
+                msg: "Comment not Found"
+            })
+        } 
     } catch(err) {
         console.log(err);
         res.status(500).json({
             err: err
         });
+    }
+}
+
+exports.delete_comment = async (req, res) => { 
+    try {
+        const comment = await Comment.findOne({
+            where: {
+                "id": req.params.id
+            }
+        });
+        const ownedComment = await this.check_ownership_and_exist(req);
+        if (ownedComment.code === 401) {
+            res.status(401).json({
+                msg: "You are not authorized to delete this comment"
+            })
+        } else if (comment) {
+            const deletedComment = await Comment.destroy({
+                where: { id: req.params.id }
+            });
+    
+            res.status(200).json({
+                msg: "Successfully deleted comment",
+                deletedComment: deletedComment
+            });
+        } else {
+            res.status(404).json({
+                msg: "Comment not Found"
+            })
+        }
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({
+            err: err
+        });
+    }
+}
+
+ // Check the ownership and existing of the comment
+exports.check_ownership_and_exist = async (req) => {
+    // if the comment is not owned by the user, return 401
+    const comment = await Comment.findOne({
+        where: {
+            "id": req.params.id
+        },
+        attributes: ['userId']
+    });
+    if (!comment) {
+        return {
+            code: 404
+        }
+    } else if (req.userData.userId !== comment.userId) {
+        return {
+            code: 401
+        }
+    } else {
+        return {
+            code: 200
+        }
     }
 }

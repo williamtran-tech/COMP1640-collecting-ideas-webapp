@@ -6,5 +6,6 @@ const checkAuth = require('./../../middleware/checkAuth');
 
 router.post('/', checkAuth, comment.create_comment);
 router.put('/:id', checkAuth, comment.update_comment);
+router.delete('/:id', checkAuth, comment.delete_comment);
 
 module.exports = router;

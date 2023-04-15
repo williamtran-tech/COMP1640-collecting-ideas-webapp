@@ -304,28 +304,30 @@ exports.create_user_root = async (req, res) => {
 
 exports.personal_info = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    decoded = jwt.verify(token, config.env.JWT_key);
+    // if (req.userData.userId == req.params.id) {
+    // Get information of user
+    const info = await User.findOne({
+      where: {
+        "id": req.params.id
+      },
+      attributes: {
+          exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
+      },
+      include: [{
+          model: Department, as: "Department",
+          attributes:['id','name']
+      },
+      {
+        model: Role, as: "Role",
+        attributes: {exclude: ["createdAt", "updatedAt"]}
+      }]
+    });
 
-    if (decoded.userId == req.params.id) {
-      // Get information of user
-      const info = await User.findOne({
-        where: {
-          "id": req.params.id
-        },
-        attributes: {
-            exclude: ['createdAt', 'updatedAt', 'DepartmentId', 'RoleId', 'roleId', 'departmentId', 'password']
-        },
-        include: [{
-            model: Department, as: "Department",
-            attributes:['id','name']
-        },
-        {
-          model: Role, as: "Role",
-          attributes: {exclude: ["createdAt", "updatedAt"]}
-        }]
-      });
-
+    if (!info) {
+      return res.status(404).json({
+        message: "Not found user"
+      })
+    } else {
       // Get all ideas that user viewed
       const viewHistory = await View.findAll({
         where: {
@@ -414,47 +416,83 @@ exports.personal_info = async (req, res) => {
       //     ]
       // })
 
-      const contributions = await db.sequelize.query(
-        `SELECT  
-            ideas.id as ideaId,
-            ideas.name AS idea,  
-            COALESCE(reacts.likes, 0) AS likes, 
-            COALESCE(reacts.dislikes, 0) AS dislikes,
-            SUM(views.views) AS views,
-            COALESCE(c.comments, 0) as comments,
-            categories.id as categoryId,
-            categories.name as category,
-            topics.id as topicId,
-            topics.name as topic,
-            ideas.createdAt, 
-            ideas.updatedAt
-        FROM ideas
-        JOIN categories ON ideas.categoryId = categories.id
-        JOIN topics ON ideas.topicId = topics.id
-        JOIN users ON ideas.userId = users.id
-        JOIN views ON ideas.id = views.ideaId
-        LEFT JOIN (
-            SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
-            FROM reacts
-            GROUP BY ideaId
-        ) reacts ON ideas.id = reacts.ideaId
-        LEFT JOIN (
-            SELECT ideaId, COUNT(id) as comments
-            FROM comments
-            GROUP BY ideaId
-        ) c ON ideas.id = c.ideaId
-        WHERE ideas.userId = ${req.params.id}
-        GROUP BY ideas.id;
-        `);
+      let activities = {};
+      // If user view their own profile
+      if (req.userData.userId == req.params.id) {
+        const contributions = await db.sequelize.query(
+          `SELECT  
+              ideas.id as ideaId,
+              ideas.name AS idea,  
+              COALESCE(reacts.likes, 0) AS likes, 
+              COALESCE(reacts.dislikes, 0) AS dislikes,
+              SUM(views.views) AS views,
+              COALESCE(c.comments, 0) as comments,
+              categories.id as categoryId,
+              categories.name as category,
+              topics.id as topicId,
+              topics.name as topic,
+              ideas.createdAt, 
+              ideas.updatedAt
+          FROM ideas
+          JOIN categories ON ideas.categoryId = categories.id
+          JOIN topics ON ideas.topicId = topics.id
+          JOIN users ON ideas.userId = users.id
+          JOIN views ON ideas.id = views.ideaId
+          LEFT JOIN (
+              SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
+              FROM reacts
+              GROUP BY ideaId
+          ) reacts ON ideas.id = reacts.ideaId
+          LEFT JOIN (
+              SELECT ideaId, COUNT(id) as comments
+              FROM comments
+              GROUP BY ideaId
+          ) c ON ideas.id = c.ideaId
+          WHERE ideas.userId = ${req.params.id}
+          GROUP BY ideas.id;
+          `);
+        activities = contributions[0];
+      } else {
+        const contributions = await db.sequelize.query(
+          `SELECT  
+              ideas.id as ideaId,
+              ideas.name AS idea,  
+              COALESCE(reacts.likes, 0) AS likes, 
+              COALESCE(reacts.dislikes, 0) AS dislikes,
+              SUM(views.views) AS views,
+              COALESCE(c.comments, 0) as comments,
+              categories.id as categoryId,
+              categories.name as category,
+              topics.id as topicId,
+              topics.name as topic,
+              ideas.createdAt, 
+              ideas.updatedAt
+          FROM ideas
+          JOIN categories ON ideas.categoryId = categories.id
+          JOIN topics ON ideas.topicId = topics.id
+          JOIN users ON ideas.userId = users.id
+          JOIN views ON ideas.id = views.ideaId
+          LEFT JOIN (
+              SELECT ideaId, SUM(nLike) as likes, SUM(nDislike) as dislikes
+              FROM reacts
+              GROUP BY ideaId
+          ) reacts ON ideas.id = reacts.ideaId
+          LEFT JOIN (
+              SELECT ideaId, COUNT(id) as comments
+              FROM comments
+              GROUP BY ideaId
+          ) c ON ideas.id = c.ideaId
+          WHERE ideas.userId = ${req.params.id} AND ideas.isAnonymous = 0
+          GROUP BY ideas.id;
+          `);
+          activities = contributions[0];
+      }
+      
       res.status(200).json({
         info: info,
-        contributions: contributions[0],
+        contributions: activities,
         viewHistory: viewHistory,
         reactHistory: reactHistory
-      })
-    } else {
-      res.status(401).json({
-        err: "Cannot access to other profile"
       })
     }
   } catch (err) {

@@ -158,7 +158,7 @@ exports.get_idea_by_id = async (req, res) => {
         // })
 
         const comments = await Comment.findAll({
-            attributes: [[db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'isAnonymous', 'createdAt', 'updatedAt'],
+            attributes: [[db.Sequelize.literal('User.id'), 'userId'], [db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'isAnonymous', 'createdAt', 'updatedAt'],
             where: {
                 'ideaId': req.params.id,
                 'isAnonymous': false
