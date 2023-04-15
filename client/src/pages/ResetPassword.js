@@ -42,7 +42,7 @@ const ResetPassword = () => {
   return (
     <Grid container className='container_auth' spacing={2} sx={{ height: '100vh' }}>
       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Grid container spacing={2} maxWidth="sm">
+        <Grid container spacing={2} maxWidth="sm" className='auth_form'>
           <Grid item xs={12}>
             <Typography variant="h4">Reset Password</Typography>
           </Grid>

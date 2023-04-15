@@ -26,7 +26,6 @@ const ReactHistory = ({react}) => {
                         }}
                         >
                         {/* <TableCell>ID</TableCell> */}
-                       
                         <TableCell>Idea Name</TableCell>
                         <TableCell>User</TableCell>
                         <TableCell>Category</TableCell>

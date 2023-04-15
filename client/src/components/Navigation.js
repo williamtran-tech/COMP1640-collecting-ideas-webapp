@@ -35,7 +35,7 @@ const Navbar = ({isLoggedIn, setIsLoggedIn}) => {
                            
                     {
                         decodedToken&&decodedToken.roleId ===1&&(
-                            <Link to='/user'>
+                            <Link to={`/user/${decodedToken.userId}`}>
                                 <IconButton>
                                     <AccountCircleIcon className='icon'/>
                                 </IconButton>

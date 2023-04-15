@@ -7,7 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import handleApi from '../../../service/handleApi';
 import UpdateModal from './UpdateModal';
 import DeleteModal from './DeleteModal';
-const CategoryList = ({updated, setUpdated}) => {
+const CategoryList = ({updated, setUpdated,setOpenSnackBar}) => {
     const [category, setCategory] =useState([])
     const [categorySelected, setCategorySelected]=useState({})
     const [onpenUpdate, setOpenUpdate] = useState(false)
@@ -83,8 +83,8 @@ const CategoryList = ({updated, setUpdated}) => {
         
       </Popover>
       
-      <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated}></UpdateModal>
-      <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated} handleClosePopover={handleClose}></DeleteModal>
+      <UpdateModal onpenUpdate={onpenUpdate} setOpenUpdate={setOpenUpdate} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated} setOpenSnackBar={setOpenSnackBar}></UpdateModal>
+      <DeleteModal onpenDelete={onpenDelete} setOpenDelete={setOpenDelete} categorySelected={categorySelected}  updated={updated} setUpdated={setUpdated} handleClosePopover={handleClose} setOpenSnackBar={setOpenSnackBar}></DeleteModal>
     </div>
   )
 }

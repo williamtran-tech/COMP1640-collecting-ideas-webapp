@@ -37,7 +37,7 @@ const ForgotPassword = () => {
           alignItems: 'center',
         }}
       >
-        <Grid container spacing={2} maxWidth="sm">
+        <Grid container spacing={2} maxWidth="sm" className='auth_form'>
           <Grid item xs={12}>
             <Typography variant="h4">Forgot Password</Typography>
           </Grid>

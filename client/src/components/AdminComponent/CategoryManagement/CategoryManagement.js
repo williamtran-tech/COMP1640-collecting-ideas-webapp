@@ -1,5 +1,6 @@
 import React from 'react'
-import { Paper,Button, Typography, Modal, TextField, Box} from '@material-ui/core'
+import { Paper,Button, Typography, Modal, TextField, Box, Snackbar, Slide} from '@material-ui/core'
+import { Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Grid } from '@mui/material';
 import CategoryList from './CategoryList';
@@ -10,6 +11,16 @@ const CategoryManagement = () => {
     const [categoryName, setCategoryname] = useState('');
     const[isOpen, setIsOpen]= useState(false)
     const[updated, setUpdated]=useState(false)
+    const [openSnackBar, setOpenSnackBar]= useState({
+        status: false,
+        message:""
+      })
+      const handleCloseSnackBar = () => {
+        setOpenSnackBar({
+          status: false,
+          message:""
+        })
+      };
   const handleSubmit = (e) => {
     e.preventDefault();
     const data={
@@ -18,8 +29,18 @@ const CategoryManagement = () => {
     handleApi.admin_post_category(data).then(response=>{
         console.log(response.data)
         setUpdated(!updated)
+        setOpenSnackBar({
+            status:true,
+            message: "Create new category successfully",
+            color:"success"
+          })
     }).catch(error=>{
         console.error(error);
+        setOpenSnackBar({
+            status:true,
+            message: error.response.data.msg,
+            color:"error"
+          })
     })
     hanldeClose()
     setCategoryname('');
@@ -46,7 +67,7 @@ const CategoryManagement = () => {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <CategoryList updated={updated} setUpdated={setUpdated}> </CategoryList>
+                <CategoryList updated={updated} setUpdated={setUpdated} setOpenSnackBar={setOpenSnackBar}> </CategoryList>
             </Grid>
         </Grid>
 
@@ -69,6 +90,18 @@ const CategoryManagement = () => {
                 </form>
             </Box>
         </Modal>
+        <Snackbar
+         open={openSnackBar.status}
+         onClose={handleCloseSnackBar}
+         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+         autoHideDuration={2000}
+         TransitionComponent={Slide}
+         TransitionProps={{ direction: 'left' }}
+         >
+            <Alert onClose={handleCloseSnackBar} severity={openSnackBar.color} sx={{ width: '100%' }}>
+                {openSnackBar.message}
+            </Alert>
+    </Snackbar>
     </div>
   )
 }

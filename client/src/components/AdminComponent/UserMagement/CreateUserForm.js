@@ -15,6 +15,8 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
     const filePicekerRef = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
+    const [responseCreate, setResponseCreate]= useState({})
+    const [errorCreate, setErrorCreate]= useState(false)
     const initialFormState = {
         fullName: '',
         email: '',
@@ -91,8 +93,20 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
       console.log(response.data)
       setSubmited(!submited)
       setOpenModal(false);
+      setErrorCreate(false)
+      setOpenSnackBar({
+        status: true,
+        message:"Insert bulk user successfully",
+        color:"success"
+      })
+    }).catch(error=>{
+      setErrorCreate(true)
+      console.error(error.response)
+      
+      setResponseCreate(error.response.data)
     })
   }
+  console.log(responseCreate)
   return (
     <>
       <Modal
@@ -233,6 +247,39 @@ const CreateUserForm = ({openModal, setOpenModal, department, role, setSubmited,
                                   )}
                                   </div>
                 </form>
+                <div className='reportCreate'>
+                      <Typography  style={{fontSize:"20px", fontWeight:"bolder"}}>Report</Typography>              
+                      {errorCreate && (
+                          <Stack >
+                            <Typography style={{fontSize:"18px", color:"#F45050"}}>{responseCreate.err}</Typography>
+                            {responseCreate&&responseCreate.existedEmail?(
+                              <>
+                                <Typography style={{fontSize:"16px", color:"#F45050"}}>Existed Email</Typography>
+                               <Stack spacing={1}> 
+                               { responseCreate.existedEmail.map((email,index)=>(
+                                 <Typography>
+                                    {email} at row [{responseCreate["At row"][index]}]
+                                 </Typography>
+                               ))}
+                             </Stack> </>
+                            ):
+                            (
+                              <Typography>
+                                At row {responseCreate["At row"].map(row=>(`[${row}] `))}
+                              </Typography> 
+                            )}
+                            {
+                              responseCreate&&responseCreate["Duplicate email"]&&(
+                                <Typography>
+                                  Duplicate email at { responseCreate["At row"].map(row=>(`[${row}] `))}
+                                </Typography>
+                              )
+                            }
+                            
+                          </Stack>
+                      )}
+                   
+                </div>
                 </>
                 
               )
