@@ -84,7 +84,7 @@ exports.all_ideas = async (req, res) => {
 
 exports.get_idea_by_id = async (req, res) => {
     try{
-        const idea = await Idea.findAll({
+        const idea = await Idea.findOne({
             attributes: {
                 exclude: ['CategoryId', 'UserId', 'TopicId','categoryId', 'userId', 'topicId' ]
             },
@@ -108,154 +108,159 @@ exports.get_idea_by_id = async (req, res) => {
             ]
         });
 
-        const react = await React.findAll({
-            where: {ideaId: req.params.id},
-            attributes: [
-                [db.Sequelize.fn('sum', db.sequelize.col('nLike')), 'Likes'],
-                [db.Sequelize.fn('sum', db.sequelize.col('nDislike')), 'Dislikes']
-            ]
-        });
-
-        const likedBy = await React.findAll({
-            where: {
-                ideaId: req.params.id,
-                nLike: 1
-            },
-            attributes: [
-                'createdAt', 'updatedAt'
-            ],
-            include: [{
-                model: User,
-                as: "User",
-                attributes: ['id','fullName', 'profileImage']
-            }]
-        });
-
-        const dislikedBy = await React.findAll({
-            where: {
-                ideaId: req.params.id,
-                nDislike: 1
-            },
-            attributes: [
-                'createdAt', 'updatedAt'
-            ],
-            include: [{
-                model: User,
-                as: "User",
-                attributes: ['id','fullName', 'profileImage']
-            }]
-        });
-
-        // const reactPeople = await React.findAll({
-        //     where: {ideaId: req.params.id}, 
-        //     attributes: [[db.Sequelize.literal("User.fullName"), "user"], [db.Sequelize.literal("User.id"), "id"]],
-        //     include: [{
-        //         model: User,
-        //         as: "User",
-        //         attributes: [],
-        //         nested: true
-        //     }]
-        // })
-
-        const comments = await Comment.findAll({
-            attributes: [[db.Sequelize.literal('User.id'), 'userId'], [db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'isAnonymous', 'createdAt', 'updatedAt'],
-            where: {
-                'ideaId': req.params.id,
-                'isAnonymous': false
-            },
-            include: {
-                model: User, 
-                as: "User",
-                attributes:[],
-                required: true
-            }
-        });
-
-        const anoComments = await Comment.findAll({
-            attributes: ['content', 'isAnonymous', 'createdAt', 'updatedAt'],
-            where: {
-                'ideaId': req.params.id,
-                'isAnonymous': true
-            },
-        })
-
-        const numComments = await Comment.findAll({
-            where: {
-                "ideaId": req.params.id
-            },
-            attributes: [[db.Sequelize.fn('count', db.sequelize.col('id')), 'quantity']],
-            raw: true
-        })
-
-        const views = await View.findAll({
-            where: {
-                "ideaId": req.params.id
-            },
-            attributes: [[db.Sequelize.fn('sum', db.sequelize.col('views')), 'views']]
-        });
-
-        const viewedBy = await View.findAll({
-            where: {
-                ideaId: req.params.id,
-                views: 1
-            },
-            attributes: [
-                'createdAt', 'updatedAt'
-            ],
-            include: [{
-                model: User,
-                as: "User",
-                attributes: ['id','fullName', 'profileImage']
-            }]
-        })
-
-        // The code above need to refactor because of the repeated code - Separated Code for readability
-        let token="";
-        let decoded
-        
-        if(req.headers.authorization) {
-            token = req.headers.authorization.split(' ')[1];
-            decoded = jwt.verify(token, config.env.JWT_key);
-        }
-        // Update Views when access to the idea detail page
-        if(decoded != null){
-            const [view, created] = await View.findOrCreate({
-                where: {
-                ideaId: req.params.id, 
-                userId: decoded.userId
-            },
-            defaults: {
-                ideaId: req.body.id,
-                userId: decoded.userId,
-                views: db.Sequelize.literal('views + 1')
-            }
+        if (idea) {
+            const react = await React.findAll({
+                where: {ideaId: req.params.id},
+                attributes: [
+                    [db.Sequelize.fn('sum', db.sequelize.col('nLike')), 'Likes'],
+                    [db.Sequelize.fn('sum', db.sequelize.col('nDislike')), 'Dislikes']
+                ]
             });
-
-            if (created) {
-                console.log("Successfully add userId to view ideaId");
+    
+            const likedBy = await React.findAll({
+                where: {
+                    ideaId: req.params.id,
+                    nLike: 1
+                },
+                attributes: [
+                    'createdAt', 'updatedAt'
+                ],
+                include: [{
+                    model: User,
+                    as: "User",
+                    attributes: ['id','fullName', 'profileImage']
+                }]
+            });
+    
+            const dislikedBy = await React.findAll({
+                where: {
+                    ideaId: req.params.id,
+                    nDislike: 1
+                },
+                attributes: [
+                    'createdAt', 'updatedAt'
+                ],
+                include: [{
+                    model: User,
+                    as: "User",
+                    attributes: ['id','fullName', 'profileImage']
+                }]
+            });
+    
+            // const reactPeople = await React.findAll({
+            //     where: {ideaId: req.params.id}, 
+            //     attributes: [[db.Sequelize.literal("User.fullName"), "user"], [db.Sequelize.literal("User.id"), "id"]],
+            //     include: [{
+            //         model: User,
+            //         as: "User",
+            //         attributes: [],
+            //         nested: true
+            //     }]
+            // })
+    
+            const comments = await Comment.findAll({
+                attributes: ['id', [db.Sequelize.literal('User.id'), 'userId'], [db.Sequelize.literal('User.fullName'), 'owner'],[db.Sequelize.literal('User.profileImage'), 'imagePath'],'content', 'isAnonymous', 'createdAt', 'updatedAt'],
+                where: {
+                    'ideaId': req.params.id,
+                    'isAnonymous': false
+                },
+                include: {
+                    model: User, 
+                    as: "User",
+                    attributes:[],
+                    required: true
+                }
+            });
+    
+            const anoComments = await Comment.findAll({
+                attributes: ['id', 'content', 'isAnonymous', 'createdAt', 'updatedAt'],
+                where: {
+                    'ideaId': req.params.id,
+                    'isAnonymous': true
+                },
+            })
+    
+            const numComments = await Comment.findAll({
+                where: {
+                    "ideaId": req.params.id
+                },
+                attributes: [[db.Sequelize.fn('count', db.sequelize.col('id')), 'quantity']],
+                raw: true
+            })
+    
+            const views = await View.findAll({
+                where: {
+                    "ideaId": req.params.id
+                },
+                attributes: [[db.Sequelize.fn('sum', db.sequelize.col('views')), 'views']]
+            });
+    
+            const viewedBy = await View.findAll({
+                where: {
+                    ideaId: req.params.id,
+                    views: 1
+                },
+                attributes: [
+                    'createdAt', 'updatedAt'
+                ],
+                include: [{
+                    model: User,
+                    as: "User",
+                    attributes: ['id','fullName', 'profileImage']
+                }]
+            })
+    
+            // The code above need to refactor because of the repeated code - Separated Code for readability
+            let token="";
+            let decoded
+            
+            if(req.headers.authorization) {
+                token = req.headers.authorization.split(' ')[1];
+                decoded = jwt.verify(token, config.env.JWT_key);
             }
+            // Update Views when access to the idea detail page
+            if(decoded != null){
+                const [view, created] = await View.findOrCreate({
+                    where: {
+                    ideaId: req.params.id, 
+                    userId: decoded.userId
+                },
+                defaults: {
+                    ideaId: req.body.id,
+                    userId: decoded.userId,
+                    views: db.Sequelize.literal('views + 1')
+                }
+                });
+    
+                if (created) {
+                    console.log("Successfully add userId to view ideaId");
+                }
+            }
+    
+            const topic = await Topic.findOne({
+                where: {
+                    id: idea.Topic.id
+                },
+                attributes: ['id', 'name', 'closureDate', 'finalClosureDate']
+            })
+    
+            res.status(200).json({
+                message: "Successfully get all comments by idea id " + idea.id,
+                idea: idea,
+                topicInfo: topic,
+                likedBy: likedBy,
+                dislikedBy: dislikedBy,
+                views: views[0].views,
+                viewedBy: viewedBy,
+                comments: comments,
+                anoComments: anoComments,
+                nComments: numComments[0].quantity,
+                react: react
+            });
+        } else {
+            res.status(404).send("Idea not found");
         }
-
-        const topic = await Topic.findOne({
-            where: {
-                id: idea[0].Topic.id
-            },
-            attributes: ['id', 'name', 'closureDate', 'finalClosureDate']
-        })
-
-        res.status(200).json({
-            message: "Successfully get all comments by idea id " + idea[0].id,
-            idea: idea,
-            topicInfo: topic,
-            likedBy: likedBy,
-            dislikedBy: dislikedBy,
-            views: views[0].views,
-            viewedBy: viewedBy,
-            comments: comments,
-            anoComments: anoComments,
-            nComments: numComments[0].quantity,
-            react: react
-        });
+        
         
     } catch (error){
         console.log(error);
