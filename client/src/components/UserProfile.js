@@ -27,7 +27,7 @@ const UserProfile = () => {
   const decodedToken = jwt_decode(token);
   console.log(decodedToken)
   useEffect(()=>{
-       handleApi.get_user_inf(id).then(response=>{
+      handleApi.get_user_inf(id).then(response=>{
       console.log(response.data)
       setProfile(response.data)
     })
@@ -65,9 +65,10 @@ const UserProfile = () => {
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 badgeContent={
+                  id==decodedToken.userId?(
                   <IconButton onClick={handleOpen}>
                     <CameraAltIcon></CameraAltIcon>
-                  </IconButton>
+                  </IconButton>): null
                 }>
                 <Avatar                                     
                         src={`http://localhost:5050/${profile.info.profileImage}`}
@@ -85,10 +86,14 @@ const UserProfile = () => {
                 </Typography> 
                </Stack>
                 <div>
-
-                    <Button variant="contained" size="small" style={{backgroundColor:'#6D9886'}} onClick={handleOpenForgot}>
+                  {
+                    id==decodedToken.userId&&(
+                      <Button variant="contained" size="small" style={{backgroundColor:'#6D9886'}} onClick={handleOpenForgot}>
                       Change Password
-                    </Button>
+                      </Button>
+                    )
+                  }
+                    
                     <Typography variant="body1" gutterBottom>
                       Department: {profile.info.Department.name}
                     </Typography>
@@ -118,9 +123,9 @@ const UserProfile = () => {
       )}
         </Grid>
         </Grid>
-        {/* {
-        profile&& profile.info && (<UploadProfilePic openModal={openModal} setOpenModal={setOpenModal} id={decodedToken.userId} uploaded={uploaded} setUploaded={setUploaded} avatar={profile.info.profileImage}></UploadProfilePic>)
-        } */}
+        {
+        profile&& profile.info&&  (<UploadProfilePic openModal={openModal} setOpenModal={setOpenModal} id={decodedToken.userId} uploaded={uploaded} setUploaded={setUploaded} avatar={profile.info.profileImage}></UploadProfilePic>)
+        }
         <Modal
             open={openModalForgot}
             onClose={handleCloseForgot}

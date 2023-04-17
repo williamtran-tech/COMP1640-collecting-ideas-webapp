@@ -91,7 +91,7 @@ const IdeaDetail = ({token}) => {
          handleApi.getIdeaDetail_by_idea(id)
           .then(response => {
             setideaDetail(response.data);
-            setExtension(response.data.idea[0].filePath.substring(response.data.idea[0].filePath.lastIndexOf('.') + 1).toLowerCase())
+            setExtension(response.data.idea.filePath.substring(response.data.idea.filePath.lastIndexOf('.') + 1).toLowerCase())
             console.log(response.data);
           })
           .catch(e => {
@@ -185,12 +185,28 @@ const IdeaDetail = ({token}) => {
       const handleUpdateComment = (e) => {
         e.preventDefault();
         const data={
-            id: commentSelected.id,
             content: commentSelected.content
         }
-        handleApi.update_comment(data).then(response=>{
+        if(data.content.length>0){
+             handleApi.update_comment(commentSelected.id,data).then(response=>{
             console.log(response.data)
-
+            handleClose()
+            setcommented(!commented)
+            }).catch(error=>{
+                console.error(error);
+            }) 
+            handleCloseUpdate()
+        }
+       
+      
+        // setCategoryname('');
+      };
+      const handleDeleteComment = (e) => {
+        e.preventDefault();
+        handleApi.delete_comment(commentSelected.id).then(response=>{
+            console.log(response.data)
+            handleClose()
+            setcommented(!commented)
         }).catch(error=>{
             console.error(error);
         })
@@ -217,17 +233,17 @@ const IdeaDetail = ({token}) => {
                                     underline="hover"
                                     key="2"
                                     style={{color: "black"}}
-                                    to={`/ideas/${ideaDetail.idea[0].id}`}
+                                    to={`/ideas/${ideaDetail.idea.id}`}
                                     >
-                                        {ideaDetail.idea[0].name}
+                                        {ideaDetail.idea.name}
                                     </Link>
                                 </Breadcrumbs>
-            <Paper elevation={4} className="idea" key={ideaDetail.idea[0].id}>
+            <Paper elevation={4} className="idea" key={ideaDetail.idea.id}>
                     <Grid container>
                         <Grid item className='header-idea' xs={12}>
                             <Stack direction="row" spacing={2} className="avatar-category">
                                 {
-                                    ideaDetail.idea[0].isAnonymous ? (
+                                    ideaDetail.idea.isAnonymous ? (
                                         <Stack >
                                             <Avatar
                                             alt="A"
@@ -237,21 +253,21 @@ const IdeaDetail = ({token}) => {
                                             <Typography variant="subtitle2" className='name-user'>Anonymous</Typography>
                                         </Stack>
                                     ): (
-                                    <Link to={`/user/${ideaDetail.idea[0].User.id}`} style={{textDecoration:"none", color:"#000"}}>
+                                    <Link to={`/user/${ideaDetail.idea.User.id}`} style={{textDecoration:"none", color:"#000"}}>
                                     <Stack >
                                         <Avatar
-                                        src={`http://localhost:5050/${ideaDetail.idea[0].User.profileImage}`}
+                                        src={`http://localhost:5050/${ideaDetail.idea.User.profileImage}`}
                                         sx={{ width: 30, height: 30, justifySelf: "center" }}
                                         className='avatar'
                                         />
-                                        <Typography variant="subtitle2" className='name-user'>{ideaDetail.idea[0].User.fullName}</Typography>
+                                        <Typography variant="subtitle2" className='name-user'>{ideaDetail.idea.User.fullName}</Typography>
                                     </Stack>
                                      </Link>
                                     )
                                 }
                                 
                                 <Stack direction="row" spacing={1}>
-                                    <Chip label={ideaDetail.idea[0].Category.name} sx={{backgroundColor: "#F7F7F7"}} size="small" onClick={"handleClick"}/>
+                                    <Chip label={ideaDetail.idea.Category.name} sx={{backgroundColor: "#F7F7F7"}} size="small" onClick={"handleClick"}/>
                                 </Stack>
                             </Stack>
                             <Stack direction="row" spacing={1}>
@@ -261,17 +277,17 @@ const IdeaDetail = ({token}) => {
                             </Stack>
                         </Grid>
                         <Grid item xs={12} className="idea-content">
-                            <Typography align="justify" variant="subtitle2"> {ideaDetail.idea[0].name} </Typography>
+                            <Typography align="justify" variant="subtitle2"> {ideaDetail.idea.name} </Typography>
                             {
-                                ideaDetail.idea[0].filePath &&(
+                                ideaDetail.idea.filePath &&(
                                     <>
                                     <Box>
                                         { extension === 'jpg' || extension === 'jpeg' || extension === 'png' 
                                         ? ( 
-                                        <img src={`http://localhost:5050/${ideaDetail.idea[0].filePath}`} alt=""  className='imageIdea_preview'/>
+                                        <img src={`http://localhost:5050/${ideaDetail.idea.filePath}`} alt=""  className='imageIdea_preview'/>
                                         )
                                         :(          
-                                        <Link to={`http://localhost:5050/${ideaDetail.idea[0].filePath}`} style={{textDecoration: 'none'}}>
+                                        <Link to={`http://localhost:5050/${ideaDetail.idea.filePath}`} style={{textDecoration: 'none'}}>
                                              <Chip icon={<EmojiObjectsIcon/>} label="Attachment" size="small" color="primary" className="chip" sx={{backgroundColor: "#F9A602", marginTop: 1}} />
                                         </Link>
                               
@@ -295,7 +311,7 @@ const IdeaDetail = ({token}) => {
                                     </AvatarGroup>
                                 ) 
                             }
-                            <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea[0].createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
+                            <Chip icon={<CreateIcon/>} label={Moment(ideaDetail.idea.createdAt).format('YYYY/MM/DD')} size="small" sx={{backgroundColor: "#6D9886"}} />
                         </Grid>
                     </Grid>
                 </Paper>
@@ -309,13 +325,16 @@ const IdeaDetail = ({token}) => {
                         ideaDetail.comments?.map(comment=>(
                     <Grid> 
                         <Stack direction="row" spacing={1} className="comment-item">
-                                    <Tooltip title={comment.owner} arrow>
-                                        <Avatar
-                                        alt="T"
-                                        src={`http://localhost:5050/${comment.imagePath}`}
-                                        sx={{ width: 30, height: 30  }}
-                                        />
-                                    </Tooltip>
+                                    <Link to={`/user/${comment.userId}`} style={{textDecoration:"none", color:"#000"}}>
+                                        <Tooltip title={comment.owner} arrow>
+                                                    <Avatar
+                                                    alt="T"
+                                                    src={`http://localhost:5050/${comment.imagePath}`}
+                                                    sx={{ width: 30, height: 30  }}
+                                                    />
+                                                </Tooltip>
+                                    </Link>
+                                    
                                     <Stack direction="row" className='comment-text'>
                                         <Stack>
                                             <Stack direction="row" spacing={1}> 
@@ -324,10 +343,14 @@ const IdeaDetail = ({token}) => {
                                             </Stack>
                                             <Typography variant="subtitle2">{comment.content}</Typography>
                                         </Stack>
-                                        
-                                       <IconButton onClick={(event)=>{handleClick(event, comment.id, comment.content)}}>
-                                            <MoreVertIcon></MoreVertIcon>
-                                        </IconButton>
+                                        {
+                                           ideaDetail&& ideaDetail.topicInfo&& new Date(ideaDetail.topicInfo.finalClosureDate)> new Date()&&comment.userId==token.userId&&(
+                                            <IconButton onClick={(event)=>{handleClick(event, comment.id, comment.content)}}>
+                                                <MoreVertIcon></MoreVertIcon>
+                                            </IconButton>
+                                           )
+                                        }
+                                       
                                     </Stack> 
                         </Stack>
                     </Grid>
@@ -351,7 +374,8 @@ const IdeaDetail = ({token}) => {
                                             </Stack>
                                             <Typography variant="subtitle2">{comment.content}</Typography>
                                         </Stack>
-                                       <IconButton onClick={(event)=>{handleClick(event, comment.id, comment.content)}}>
+
+                                    <IconButton onClick={(event)=>{handleClick(event, comment.id, comment.content)}}>
                                             <MoreVertIcon></MoreVertIcon>
                                     </IconButton>
                                     </Stack> 
@@ -427,7 +451,7 @@ const IdeaDetail = ({token}) => {
                 >
                     <Stack spacing={1}>
                         <Button size='small' onClick={handleOpenUpdate}> Edit</Button>
-                        <Button size='small' onClick={1}> Delete</Button>
+                        <Button size='small' onClick={handleDeleteComment}> Delete</Button>
                     </Stack>
                     
                 </Popover>
@@ -436,22 +460,29 @@ const IdeaDetail = ({token}) => {
         <div>
         <Modal open={onpenUpdate} onClose={handleCloseUpdate} aria-labelledby="modal-title"
             aria-describedby="modal-description" 
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Box className='createNewCategory'>
-                    <h2>Update comment</h2>
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                {ideaDetail&& ideaDetail.topicInfo&&(
+                    <Box className='updateComment'>
                     <form onSubmit={handleUpdateComment}>
-                    <TextField
-                        label="Comment"
-                        variant="outlined"
-                        value={commentSelected.content}
-                        onChange={handleUpdateCommentChange}
-                        fullWidth
-                    />
-                    <Button type="submit" variant="contained" className='create_user_btn'>
-                        Update
-                    </Button>
-                    </form>
-                </Box>
+                        <Stack direction="row" spacing={1} className="comment-item">
+                                    <Tooltip title="VO HOANG TAM" arrow>
+                                        <Avatar
+                                        alt="T"
+                                        src={token&&`http://localhost:5050/${token.imagePath}`}
+                                        sx={{ width: 30, height: 30  }}
+                                        />
+                                    </Tooltip>
+                                        <Box flexGrow={1}>
+                                            <Input placeholder="Comment..." className='comment-input' sx={{borderBottomColor: "#6D9886"}} id='comment-input' name='content' 
+                                            value={commentSelected.content} onChange={handleUpdateCommentChange} />
+                                        </Box>
+                                        <IconButton type='submit'>
+                                                    <SendIcon fontSize='small' sx={{color: "#fff"}}/>
+                                        </IconButton>
+                        </Stack>
+                        </form>
+                        </Box>
+                )}
                 </Modal>
     </div>
     </Box>

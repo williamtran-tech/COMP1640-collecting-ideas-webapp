@@ -18,8 +18,8 @@ const getIdeaDetail_by_idea = async id => {
 const post_comment = data => {
     return axios.post("/comments", data, config());
   };
-  const delete_comment = data => {
-    return axios.delete("/comments", data, config());
+  const delete_comment = (id) => {
+    return axios.delete(`/comments/${id}`, config());
   };
   const update_comment = (id,data) => {
     return axios.put(`/comments/${id}`, data, config());
@@ -168,6 +168,7 @@ const handleApi = {
     create_idea,
     get_user_inf,
     update_comment,
+    delete_comment,
     admin_getListTopic,
     admin_create_idea,
     admin_getIdeas_by_topic,

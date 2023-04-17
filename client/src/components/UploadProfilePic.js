@@ -10,9 +10,7 @@ import handleApi from '../service/handleApi'
 const UploadProfilePic = ({openModal,setOpenModal, id, setUploaded, uploaded, avatar}) => {
     const filePicekerRef = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(avatar);
-   
-   console.log(imagePreview)
+    const [imagePreview, setImagePreview] = useState(`http://localhost:5050/${avatar}`);
     const handleChooseClick = () => {
         filePicekerRef.current.click();
     };
@@ -30,7 +28,7 @@ const UploadProfilePic = ({openModal,setOpenModal, id, setUploaded, uploaded, av
     }; 
     const handleClose = () => {
         setOpenModal(false);
-        setImagePreview(avatar);
+        setImagePreview(`http://localhost:5050/${avatar}`);
       };
     // console.log(imagePreview)
     //         console.log(filePicekerRef)

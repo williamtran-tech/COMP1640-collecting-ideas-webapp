@@ -267,3 +267,14 @@ margin-right: auto;
 .list_overview{
   padding: 10px;
 }
+.updateComment{
+  background-color: #6D9886;
+  padding: 10px;
+  border-radius: 20px;
+  width: 30%;
+}
+@media (max-width: 767px) and (min-width: 320px) {
+  .updateComment {
+    width: 90%;
+  }
+}
